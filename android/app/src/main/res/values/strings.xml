@@ -1,3 +1,7 @@
 <resources>
+<<<<<<< HEAD
     <string name="app_name">PWC</string>
+=======
+    <string name="app_name">PWCApp</string>
+>>>>>>> main
 </resources>

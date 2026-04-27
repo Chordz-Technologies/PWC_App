@@ -1,31 +1,37 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import SplashScreen from '../screens/SplashScreen';
-import LoginScreen from '../screens/LoginScreen';
-import RegisterScreen from '../screens/RegisterScreen';
-import HomeScreen from '../screens/HomeScreen';
 
-export type RootStackParamList = {
-    Splash: undefined;
-    Login: undefined;
-    Register: undefined;
-    Home: undefined;
-};
+import LoginScreen from '../screens/Login/LoginScreen';
+import HomeScreen from '../screens/Home/HomeScreen';
+import EventsScreen from '../screens/Event/EventsScreen';
+import EventRegisterScreen from '../screens/Event/EventRegister';
+import ProfileScreen from '../screens/Profile/ProfileScreen';
+import ReferenceScreen from '../screens/Reference/ReferenceScreen';
+import ScheduleScreen from '../screens/Schedule/ScheduleScreen';
+import NewMeetingScreen from '../screens/Schedule/NewMeetingScreen';
+import AddReferenceScreen from '../screens/AddRef/AddReferenceScreen';
+
+import { RootStackParamList } from './types';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 const AppNavigator = () => {
-    return (
-        <NavigationContainer>
-            <Stack.Navigator initialRouteName="Splash" screenOptions={{ headerShown: false }}>
-                <Stack.Screen name="Splash" component={SplashScreen} />
-                <Stack.Screen name="Login" component={LoginScreen} />
-                <Stack.Screen name="Register" component={RegisterScreen} />
-                <Stack.Screen name="Home" component={HomeScreen} />
-            </Stack.Navigator>
-        </NavigationContainer>
-    );
+  return (
+    <NavigationContainer>
+      <Stack.Navigator screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="Login" component={LoginScreen} />
+        <Stack.Screen name="Home" component={HomeScreen} />
+        <Stack.Screen name="Events" component={EventsScreen} />
+        <Stack.Screen name="EventRegister" component={EventRegisterScreen} />
+        <Stack.Screen name="Profile" component={ProfileScreen} />
+        <Stack.Screen name="Reference" component={ReferenceScreen} />
+        <Stack.Screen name="Schedule" component={ScheduleScreen} />
+        <Stack.Screen name="NewMeetingScreen"component={NewMeetingScreen}/>
+        <Stack.Screen name="AddRef" component={AddReferenceScreen} />
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
 };
 
 export default AppNavigator;
