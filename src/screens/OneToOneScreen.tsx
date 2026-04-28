@@ -1,0 +1,188 @@
+import React, { useState } from 'react';
+import { View, Text, TextInput, TouchableOpacity, ScrollView, Alert, } from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
+import Icon from 'react-native-vector-icons/Ionicons';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import { styles } from '../styles/OneToOneScreenStyle';
+import { addMeeting } from '../services/authApi';
+
+const OneToOneScreen = ({ navigation }: any) => {
+    const [showDate, setShowDate] = useState(false);
+    const [showTimePicker, setShowTimePicker] = useState(false);
+    const [selectedTime, setSelectedTime] = useState(new Date());
+    const [displayTime, setDisplayTime] = useState('');
+    const [form, setForm] = useState({
+        person1: '',
+        person2: '',
+        title: '',
+        date: '',
+        time: '',
+        venue: '',
+        description: '',
+    });
+
+    const handleChange = (key: string, value: string) => {
+        setForm({ ...form, [key]: value });
+    };
+
+    // ⏰ Handle Time Selection
+    const onTimeChange = (event: any, selected?: Date) => {
+        setShowTimePicker(false);
+
+        if (selected) {
+            setSelectedTime(selected);
+
+            let hours = selected.getHours();
+            let minutes: any = selected.getMinutes();
+
+            // API format
+            let apiHours = hours < 10 ? `0${hours}` : hours;
+            let apiMinutes = minutes < 10 ? `0${minutes}` : minutes;
+            const apiTime = `${apiHours}:${apiMinutes}:00`;
+
+            // Display format
+            let displayHours = hours % 12 || 12;
+            let ampm = hours >= 12 ? 'PM' : 'AM';
+            let displayMinutes = minutes < 10 ? `0${minutes}` : minutes;
+            const uiTime = `${displayHours}:${displayMinutes} ${ampm}`;
+
+            setDisplayTime(uiTime);
+            handleChange('time', apiTime); // send to API
+        }
+    };
+
+    const handleSubmit = async () => {
+        try {
+            if (!form.person1 || !form.person2 || !form.title || !form.date || !form.time || !form.venue) {
+                Alert.alert('Error', 'Please fill all fields');
+                return;
+            }
+
+            const res = await addMeeting(form);
+            Alert.alert('Success', 'Meeting Scheduled');
+            navigation.reset({
+                index: 0,
+                routes: [{ name: 'Home' }],
+            });
+        } catch (err) {
+            Alert.alert('Error', 'Failed to schedule meeting');
+        }
+    };
+
+    return (
+        <View style={styles.container}>
+
+            {/* 🔷 HEADER */}
+            <LinearGradient colors={['#4361ee', '#3f37c9']} style={styles.header}>
+                <TouchableOpacity onPress={() => navigation.goBack()}>
+                    <Icon name="arrow-back" size={24} color="#fff" />
+                </TouchableOpacity>
+                <Text style={styles.headerTitle}>Schedule 1:1 Meeting</Text>
+            </LinearGradient>
+
+            <ScrollView contentContainerStyle={{ padding: 15 }}>
+
+                {/* PERSON 1 */}
+                <Text style={styles.label}>Person 1*</Text>
+                <TextInput
+                    placeholder="Enter Person 1"
+                    placeholderTextColor="#999"
+                    style={styles.input}
+                    onChangeText={(v) => handleChange('person1', v)}
+                />
+
+                {/* PERSON 2 */}
+                <Text style={styles.label}>Person 2*</Text>
+                <TextInput
+                    placeholder="Enter Person 2"
+                    placeholderTextColor="#999"
+                    style={styles.input}
+                    onChangeText={(v) => handleChange('person2', v)}
+                />
+
+                {/* TITLE */}
+                <Text style={styles.label}>Meeting Title*</Text>
+                <TextInput
+                    placeholder="Enter Meeting Title"
+                    placeholderTextColor="#999"
+                    style={styles.input}
+                    onChangeText={(v) => handleChange('title', v)}
+                />
+
+                {/* DATE */}
+                <Text style={styles.label}>Select Date*</Text>
+                <TouchableOpacity
+                    style={styles.input}
+                    onPress={() => setShowDate(true)}
+                >
+                    <Text style={{ color: form.date ? '#000' : '#999' }}>
+                        {form.date || 'Select Date'}
+                    </Text>
+                </TouchableOpacity>
+
+                {showDate && (
+                    <DateTimePicker
+                        mode="date"
+                        display="calendar"
+                        value={new Date()}
+                        onChange={(event, date) => {
+                            setShowDate(false);
+                            if (date) {
+                                const formatted = date.toISOString().split('T')[0];
+                                handleChange('date', formatted);
+                            }
+                        }}
+                    />
+                )}
+
+                {/* TIME */}
+                <Text style={styles.label}>Select Time*</Text>
+
+                <TouchableOpacity
+                    style={styles.input}
+                    onPress={() => setShowTimePicker(true)}
+                >
+                    <Text style={{ color: displayTime ? '#000' : '#999' }}>
+                        {displayTime || 'Select Time'}
+                    </Text>
+                </TouchableOpacity>
+
+                {showTimePicker && (
+                    <DateTimePicker
+                        value={selectedTime}
+                        mode="time"
+                        display="default"
+                        onChange={onTimeChange}
+                    />
+                )}
+
+                {/* VENUE */}
+                <Text style={styles.label}>Venue*</Text>
+                <TextInput
+                    placeholder="Enter Venue"
+                    placeholderTextColor="#999"
+                    style={styles.input}
+                    onChangeText={(v) => handleChange('venue', v)}
+                />
+
+                {/* DESCRIPTION */}
+                <Text style={styles.label}>Description</Text>
+                <TextInput
+                    placeholder="Enter Description"
+                    placeholderTextColor="#999"
+                    style={[styles.input, { height: 100 }]}
+                    multiline
+                    textAlignVertical="top"
+                    onChangeText={(v) => handleChange('description', v)}
+                />
+
+                {/* SUBMIT */}
+                <TouchableOpacity style={styles.button} onPress={handleSubmit}>
+                    <Text style={styles.btnText}>Schedule Meeting</Text>
+                </TouchableOpacity>
+            </ScrollView>
+        </View>
+    );
+};
+
+export default OneToOneScreen;

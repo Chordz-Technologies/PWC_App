@@ -3,7 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, Image, ActivityIndicator, Aler
 import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { styles } from '../styles/LoginScreenStyle';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { loginUser } from '../services/authApi';
 
 const LoginScreen = ({ navigation }: any) => {
@@ -12,36 +12,24 @@ const LoginScreen = ({ navigation }: any) => {
     const [loading, setLoading] = useState(false);
     const [secureText, setSecureText] = useState(true);
 
-    // 🔍 Validate Email or Mobile
-    // const isValidInput = (value: string) => {
-    //     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    //     const mobileRegex = /^[0-9]{10}$/;
-
-    //     return emailRegex.test(value) || mobileRegex.test(value);
-    // };
-
     const handleLogin = async () => {
         if (!username || !password) {
             Alert.alert('Error', 'Please enter valid username and password');
             return;
         }
 
-        // if (!isValidInput(username)) {
-        //     Alert.alert('Error', 'Enter valid email or 10-digit mobile number');
-        //     return;
-        // }
-
         try {
             setLoading(true);
-
             const response = await loginUser({
                 username: username,
                 password: password,
             });
 
             setLoading(false);
-
             if (response?.token) {
+                await AsyncStorage.setItem('userId', String(response.id));
+                await AsyncStorage.setItem('userName', response.name);
+                await AsyncStorage.setItem('token', response.token);
                 navigation.replace('Home');
             } else {
                 Alert.alert('Error', response?.message || 'Login failed');
@@ -129,9 +117,7 @@ const LoginScreen = ({ navigation }: any) => {
                         Don’t have an account? <Text style={styles.signupLink}>Sign up</Text>
                     </Text>
                 </TouchableOpacity>
-
             </View>
-
         </LinearGradient>
     );
 };

@@ -11,15 +11,15 @@ export const styles = StyleSheet.create({
         borderRadius: 20,
         padding: 20,
         elevation: 6,
-        flex: 1,              // 🔥 important
+        flex: 1,
         marginVertical: 20,
     },
+
     dateText: {
         marginLeft: 10,
         color: '#333',
         fontSize: 14,
     },
-
 
     title: {
         fontSize: 22,

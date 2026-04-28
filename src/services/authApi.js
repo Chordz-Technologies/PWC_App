@@ -39,3 +39,51 @@ export const getAllChapters = async () => {
         throw error.response?.data || { message: 'Error fetching chapters' };
     }
 };
+
+// get all carousel images
+export const getCarouselImages = async () => {
+    try {
+        const response = await axios.get(`${BASE_URL}/carousel/allimages/`);
+        return response.data;
+    } catch (error) {
+        throw error.response?.data || { message: 'Error fetching carousel images' };
+    }
+};
+
+// add one-to-one meeting
+export const addMeeting = async (data) => {
+    try {
+        const response = await axios.post(`${BASE_URL}/one-to-one/addMeeting/`, data);
+        return response.data;
+    } catch (error) {
+        if (error.response) {
+            throw error.response.data;
+        } else {
+            throw { message: 'Network Error' };
+        }
+    }
+};
+
+// add referral
+export const addReferral = async (data) => {
+    try {
+        const response = await axios.post(`${BASE_URL}/referral/addreferral/`, data);
+        return response.data;
+    } catch (error) {
+        if (error.response) {
+            throw error.response.data;
+        } else {
+            throw { message: 'Network Error' };
+        }
+    }
+};
+
+// get all members
+export const getAllMembers = async () => {
+    try {
+        const response = await axios.get(`${BASE_URL}/member/allmembers/`);
+        return response.data;
+    } catch (error) {
+        throw error.response?.data || { message: 'Error fetching members' };
+    }
+};

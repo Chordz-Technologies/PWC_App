@@ -1,11 +1,31 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, Image, TouchableOpacity, Dimensions } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import { styles } from '../styles/SplashScreenStyle';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const { width } = Dimensions.get('window');
 
 const SplashScreen = ({ navigation }: any) => {
+
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+    useEffect(() => {
+        checkAuth();
+    }, []);
+
+    const checkAuth = async () => {
+        const token = await AsyncStorage.getItem('token');
+
+        if (token) {
+            setIsLoggedIn(true);
+
+            setTimeout(() => {
+                navigation.replace('Home');
+            }, 1500);
+        }
+    };
+
     return (
         <LinearGradient
             colors={['#4361ee', '#3f37c9']}
@@ -33,14 +53,15 @@ const SplashScreen = ({ navigation }: any) => {
                     Creative Womens
                 </Text>
 
-                <TouchableOpacity
-                    style={styles.button}
-                    onPress={() => navigation.replace('Login')}
-                >
-                    <Text style={styles.btnText}>Get Started</Text>
-                </TouchableOpacity>
+                {!isLoggedIn && (
+                    <TouchableOpacity
+                        style={styles.button}
+                        onPress={() => navigation.replace('Login')}
+                    >
+                        <Text style={styles.btnText}>Get Started</Text>
+                    </TouchableOpacity>
+                )}
             </View>
-
         </LinearGradient>
     );
 };

@@ -5,7 +5,6 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { Dropdown } from 'react-native-element-dropdown';
 import { styles } from '../styles/RegisterScreenStyle';
 import DateTimePicker from '@react-native-community/datetimepicker';
-
 import { registerUser, getAllChapters } from '../services/authApi';
 
 const RegisterScreen = ({ navigation }: any) => {
@@ -61,7 +60,7 @@ const RegisterScreen = ({ navigation }: any) => {
 
             const formatted = res.all_chapters.map((item: any) => ({
                 label: item.chapterName,
-                value: item.chapterName,
+                value: item.id,
             }));
 
             setChapters(formatted);
@@ -78,14 +77,12 @@ const RegisterScreen = ({ navigation }: any) => {
 
         try {
             setLoading(true);
-
             const payload = {
                 ...form,
                 chapter: form.chapter,   // now sending chapterName
             };
 
             const response = await registerUser(payload);
-
             setLoading(false);
 
             if (response?.success || response?.message) {
@@ -107,7 +104,6 @@ const RegisterScreen = ({ navigation }: any) => {
             behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         >
             <LinearGradient colors={['#4361ee', '#3f37c9']} style={styles.container}>
-                {/* <ScrollView showsVerticalScrollIndicator={false}> */}
                 <View style={styles.card}>
                     <Text style={styles.title}>Create Account</Text>
 
@@ -128,7 +124,7 @@ const RegisterScreen = ({ navigation }: any) => {
 
                         <View style={styles.inputContainer}>
                             <Icon name="call-outline" size={20} color="#8d99ae" />
-                            <TextInput placeholder="Mobile Number*" placeholderTextColor="#8d99ae" keyboardType="numeric" style={styles.input} onChangeText={(v) => handleChange('phone', v)} />
+                            <TextInput placeholder="Mobile Number*" placeholderTextColor="#8d99ae" maxLength={10} keyboardType="numeric" style={styles.input} onChangeText={(v) => handleChange('phone', v)} />
                         </View>
 
                         <View style={styles.inputContainer}>
@@ -163,6 +159,7 @@ const RegisterScreen = ({ navigation }: any) => {
                                 </Text>
                             </TouchableOpacity>
                         </View>
+
                         {showPicker && (
                             <DateTimePicker
                                 value={
@@ -321,7 +318,6 @@ const RegisterScreen = ({ navigation }: any) => {
                         </TouchableOpacity>
                     </ScrollView>
                 </View>
-                {/* </ScrollView> */}
             </LinearGradient>
         </KeyboardAvoidingView>
     );
