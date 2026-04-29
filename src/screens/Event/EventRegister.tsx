@@ -45,7 +45,7 @@ const EventRegisterScreen = ({ route, navigation }: Props) => {
       return;
     }
 
-    Alert.alert('Success', `${event.title} registration completed`);
+   navigation.navigate('RegistrationSuccess', { event });
   };
 
   return (
@@ -62,7 +62,7 @@ const EventRegisterScreen = ({ route, navigation }: Props) => {
           <PaymentSection form={form} setForm={setForm} />
           <PriceSummary fee={event.fee} />
 
-          <TouchableOpacity style={styles.button} onPress={handleRegister}>
+              <TouchableOpacity style={styles.button} onPress={handleRegister}>
             <Text style={styles.buttonText}>Pay & Register</Text>
           </TouchableOpacity>
         </View>

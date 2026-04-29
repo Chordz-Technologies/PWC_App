@@ -1,56 +1,77 @@
 import { StyleSheet } from 'react-native';
 
-export default StyleSheet.create({
+const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    padding: 26,
-    backgroundColor: '#f4f1ea',
+    padding: 16,
   },
 
   label: {
-    fontSize: 15,
-    fontWeight: '700',
-    color: '#111',
-    marginBottom: 12,
-    marginTop: 20,
+    fontSize: 14,
+    fontWeight: '600',
+    marginBottom: 6,
+    marginTop: 12,
+  },
+
+  inputBox: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 8,
+    paddingHorizontal: 10,
   },
 
   input: {
-    height: 86,
-    backgroundColor: '#fff',
-    borderWidth: 1,
-    borderColor: '#bbb',
-    borderRadius: 15,
-    paddingHorizontal: 24,
-    fontSize: 19,
-    color: '#111',
+    flex: 1,
+    padding: 10,
+    color: '#000',
   },
 
-  noteInput: {
-    height: 100,
-    backgroundColor: '#fff',
+  textInput: {
     borderWidth: 1,
-    borderColor: '#bbb',
-    borderRadius: 15,
-    paddingHorizontal: 24,
-    paddingTop: 28,
-    fontSize: 19,
-    color: '#111',
-    textAlignVertical: 'top',
+    borderColor: '#ccc',
+    borderRadius: 8,
+    padding: 10,
+    color: '#000', 
+  },
+
+  tagContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+  },
+
+  tag: {
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    backgroundColor: '#eee',
+    borderRadius: 20,
+    margin: 4,
+  },
+
+  tagActive: {
+    backgroundColor: '#3f37c9',
+  },
+
+  tagText: {
+     color: '#000',
+  },
+
+  tagTextActive: {
+    color: '#fff',
   },
 
   button: {
-    height: 50,
-    backgroundColor: '#4A63F0',
-    borderRadius: 17,
-    justifyContent: 'center',
+    backgroundColor: '#3f37c9',
+    padding: 14,
+    borderRadius: 10,
+    marginTop: 20,
     alignItems: 'center',
-    marginTop: 40,
   },
 
   buttonText: {
     color: '#fff',
-    fontSize: 19,
-    fontWeight: '700',
+    fontWeight: '600',
   },
 });
+
+export default styles;

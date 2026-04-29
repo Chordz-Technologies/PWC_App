@@ -1,76 +1,91 @@
 import { StyleSheet } from 'react-native';
 
-export default StyleSheet.create({
+const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f4f1ea',
-    padding: 26,
+    backgroundColor: '#f5f6fa',
+    padding: 16,
   },
 
-  addButton: {
-    height: 50,
-    backgroundColor: '#4A63F0',
-    borderRadius: 17,
+  header: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+
+  card: {
+    backgroundColor: '#fff',
+    padding: 16,
+    borderRadius: 12,
+    marginBottom: 12,
+    elevation: 3,
+  },
+
+  row: {
     flexDirection: 'row',
-    justifyContent: 'center',
     alignItems: 'center',
-    gap: 14,
-    marginBottom: 36,
+    marginBottom: 8,
   },
 
-  addButtonText: {
-    color: '#fff',
-    fontSize: 17,
-    fontWeight: '700',
+  avatar: {
+    width: 45,
+    height: 45,
+    borderRadius: 25,
+    marginRight: 10,
   },
 
   title: {
     fontSize: 16,
-    fontWeight: '800',
-    color: '#111',
-    marginBottom: 24,
+    fontWeight: 'bold',
   },
 
-  card: {
-    minHeight: 128,
-    backgroundColor: '#fff',
-    borderRadius: 20,
+  sub: {
+    color: '#888',
+    fontSize: 12,
+  },
+
+  desc: {
+    fontSize: 13,
+    color: '#444',
+    marginVertical: 6,
+  },
+
+  tagRow: {
     flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 28,
-    marginBottom: 24,
-    elevation: 4,
+    marginVertical: 6,
   },
 
-  iconCircle: {
-    width: 78,
-    height: 78,
-    borderRadius: 39,
-    backgroundColor: '#eef2ff',
+  tag: {
+    backgroundColor: '#eee',
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 8,
+    marginRight: 6,
+    fontSize: 12,
+  },
+
+  footer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+
+  footerText: {
+    fontSize: 12,
+    color: '#555',
+  },
+
+  fab: {
+    position: 'absolute',
+    bottom: 20,
+    right: 20,
+    backgroundColor: '#3f37c9',
+    width: 55,
+    height: 55,
+    borderRadius: 30,
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 22,
-  },
-
-  info: {
-    flex: 1,
-  },
-
-  name: {
-    fontSize: 15,
-    fontWeight: '800',
-    color: '#111',
-    marginBottom: 10,
-  },
-
-  role: {
-    fontSize: 15,
-    color: '#666',
-    marginBottom: 10,
-  },
-
-  note: {
-    fontSize: 15,
-    color: '#666',
+    elevation: 5,
   },
 });
+
+export default styles;

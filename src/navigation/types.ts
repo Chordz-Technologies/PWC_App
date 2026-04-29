@@ -16,15 +16,19 @@ export type EventItem = {
 };
 
 export type RootStackParamList = {
+  SpalshScreen:undefined;
   Login: undefined;
   Home: undefined;
+  Register:undefined;
   Events: undefined;
   EventRegister: {
   event: EventItem;
   };
+  RegistrationSuccess:{event:EventItem};
   Profile: undefined;
   Reference: undefined;
   Schedule: undefined;
   AddRef: undefined;
   NewMeetingScreen: undefined;
+
 };

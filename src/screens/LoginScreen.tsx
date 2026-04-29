@@ -115,7 +115,7 @@ const LoginScreen = ({ navigation }: any) => {
                 </TouchableOpacity>
 
                 {/* 🔷 BUTTON */}
-                <TouchableOpacity style={styles.button} onPress={handleLogin}>
+                <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Home')}>
                     {loading ? (
                         <ActivityIndicator color="#fff" />
                     ) : (

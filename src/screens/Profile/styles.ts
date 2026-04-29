@@ -1,119 +1,91 @@
 import { StyleSheet } from 'react-native';
 
 export default StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#f4f1ea',
-    paddingHorizontal: 20,
-    paddingTop: 36,
-  },
-
-  profileCard: {
+  card: {
     backgroundColor: '#fff',
-    borderRadius: 20,
-    paddingHorizontal: 15,
-    paddingVertical: 42,
+    margin: 16,
+    borderRadius: 16,
+    padding: 20,
     alignItems: 'center',
-    elevation: 4,
+    elevation: 3,
   },
 
-  avatarBox: {
+  imageWrapper: {
     position: 'relative',
-    marginBottom: 22,
+    marginBottom: 10,
+  },
+
+  avatar: {
+    width: 90,
+    height: 90,
+    borderRadius: 45,
   },
 
   editIcon: {
     position: 'absolute',
-    right: -12,
-    bottom: 8,
-    width: 44,
-    height: 44,
-    borderRadius: 22,
+    bottom: 0,
+    right: 0,
     backgroundColor: '#fff',
-    borderWidth: 1,
-    borderColor: '#ddd',
-    justifyContent: 'center',
-    alignItems: 'center',
+    padding: 5,
+    borderRadius: 20,
+    elevation: 3,
   },
 
   name: {
     fontSize: 18,
-    fontWeight: '800',
-    color: '#111',
-    marginBottom: 18,
+    fontWeight: '600',
+    marginTop: 5,
   },
 
   role: {
-    fontSize: 15,
+    fontSize: 13,
+    color: '#555',
+    textAlign: 'center',
+  },
+
+  stats: {
+    marginTop: 5,
+    color: '#444',
+  },
+
+  bold: {
+    fontWeight: '700',
+  },
+
+  desc: {
+    fontSize: 13,
     color: '#666',
     textAlign: 'center',
-    lineHeight: 28,
-  },
-
-  ratingRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: 24,
-  },
-
-  star: {
-    fontSize: 17,
-    marginRight: 8,
-  },
-
-  rating: {
-    fontSize: 17,
-    color: '#222',
-  },
-
-  description: {
-    fontSize: 16,
-    color: '#666',
-    textAlign: 'center',
-    lineHeight: 30,
-    marginTop: 28,
+    marginVertical: 10,
   },
 
   tagRow: {
     flexDirection: 'row',
-    marginTop: 34,
-    gap: 18,
+    marginTop: 5,
   },
 
   tag: {
-    backgroundColor: '#f0f0f0',
-    paddingVertical: 14,
-    paddingHorizontal: 24,
-    borderRadius: 25,
+    backgroundColor: '#eee',
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 10,
+    marginHorizontal: 5,
+    fontSize: 12,
   },
 
-  tagLarge: {
-    backgroundColor: '#f0f0f0',
-    paddingVertical: 14,
-    paddingHorizontal: 24,
-    borderRadius: 25,
-  },
-
-  tagText: {
-    fontSize: 16,
-    color: '#111',
-    fontWeight: '600',
-  },
-
-  settingBox: {
-    height: 50,
-    backgroundColor: '#f1f1f1',
-    marginTop: 30,
-    borderRadius: 4,
+  settingsBtn: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 28,
+    marginHorizontal: 16,
+    padding: 12,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    backgroundColor: '#fff',
   },
 
-  settingText: {
-    fontSize: 16,
-    color: '#111',
-    fontWeight: '600',
-    marginLeft: 18,
+  settingsText: {
+    marginLeft: 5,
+    fontSize: 14,
   },
 });
