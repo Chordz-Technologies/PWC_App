@@ -1,6 +1,7 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import HomeScreen from '../screens/HomeScreen';
 import OneToOneScreen from '../screens/OneToOneScreen';
 import AddReferenceScreen from '../screens/AddReferenceScreen';
@@ -8,6 +9,8 @@ import AddReferenceScreen from '../screens/AddReferenceScreen';
 const Tab = createBottomTabNavigator();
 
 const BottomTab = () => {
+    const insets = useSafeAreaInsets();
+
     return (
         <Tab.Navigator
             screenOptions={({ route }) => ({
@@ -15,8 +18,16 @@ const BottomTab = () => {
                 tabBarActiveTintColor: '#4361ee',
                 tabBarInactiveTintColor: '#888',
                 tabBarStyle: {
-                    height: 60,
-                    paddingBottom: 5,
+                    paddingBottom: insets.bottom + 8,
+                    paddingTop: 8,
+                    height: 60 + insets.bottom,
+                    backgroundColor: '#fff',
+                    borderTopWidth: 1,
+                    borderTopColor: '#eee',
+                },
+                tabBarLabelStyle: {
+                    fontSize: 12,
+                    fontWeight: '500',
                 },
                 tabBarIcon: ({ color, size }) => {
                     let iconName: string = '';

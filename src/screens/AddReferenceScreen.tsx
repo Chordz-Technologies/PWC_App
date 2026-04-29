@@ -7,6 +7,7 @@ import { Dropdown } from 'react-native-element-dropdown';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { styles } from '../styles/AddReferenceScreenStyle';
 import { addReferral, getAllMembers } from '../services/authApi';
+import SafeAreaWrapper from './SafeAreaWrapper';
 
 const AddReferenceScreen = ({ navigation }: any) => {
     const [showDate, setShowDate] = useState(false);
@@ -109,122 +110,124 @@ const AddReferenceScreen = ({ navigation }: any) => {
     };
 
     return (
-        <View style={styles.container}>
+        <SafeAreaWrapper>
+            <View style={styles.container}>
 
-            {/* 🔷 HEADER */}
-            <LinearGradient colors={['#4361ee', '#3f37c9']} style={styles.header}>
-                <TouchableOpacity onPress={() => navigation.goBack()}>
-                    <Icon name="arrow-back" size={24} color="#fff" />
-                </TouchableOpacity>
+                {/* 🔷 HEADER */}
+                <LinearGradient colors={['#4361ee', '#3f37c9']} style={styles.header}>
+                    <TouchableOpacity onPress={() => navigation.goBack()}>
+                        <Icon name="arrow-back" size={24} color="#fff" />
+                    </TouchableOpacity>
 
-                <Text style={styles.headerTitle}>Add Reference</Text>
-            </LinearGradient>
+                    <Text style={styles.headerTitle}>Add Reference</Text>
+                </LinearGradient>
 
-            <ScrollView contentContainerStyle={{ padding: 15 }}>
+                <ScrollView contentContainerStyle={{ padding: 15 }}>
 
-                {/* DATE */}
-                <Text style={styles.label}>Reference Date*</Text>
-                <TouchableOpacity
-                    style={styles.input}
-                    onPress={() => setShowDate(true)}
-                >
-                    <Text style={{ color: form.ref_date ? '#000' : '#999' }}>
-                        {form.ref_date || 'Select Date'}
-                    </Text>
-                </TouchableOpacity>
+                    {/* DATE */}
+                    <Text style={styles.label}>Reference Date*</Text>
+                    <TouchableOpacity
+                        style={styles.input}
+                        onPress={() => setShowDate(true)}
+                    >
+                        <Text style={{ color: form.ref_date ? '#000' : '#999' }}>
+                            {form.ref_date || 'Select Date'}
+                        </Text>
+                    </TouchableOpacity>
 
-                {showDate && (
-                    <DateTimePicker
-                        mode="date"
-                        display="calendar"
-                        value={new Date()}
-                        onChange={(event, date) => {
-                            setShowDate(false);
-                            if (date) {
-                                const formatted = date.toISOString().split('T')[0];
-                                handleChange('ref_date', formatted);
-                            }
+                    {showDate && (
+                        <DateTimePicker
+                            mode="date"
+                            display="calendar"
+                            value={new Date()}
+                            onChange={(event, date) => {
+                                setShowDate(false);
+                                if (date) {
+                                    const formatted = date.toISOString().split('T')[0];
+                                    handleChange('ref_date', formatted);
+                                }
+                            }}
+                        />
+                    )}
+
+                    {/* ✅ REFERRAL FROM */}
+                    <Text style={styles.label}>Referral From*</Text>
+                    <TextInput
+                        value={userName}
+                        editable={false}
+                        style={[styles.input, { backgroundColor: '#f0f0f0' }]} />
+
+                    {/* ✅ REFERRAL TO (DROPDOWN) */}
+                    <Text style={styles.label}>Referral To*</Text>
+                    <Dropdown
+                        style={styles.input}
+                        data={members}
+                        labelField="label"
+                        valueField="value"
+                        placeholder="Select Member"
+                        placeholderStyle={{ color: '#999' }}
+                        value={form.ref_to}
+                        onChange={(item) => {
+                            setForm(prev => ({
+                                ...prev,
+                                ref_to: Number(item.value),   // ✅ FORCE NUMBER
+                                referral_to: item.label
+                            }));
                         }}
                     />
-                )}
 
-                {/* ✅ REFERRAL FROM (AUTO - DISABLED) */}
-                <Text style={styles.label}>Referral From*</Text>
-                <TextInput
-                    value={userName}
-                    style={[styles.input, { color: '#000000' }]}
-                />
+                    {/* REFERRAL */}
+                    <Text style={styles.label}>Referral*</Text>
+                    <TextInput
+                        placeholder="Enter Referral Details"
+                        placeholderTextColor="#999"
+                        style={styles.input}
+                        onChangeText={(v) => handleChange('referral', v)}
+                    />
 
-                {/* ✅ REFERRAL TO (DROPDOWN) */}
-                <Text style={styles.label}>Referral To*</Text>
-                <Dropdown
-                    style={styles.input}
-                    data={members}
-                    labelField="label"
-                    valueField="value"
-                    placeholder="Select Member"
-                    placeholderStyle={{ color: '#999' }}
-                    value={form.ref_to}
-                    onChange={(item) => {
-                        setForm(prev => ({
-                            ...prev,
-                            ref_to: Number(item.value),   // ✅ FORCE NUMBER
-                            referral_to: item.label
-                        }));
-                    }}
-                />
+                    {/* REF TYPE */}
+                    <Text style={styles.label}>Reference Type*</Text>
 
-                {/* REFERRAL */}
-                <Text style={styles.label}>Referral*</Text>
-                <TextInput
-                    placeholder="Enter Referral Details"
-                    placeholderTextColor="#999"
-                    style={styles.input}
-                    onChangeText={(v) => handleChange('referral', v)}
-                />
+                    <Dropdown
+                        style={styles.input}
+                        data={referralTypes}
+                        labelField="label"
+                        valueField="value"
+                        placeholder="Select Reference Type"
+                        placeholderStyle={{ color: '#999' }}
+                        value={form.ref_type}
+                        onChange={(item) => handleChange('ref_type', item.value)}
+                    />
 
-                {/* REF TYPE */}
-                <Text style={styles.label}>Reference Type*</Text>
+                    {/* ADDRESS */}
+                    <Text style={styles.label}>Address</Text>
+                    <TextInput
+                        placeholder="Enter Address"
+                        placeholderTextColor="#999"
+                        style={[styles.input, { height: 100 }]}
+                        multiline
+                        textAlignVertical="top"
+                        onChangeText={(v) => handleChange('address', v)}
+                    />
 
-                <Dropdown
-                    style={styles.input}
-                    data={referralTypes}
-                    labelField="label"
-                    valueField="value"
-                    placeholder="Select Reference Type"
-                    placeholderStyle={{ color: '#999' }}
-                    value={form.ref_type}
-                    onChange={(item) => handleChange('ref_type', item.value)}
-                />
+                    {/* COMMENT */}
+                    <Text style={styles.label}>Comment</Text>
+                    <TextInput
+                        placeholder="Enter Comment"
+                        placeholderTextColor="#999"
+                        style={[styles.input, { height: 100 }]}
+                        multiline
+                        textAlignVertical="top"
+                        onChangeText={(v) => handleChange('comment', v)}
+                    />
 
-                {/* ADDRESS */}
-                <Text style={styles.label}>Address</Text>
-                <TextInput
-                    placeholder="Enter Address"
-                    placeholderTextColor="#999"
-                    style={[styles.input, { height: 100 }]}
-                    multiline
-                    textAlignVertical="top"
-                    onChangeText={(v) => handleChange('address', v)}
-                />
-
-                {/* COMMENT */}
-                <Text style={styles.label}>Comment</Text>
-                <TextInput
-                    placeholder="Enter Comment"
-                    placeholderTextColor="#999"
-                    style={[styles.input, { height: 100 }]}
-                    multiline
-                    textAlignVertical="top"
-                    onChangeText={(v) => handleChange('comment', v)}
-                />
-
-                {/* SUBMIT */}
-                <TouchableOpacity style={styles.button} onPress={handleSubmit}>
-                    <Text style={styles.btnText}>Add Reference</Text>
-                </TouchableOpacity>
-            </ScrollView>
-        </View>
+                    {/* SUBMIT */}
+                    <TouchableOpacity style={styles.button} onPress={handleSubmit}>
+                        <Text style={styles.btnText}>Add Reference</Text>
+                    </TouchableOpacity>
+                </ScrollView>
+            </View>
+        </SafeAreaWrapper>
     );
 };
 

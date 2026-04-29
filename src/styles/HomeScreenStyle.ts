@@ -138,10 +138,13 @@ export const styles = StyleSheet.create({
         shadowRadius: 5,
     },
 
-    avatar: {
-        width: 50,
-        height: 50,
+    avatarIcon: {
+        width: 45,
+        height: 45,
         borderRadius: 25,
+        backgroundColor: '#eef1ff',
+        justifyContent: 'center',
+        alignItems: 'center',
     },
 
     meetingTitle: {

@@ -6,6 +6,7 @@ import { Dropdown } from 'react-native-element-dropdown';
 import { styles } from '../styles/RegisterScreenStyle';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { registerUser, getAllChapters } from '../services/authApi';
+import SafeAreaWrapper from './SafeAreaWrapper';
 
 const RegisterScreen = ({ navigation }: any) => {
     const [loading, setLoading] = useState(false);
@@ -99,227 +100,229 @@ const RegisterScreen = ({ navigation }: any) => {
     };
 
     return (
-        <KeyboardAvoidingView
-            style={{ flex: 1 }}
-            behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-        >
-            <LinearGradient colors={['#4361ee', '#3f37c9']} style={styles.container}>
-                <View style={styles.card}>
-                    <Text style={styles.title}>Create Account</Text>
+        <SafeAreaWrapper>
+            <KeyboardAvoidingView
+                style={{ flex: 1 }}
+                behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+            >
+                <LinearGradient colors={['#4361ee', '#3f37c9']} style={styles.container}>
+                    <View style={styles.card}>
+                        <Text style={styles.title}>Create Account</Text>
 
-                    <ScrollView
-                        showsVerticalScrollIndicator={false}
-                        contentContainerStyle={{ paddingBottom: 20 }}
-                    >
-                        {/* 🔹 BASIC */}
-                        <View style={styles.inputContainer}>
-                            <Icon name="person-outline" size={20} color="#8d99ae" />
-                            <TextInput placeholder="Full Name*" placeholderTextColor="#8d99ae" style={styles.input} onChangeText={(v) => handleChange('name', v)} />
-                        </View>
+                        <ScrollView
+                            showsVerticalScrollIndicator={false}
+                            contentContainerStyle={{ paddingBottom: 20 }}
+                        >
+                            {/* 🔹 BASIC */}
+                            <View style={styles.inputContainer}>
+                                <Icon name="person-outline" size={20} color="#8d99ae" />
+                                <TextInput placeholder="Full Name*" placeholderTextColor="#8d99ae" style={styles.input} onChangeText={(v) => handleChange('name', v)} />
+                            </View>
 
-                        <View style={styles.inputContainer}>
-                            <Icon name="mail-outline" size={20} color="#8d99ae" />
-                            <TextInput placeholder="Email Address*" placeholderTextColor="#8d99ae" style={styles.input} onChangeText={(v) => handleChange('email', v)} />
-                        </View>
+                            <View style={styles.inputContainer}>
+                                <Icon name="mail-outline" size={20} color="#8d99ae" />
+                                <TextInput placeholder="Email Address*" placeholderTextColor="#8d99ae" style={styles.input} onChangeText={(v) => handleChange('email', v)} />
+                            </View>
 
-                        <View style={styles.inputContainer}>
-                            <Icon name="call-outline" size={20} color="#8d99ae" />
-                            <TextInput placeholder="Mobile Number*" placeholderTextColor="#8d99ae" maxLength={10} keyboardType="numeric" style={styles.input} onChangeText={(v) => handleChange('phone', v)} />
-                        </View>
+                            <View style={styles.inputContainer}>
+                                <Icon name="call-outline" size={20} color="#8d99ae" />
+                                <TextInput placeholder="Mobile Number*" placeholderTextColor="#8d99ae" maxLength={10} keyboardType="numeric" style={styles.input} onChangeText={(v) => handleChange('phone', v)} />
+                            </View>
 
-                        <View style={styles.inputContainer}>
-                            <Icon name="lock-closed-outline" size={20} color="#8d99ae" />
-                            <TextInput
-                                placeholder="Password*"
-                                secureTextEntry={secureText}
-                                placeholderTextColor="#8d99ae"
-                                style={styles.input}
-                                onChangeText={(v) => handleChange('password', v)}
-                            />
-                            <TouchableOpacity onPress={() => setSecureText(!secureText)}>
-                                <Icon name={secureText ? 'eye-off-outline' : 'eye-outline'} size={20} color="#8d99ae" />
-                            </TouchableOpacity>
-                        </View>
+                            <View style={styles.inputContainer}>
+                                <Icon name="lock-closed-outline" size={20} color="#8d99ae" />
+                                <TextInput
+                                    placeholder="Password*"
+                                    secureTextEntry={secureText}
+                                    placeholderTextColor="#8d99ae"
+                                    style={styles.input}
+                                    onChangeText={(v) => handleChange('password', v)}
+                                />
+                                <TouchableOpacity onPress={() => setSecureText(!secureText)}>
+                                    <Icon name={secureText ? 'eye-off-outline' : 'eye-outline'} size={20} color="#8d99ae" />
+                                </TouchableOpacity>
+                            </View>
 
-                        <View style={styles.inputContainer}>
-                            <Icon name="calendar-outline" size={20} color="#8d99ae" />
+                            <View style={styles.inputContainer}>
+                                <Icon name="calendar-outline" size={20} color="#8d99ae" />
 
-                            <TouchableOpacity
-                                style={{ flex: 1 }}
-                                onPress={() => setShowPicker('dob')}
-                                activeOpacity={0.7}
-                            >
-                                <Text
-                                    style={[
-                                        styles.input,
-                                        { color: form.dob ? '#2b2d42' : '#8d99ae' }
-                                    ]}
+                                <TouchableOpacity
+                                    style={{ flex: 1 }}
+                                    onPress={() => setShowPicker('dob')}
+                                    activeOpacity={0.7}
                                 >
-                                    {form.dob || 'Date of Birth'}
-                                </Text>
-                            </TouchableOpacity>
-                        </View>
+                                    <Text
+                                        style={[
+                                            styles.input,
+                                            { color: form.dob ? '#2b2d42' : '#8d99ae' }
+                                        ]}
+                                    >
+                                        {form.dob || 'Date of Birth'}
+                                    </Text>
+                                </TouchableOpacity>
+                            </View>
 
-                        {showPicker && (
-                            <DateTimePicker
-                                value={
-                                    showPicker === 'dob'
-                                        ? dates.dob
-                                        : showPicker === 'joining'
-                                            ? dates.joining
-                                            : dates.expiry
-                                }
-                                mode="date"
-                                display="calendar"
-                                maximumDate={showPicker === 'dob' ? new Date() : undefined}
-                                onChange={(event, selectedDate) => {
-                                    setShowPicker(null);
-
-                                    if (selectedDate) {
-                                        const formatted = selectedDate.toISOString().split('T')[0];
-
-                                        if (showPicker === 'dob') {
-                                            setDates({ ...dates, dob: selectedDate });
-                                            handleChange('dob', formatted);
-                                        }
-                                        if (showPicker === 'joining') {
-                                            setDates({ ...dates, joining: selectedDate });
-                                            handleChange('joining_date', formatted);
-                                        }
-                                        if (showPicker === 'expiry') {
-                                            setDates({ ...dates, expiry: selectedDate });
-                                            handleChange('expiry_date', formatted);
-                                        }
+                            {showPicker && (
+                                <DateTimePicker
+                                    value={
+                                        showPicker === 'dob'
+                                            ? dates.dob
+                                            : showPicker === 'joining'
+                                                ? dates.joining
+                                                : dates.expiry
                                     }
-                                }}
+                                    mode="date"
+                                    display="calendar"
+                                    maximumDate={showPicker === 'dob' ? new Date() : undefined}
+                                    onChange={(event, selectedDate) => {
+                                        setShowPicker(null);
+
+                                        if (selectedDate) {
+                                            const formatted = selectedDate.toISOString().split('T')[0];
+
+                                            if (showPicker === 'dob') {
+                                                setDates({ ...dates, dob: selectedDate });
+                                                handleChange('dob', formatted);
+                                            }
+                                            if (showPicker === 'joining') {
+                                                setDates({ ...dates, joining: selectedDate });
+                                                handleChange('joining_date', formatted);
+                                            }
+                                            if (showPicker === 'expiry') {
+                                                setDates({ ...dates, expiry: selectedDate });
+                                                handleChange('expiry_date', formatted);
+                                            }
+                                        }
+                                    }}
+                                />
+                            )}
+
+                            {/* 🔹 BUSINESS */}
+                            <View style={styles.inputContainer}>
+                                <Icon name="id-card-outline" size={20} color="#8d99ae" />
+                                <TextInput placeholder="PAN Number" placeholderTextColor="#8d99ae" style={styles.input} onChangeText={(v) => handleChange('pan_no', v)} />
+                            </View>
+
+                            <View style={styles.inputContainer}>
+                                <Icon name="briefcase-outline" size={20} color="#8d99ae" />
+                                <TextInput placeholder="GST Number" placeholderTextColor="#8d99ae" style={styles.input} onChangeText={(v) => handleChange('gst_no', v)} />
+                            </View>
+
+                            <View style={styles.inputContainer}>
+                                <Icon name="business-outline" size={20} color="#8d99ae" />
+                                <TextInput placeholder="Organization Name" placeholderTextColor="#8d99ae" style={styles.input} onChangeText={(v) => handleChange('org_name', v)} />
+                            </View>
+
+                            <View style={styles.inputContainer}>
+                                <Icon name="layers-outline" size={20} color="#8d99ae" />
+                                <TextInput placeholder="Business Category" placeholderTextColor="#8d99ae" style={styles.input} onChangeText={(v) => handleChange('business_category', v)} />
+                            </View>
+
+                            {/* 🔹 DATES */}
+                            <View style={styles.inputContainer}>
+                                <Icon name="calendar-outline" size={20} color="#8d99ae" />
+
+                                <TouchableOpacity
+                                    style={{ flex: 1 }}
+                                    onPress={() => setShowPicker('joining')}
+                                    activeOpacity={0.7}
+                                >
+                                    <Text
+                                        style={[
+                                            styles.input,
+                                            { color: form.joining_date ? '#2b2d42' : '#8d99ae' }
+                                        ]}
+                                    >
+                                        {form.joining_date || 'Joining Date'}
+                                    </Text>
+                                </TouchableOpacity>
+                            </View>
+                            <View style={styles.inputContainer}>
+                                <Icon name="calendar-outline" size={20} color="#8d99ae" />
+                                <TouchableOpacity
+                                    style={{ flex: 1 }}
+                                    onPress={() => setShowPicker('expiry')}
+                                    activeOpacity={0.7}
+                                >
+                                    <Text
+                                        style={[
+                                            styles.input,
+                                            { color: form.expiry_date ? '#2b2d42' : '#8d99ae' }
+                                        ]}
+                                    >
+                                        {form.expiry_date || 'Expiry Date'}
+                                    </Text>
+                                </TouchableOpacity>
+                            </View>
+
+                            {/* 🔹 OTHER */}
+                            <View style={styles.inputContainer}>
+                                <Icon name="checkmark-done-outline" size={20} color="#8d99ae" />
+                                <TextInput placeholder="Subscription Status" placeholderTextColor="#8d99ae" style={styles.input} onChangeText={(v) => handleChange('subscription_status', v)} />
+                            </View>
+                            <View style={styles.inputContainer}>
+                                <Icon name="location-outline" size={20} color="#8d99ae" />
+                                <TextInput placeholder="Office Address" placeholderTextColor="#8d99ae" style={styles.input} onChangeText={(v) => handleChange('office_address', v)} />
+                            </View>
+
+                            {/* 🔹 SOCIAL */}
+                            <View style={styles.inputContainer}>
+                                <Icon name="logo-facebook" size={20} color="#8d99ae" />
+                                <TextInput placeholder="Facebook Profile" placeholderTextColor="#8d99ae" style={styles.input} onChangeText={(v) => handleChange('facebook', v)} />
+                            </View>
+                            <View style={styles.inputContainer}>
+                                <Icon name="logo-linkedin" size={20} color="#8d99ae" />
+                                <TextInput placeholder="LinkedIn Profile" placeholderTextColor="#8d99ae" style={styles.input} onChangeText={(v) => handleChange('linkedin', v)} />
+                            </View>
+                            <View style={styles.inputContainer}>
+                                <Icon name="logo-twitter" size={20} color="#8d99ae" />
+                                <TextInput placeholder="Other Social Media" placeholderTextColor="#8d99ae" style={styles.input} onChangeText={(v) => handleChange('social_media', v)} />
+                            </View>
+                            <View style={styles.inputContainer}>
+                                <Icon name="globe-outline" size={20} color="#8d99ae" />
+                                <TextInput placeholder="Website URL" placeholderTextColor="#8d99ae" style={styles.input} onChangeText={(v) => handleChange('personal_website', v)} />
+                            </View>
+
+                            {/* 🔹 DROPDOWNS */}
+                            <Dropdown
+                                style={styles.dropdown}
+                                data={roles}
+                                labelField="label"
+                                valueField="value"
+                                placeholder="Select Role*"
+                                placeholderStyle={{ color: '#8d99ae' }}
+                                value={form.role}
+                                onChange={(item) => handleChange('role', item.value)}
                             />
-                        )}
 
-                        {/* 🔹 BUSINESS */}
-                        <View style={styles.inputContainer}>
-                            <Icon name="id-card-outline" size={20} color="#8d99ae" />
-                            <TextInput placeholder="PAN Number" placeholderTextColor="#8d99ae" style={styles.input} onChangeText={(v) => handleChange('pan_no', v)} />
-                        </View>
+                            <Dropdown
+                                style={styles.dropdown}
+                                data={chapters}
+                                labelField="label"
+                                valueField="value"
+                                placeholder="Select Chapter*"
+                                placeholderStyle={{ color: '#8d99ae' }}
+                                value={form.chapter}
+                                onChange={(item) => handleChange('chapter', item.value)}
+                                maxHeight={200}
+                            />
 
-                        <View style={styles.inputContainer}>
-                            <Icon name="briefcase-outline" size={20} color="#8d99ae" />
-                            <TextInput placeholder="GST Number" placeholderTextColor="#8d99ae" style={styles.input} onChangeText={(v) => handleChange('gst_no', v)} />
-                        </View>
+                            {/* 🔹 BUTTON */}
+                            <TouchableOpacity style={styles.button} onPress={handleRegister} disabled={loading}>
+                                {loading ? <ActivityIndicator color="#fff" /> : <Text style={styles.btnText}>Register</Text>}
+                            </TouchableOpacity>
 
-                        <View style={styles.inputContainer}>
-                            <Icon name="business-outline" size={20} color="#8d99ae" />
-                            <TextInput placeholder="Organization Name" placeholderTextColor="#8d99ae" style={styles.input} onChangeText={(v) => handleChange('org_name', v)} />
-                        </View>
-
-                        <View style={styles.inputContainer}>
-                            <Icon name="layers-outline" size={20} color="#8d99ae" />
-                            <TextInput placeholder="Business Category" placeholderTextColor="#8d99ae" style={styles.input} onChangeText={(v) => handleChange('business_category', v)} />
-                        </View>
-
-                        {/* 🔹 DATES */}
-                        <View style={styles.inputContainer}>
-                            <Icon name="calendar-outline" size={20} color="#8d99ae" />
-
-                            <TouchableOpacity
-                                style={{ flex: 1 }}
-                                onPress={() => setShowPicker('joining')}
-                                activeOpacity={0.7}
-                            >
-                                <Text
-                                    style={[
-                                        styles.input,
-                                        { color: form.joining_date ? '#2b2d42' : '#8d99ae' }
-                                    ]}
-                                >
-                                    {form.joining_date || 'Joining Date'}
+                            {/* 🔹 LOGIN */}
+                            <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+                                <Text style={styles.link}>
+                                    Already have an account? <Text style={styles.linkHighlight}>Login</Text>
                                 </Text>
                             </TouchableOpacity>
-                        </View>
-                        <View style={styles.inputContainer}>
-                            <Icon name="calendar-outline" size={20} color="#8d99ae" />
-                            <TouchableOpacity
-                                style={{ flex: 1 }}
-                                onPress={() => setShowPicker('expiry')}
-                                activeOpacity={0.7}
-                            >
-                                <Text
-                                    style={[
-                                        styles.input,
-                                        { color: form.expiry_date ? '#2b2d42' : '#8d99ae' }
-                                    ]}
-                                >
-                                    {form.expiry_date || 'Expiry Date'}
-                                </Text>
-                            </TouchableOpacity>
-                        </View>
-
-                        {/* 🔹 OTHER */}
-                        <View style={styles.inputContainer}>
-                            <Icon name="checkmark-done-outline" size={20} color="#8d99ae" />
-                            <TextInput placeholder="Subscription Status" placeholderTextColor="#8d99ae" style={styles.input} onChangeText={(v) => handleChange('subscription_status', v)} />
-                        </View>
-                        <View style={styles.inputContainer}>
-                            <Icon name="location-outline" size={20} color="#8d99ae" />
-                            <TextInput placeholder="Office Address" placeholderTextColor="#8d99ae" style={styles.input} onChangeText={(v) => handleChange('office_address', v)} />
-                        </View>
-
-                        {/* 🔹 SOCIAL */}
-                        <View style={styles.inputContainer}>
-                            <Icon name="logo-facebook" size={20} color="#8d99ae" />
-                            <TextInput placeholder="Facebook Profile" placeholderTextColor="#8d99ae" style={styles.input} onChangeText={(v) => handleChange('facebook', v)} />
-                        </View>
-                        <View style={styles.inputContainer}>
-                            <Icon name="logo-linkedin" size={20} color="#8d99ae" />
-                            <TextInput placeholder="LinkedIn Profile" placeholderTextColor="#8d99ae" style={styles.input} onChangeText={(v) => handleChange('linkedin', v)} />
-                        </View>
-                        <View style={styles.inputContainer}>
-                            <Icon name="logo-twitter" size={20} color="#8d99ae" />
-                            <TextInput placeholder="Other Social Media" placeholderTextColor="#8d99ae" style={styles.input} onChangeText={(v) => handleChange('social_media', v)} />
-                        </View>
-                        <View style={styles.inputContainer}>
-                            <Icon name="globe-outline" size={20} color="#8d99ae" />
-                            <TextInput placeholder="Website URL" placeholderTextColor="#8d99ae" style={styles.input} onChangeText={(v) => handleChange('personal_website', v)} />
-                        </View>
-
-                        {/* 🔹 DROPDOWNS */}
-                        <Dropdown
-                            style={styles.dropdown}
-                            data={roles}
-                            labelField="label"
-                            valueField="value"
-                            placeholder="Select Role*"
-                            placeholderStyle={{ color: '#8d99ae' }}
-                            value={form.role}
-                            onChange={(item) => handleChange('role', item.value)}
-                        />
-
-                        <Dropdown
-                            style={styles.dropdown}
-                            data={chapters}
-                            labelField="label"
-                            valueField="value"
-                            placeholder="Select Chapter*"
-                            placeholderStyle={{ color: '#8d99ae' }}
-                            value={form.chapter}
-                            onChange={(item) => handleChange('chapter', item.value)}
-                            maxHeight={200}
-                        />
-
-                        {/* 🔹 BUTTON */}
-                        <TouchableOpacity style={styles.button} onPress={handleRegister} disabled={loading}>
-                            {loading ? <ActivityIndicator color="#fff" /> : <Text style={styles.btnText}>Register</Text>}
-                        </TouchableOpacity>
-
-                        {/* 🔹 LOGIN */}
-                        <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-                            <Text style={styles.link}>
-                                Already have an account? <Text style={styles.linkHighlight}>Login</Text>
-                            </Text>
-                        </TouchableOpacity>
-                    </ScrollView>
-                </View>
-            </LinearGradient>
-        </KeyboardAvoidingView>
+                        </ScrollView>
+                    </View>
+                </LinearGradient>
+            </KeyboardAvoidingView>
+        </SafeAreaWrapper>
     );
 };
 

@@ -50,6 +50,16 @@ export const getCarouselImages = async () => {
     }
 };
 
+// get one-to-one meetings for a person
+export const getMyMeetings = async (person1) => {
+    try {
+        const res = await axios.get(`${BASE_URL}/one-to-one/myMeetings/${person1}/`);
+        return res.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
 // add one-to-one meeting
 export const addMeeting = async (data) => {
     try {

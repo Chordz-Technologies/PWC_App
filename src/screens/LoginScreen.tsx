@@ -5,6 +5,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { styles } from '../styles/LoginScreenStyle';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { loginUser } from '../services/authApi';
+import SafeAreaWrapper from './SafeAreaWrapper';
 
 const LoginScreen = ({ navigation }: any) => {
     const [username, setUsername] = useState('');
@@ -42,83 +43,85 @@ const LoginScreen = ({ navigation }: any) => {
     };
 
     return (
-        <LinearGradient
-            colors={['#4361ee', '#3f37c9']}
-            style={styles.container}
-        >
-            <View style={styles.circleTop} />
-            <View style={styles.circleBottom} />
+        <SafeAreaWrapper>
+            <LinearGradient
+                colors={['#4361ee', '#3f37c9']}
+                style={styles.container}
+            >
+                <View style={styles.circleTop} />
+                <View style={styles.circleBottom} />
 
-            {/* 🔷 CARD */}
-            <View style={styles.card}>
+                {/* 🔷 CARD */}
+                <View style={styles.card}>
 
-                {/* 🔷 LOGO */}
-                <View style={styles.logoWrapper}>
-                    <Image
-                        source={require('../assets/logo.png')}
-                        style={styles.logo}
-                    />
-                </View>
-
-                <Text style={styles.title}>Welcome Back</Text>
-                <Text style={styles.subtitle}>Login to continue</Text>
-
-                {/* 🔷 EMAIL / MOBILE */}
-                <View style={styles.inputContainer}>
-                    <Icon name="person-outline" size={20} color="#8d99ae" />
-                    <TextInput
-                        placeholder="Username"
-                        placeholderTextColor="#8d99ae"
-                        style={styles.input}
-                        value={username}
-                        onChangeText={setUsername}
-                        keyboardType="default"
-                    />
-                </View>
-
-                {/* 🔷 PASSWORD */}
-                <View style={styles.inputContainer}>
-                    <Icon name="lock-closed-outline" size={20} color="#8d99ae" />
-                    <TextInput
-                        placeholder="Password"
-                        placeholderTextColor="#8d99ae"
-                        secureTextEntry={secureText}
-                        style={styles.input}
-                        value={password}
-                        onChangeText={setPassword}
-                    />
-
-                    <TouchableOpacity onPress={() => setSecureText(!secureText)}>
-                        <Icon
-                            name={secureText ? 'eye-off-outline' : 'eye-outline'}
-                            size={20}
-                            color="#8d99ae"
+                    {/* 🔷 LOGO */}
+                    <View style={styles.logoWrapper}>
+                        <Image
+                            source={require('../assets/logo.png')}
+                            style={styles.logo}
                         />
+                    </View>
+
+                    <Text style={styles.title}>Welcome Back</Text>
+                    <Text style={styles.subtitle}>Login to continue</Text>
+
+                    {/* 🔷 EMAIL / MOBILE */}
+                    <View style={styles.inputContainer}>
+                        <Icon name="person-outline" size={20} color="#8d99ae" />
+                        <TextInput
+                            placeholder="Username"
+                            placeholderTextColor="#8d99ae"
+                            style={styles.input}
+                            value={username}
+                            onChangeText={setUsername}
+                            keyboardType="default"
+                        />
+                    </View>
+
+                    {/* 🔷 PASSWORD */}
+                    <View style={styles.inputContainer}>
+                        <Icon name="lock-closed-outline" size={20} color="#8d99ae" />
+                        <TextInput
+                            placeholder="Password"
+                            placeholderTextColor="#8d99ae"
+                            secureTextEntry={secureText}
+                            style={styles.input}
+                            value={password}
+                            onChangeText={setPassword}
+                        />
+
+                        <TouchableOpacity onPress={() => setSecureText(!secureText)}>
+                            <Icon
+                                name={secureText ? 'eye-off-outline' : 'eye-outline'}
+                                size={20}
+                                color="#8d99ae"
+                            />
+                        </TouchableOpacity>
+                    </View>
+
+                    {/* 🔷 FORGOT PASSWORD */}
+                    <TouchableOpacity onPress={() => navigation.navigate('ForgotPassword')}>
+                        <Text style={styles.forgot}>Forgot Password?</Text>
+                    </TouchableOpacity>
+
+                    {/* 🔷 BUTTON */}
+                    <TouchableOpacity style={styles.button} onPress={handleLogin}>
+                        {loading ? (
+                            <ActivityIndicator color="#fff" />
+                        ) : (
+                            <Text style={styles.btnText}>Sign In</Text>
+                        )}
+                    </TouchableOpacity>
+
+                    {/* 🔷 SIGNUP */}
+                    <TouchableOpacity onPress={() => navigation.navigate('Register')}>
+                        <Text style={styles.signup}>
+                            Don’t have an account? <Text style={styles.signupLink}>Sign up</Text>
+                        </Text>
                     </TouchableOpacity>
                 </View>
-
-                {/* 🔷 FORGOT PASSWORD */}
-                <TouchableOpacity onPress={() => navigation.navigate('ForgotPassword')}>
-                    <Text style={styles.forgot}>Forgot Password?</Text>
-                </TouchableOpacity>
-
-                {/* 🔷 BUTTON */}
-                <TouchableOpacity style={styles.button} onPress={handleLogin}>
-                    {loading ? (
-                        <ActivityIndicator color="#fff" />
-                    ) : (
-                        <Text style={styles.btnText}>Sign In</Text>
-                    )}
-                </TouchableOpacity>
-
-                {/* 🔷 SIGNUP */}
-                <TouchableOpacity onPress={() => navigation.navigate('Register')}>
-                    <Text style={styles.signup}>
-                        Don’t have an account? <Text style={styles.signupLink}>Sign up</Text>
-                    </Text>
-                </TouchableOpacity>
-            </View>
-        </LinearGradient>
+            </LinearGradient>
+        </SafeAreaWrapper>
     );
 };
 
