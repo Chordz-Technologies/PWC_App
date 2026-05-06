@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity, Image, ScrollView, ActivityIndicator, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, Image, ScrollView, ActivityIndicator } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import LinearGradient from 'react-native-linear-gradient';
 import Swiper from 'react-native-swiper';
@@ -13,48 +13,38 @@ const HomeScreen = ({ navigation }: any) => {
     const [loading, setLoading] = useState(true);
     const [userName, setUserName] = useState('');
     const [meetings, setMeetings] = useState<any[]>([]);
-    const [meetingLoading, setMeetingLoading] = useState(true);
 
     useEffect(() => {
-        fetchCarousel();
-        getUserData();
+        loadAllData();
     }, []);
 
-    const getUserData = async () => {
-        const name = await AsyncStorage.getItem('userName');
-
-        if (name) {
-            setUserName(name);
-            fetchMeetings(name); // ✅ call API here
-        }
-    };
-
-    const fetchCarousel = async () => {
+    const loadAllData = async () => {
         try {
-            const response = await getCarouselImages();
-            if (response?.all_images) {
-                setImages(response.all_images);
-            }
-        } catch (error) {
-            console.log('Carousel API Error', error);
-        } finally {
-            setLoading(false);
-        }
-    };
+            const name = await AsyncStorage.getItem('userName');
 
-    const fetchMeetings = async (name: string) => {
-        try {
-            const res = await getMyMeetings(name);
-
-            if (res?.person1_meetings) {
-                setMeetings(res.person1_meetings);
+            if (name) {
+                setUserName(name);
             }
+
+            const [carouselRes, meetingRes] = await Promise.all([
+                getCarouselImages(),
+                name ? getMyMeetings(name) : Promise.resolve(null),
+            ]);
+
+            if (carouselRes?.all_images) {
+                setImages(carouselRes.all_images);
+            }
+
+            if (meetingRes?.person1_meetings) {
+                setMeetings(meetingRes.person1_meetings);
+            }
+
         } catch (error) {
-            console.log('Meetings API Error', error);
+            console.log('Home API Error', error);
         } finally {
-            setMeetingLoading(false);
+            setLoading(false); // ✅ only once after ALL APIs
         }
-    };
+    }
 
     const formatDateTime = (date: string, time: string) => {
         const d = new Date(`${date}T${time}`);
@@ -72,22 +62,15 @@ const HomeScreen = ({ navigation }: any) => {
         return `${formattedDate} at ${formattedTime}`;
     };
 
-    const handleLogout = async () => {
-        Alert.alert(
-            'Logout',
-            'Are you sure you want to logout?',
-            [
-                { text: 'Cancel', style: 'cancel' },
-                {
-                    text: 'Yes',
-                    onPress: async () => {
-                        await AsyncStorage.clear();
-                        navigation.replace('Login');
-                    },
-                },
-            ]
+    if (loading) {
+        return (
+            <SafeAreaWrapper>
+                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                    <ActivityIndicator size="large" color="#4361ee" />
+                </View>
+            </SafeAreaWrapper>
         );
-    };
+    }
 
     return (
         <SafeAreaWrapper>
@@ -109,13 +92,8 @@ const HomeScreen = ({ navigation }: any) => {
                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
 
                             {/* Notification */}
-                            <TouchableOpacity style={{ marginRight: 15 }}>
+                            <TouchableOpacity style={{ marginRight: 5 }}>
                                 <Icon name="notifications-outline" size={26} color="#fff" />
-                            </TouchableOpacity>
-
-                            {/* Logout */}
-                            <TouchableOpacity onPress={handleLogout}>
-                                <Icon name="log-out-outline" size={26} color="#fff" />
                             </TouchableOpacity>
                         </View>
                     </View>
@@ -124,19 +102,15 @@ const HomeScreen = ({ navigation }: any) => {
                 <ScrollView showsVerticalScrollIndicator={false}>
 
                     {/* 🔷 CAROUSEL */}
-                    {loading ? (
-                        <ActivityIndicator size="large" color="#4361ee" style={{ marginTop: 20 }} />
-                    ) : (
-                        <View style={styles.swiperContainer}>
-                            <Swiper autoplay showsPagination={false} loop>
-                                {images.map((item, index) => (
-                                    <View key={index} style={styles.bannerWrapper}>
-                                        <Image source={{ uri: item.img }} style={styles.bannerImage} />
-                                    </View>
-                                ))}
-                            </Swiper>
-                        </View>
-                    )}
+                    <View style={styles.swiperContainer}>
+                        <Swiper autoplay showsPagination={false} loop>
+                            {images.map((item, index) => (
+                                <View key={index} style={styles.bannerWrapper}>
+                                    <Image source={{ uri: item.img }} style={styles.bannerImage} />
+                                </View>
+                            ))}
+                        </Swiper>
+                    </View>
 
                     {/* 🔷 EXPLORE */}
                     <Text style={styles.sectionTitle}>Explore</Text>
@@ -155,12 +129,12 @@ const HomeScreen = ({ navigation }: any) => {
 
                         <TouchableOpacity
                             style={styles.card}
-                            onPress={() => navigation.navigate('AddReference')}
+                            onPress={() => navigation.navigate('AddReferral')}
                         >
                             <View style={styles.iconBox}>
                                 <Icon name="book-outline" size={24} color="#4361ee" />
                             </View>
-                            <Text style={styles.cardTitle}>Add Reference</Text>
+                            <Text style={styles.cardTitle}>Add Referral</Text>
                             <Text style={styles.cardSub}>Recommend reliable members easily</Text>
                         </TouchableOpacity>
                     </View>
@@ -172,9 +146,7 @@ const HomeScreen = ({ navigation }: any) => {
                     </View>
                     <View style={{ paddingHorizontal: 15, marginTop: 10 }}>
 
-                        {meetingLoading ? (
-                            <ActivityIndicator size="small" color="#4361ee" />
-                        ) : meetings.length === 0 ? (
+                        {meetings.length === 0 ? (
                             <Text style={{ textAlign: 'center', marginTop: 10 }}>
                                 No Meetings Found
                             </Text>
@@ -206,7 +178,6 @@ const HomeScreen = ({ navigation }: any) => {
                                 </View>
                             ))
                         )}
-
                     </View>
                 </ScrollView>
             </View>

@@ -4,7 +4,9 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import HomeScreen from '../screens/HomeScreen';
 import OneToOneScreen from '../screens/OneToOneScreen';
-import AddReferenceScreen from '../screens/AddReferenceScreen';
+import EventScreen from '../screens/EventScreen';
+import ProfileScreen from '../screens/ProfileScreen';
+import ReferralScreen from '../screens/ReferralScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -19,8 +21,8 @@ const BottomTab = () => {
                 tabBarInactiveTintColor: '#888',
                 tabBarStyle: {
                     paddingBottom: insets.bottom + 8,
-                    paddingTop: 8,
-                    height: 60 + insets.bottom,
+                    paddingTop: 6,
+                    height: 62 + insets.bottom,
                     backgroundColor: '#fff',
                     borderTopWidth: 1,
                     borderTopColor: '#eee',
@@ -34,7 +36,7 @@ const BottomTab = () => {
 
                     if (route.name === 'Home') iconName = 'home';
                     else if (route.name === 'OneToOne') iconName = 'calendar';
-                    else if (route.name === 'Reference') iconName = 'book';
+                    else if (route.name === 'Referrals') iconName = 'book';
                     else if (route.name === 'Events') iconName = 'calendar-clear';
                     else if (route.name === 'Profile') iconName = 'person';
 
@@ -44,9 +46,9 @@ const BottomTab = () => {
         >
             <Tab.Screen name="Home" component={HomeScreen} />
             <Tab.Screen name="OneToOne" component={OneToOneScreen} />
-            <Tab.Screen name="Reference" component={AddReferenceScreen} />
-            <Tab.Screen name="Events" component={HomeScreen} />
-            <Tab.Screen name="Profile" component={HomeScreen} />
+            <Tab.Screen name="Referrals" component={ReferralScreen} />
+            <Tab.Screen name="Events" component={EventScreen} />
+            <Tab.Screen name="Profile" component={ProfileScreen} />
         </Tab.Navigator>
     );
 };

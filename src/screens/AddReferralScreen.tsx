@@ -9,7 +9,7 @@ import { styles } from '../styles/AddReferenceScreenStyle';
 import { addReferral, getAllMembers } from '../services/authApi';
 import SafeAreaWrapper from './SafeAreaWrapper';
 
-const AddReferenceScreen = ({ navigation }: any) => {
+const AddReferralScreen = ({ navigation }: any) => {
     const [showDate, setShowDate] = useState(false);
     const [members, setMembers] = useState<any[]>([]);
     const [userId, setUserId] = useState<number | null>(null);
@@ -119,13 +119,13 @@ const AddReferenceScreen = ({ navigation }: any) => {
                         <Icon name="arrow-back" size={24} color="#fff" />
                     </TouchableOpacity>
 
-                    <Text style={styles.headerTitle}>Add Reference</Text>
+                    <Text style={styles.headerTitle}>Add Referral</Text>
                 </LinearGradient>
 
                 <ScrollView contentContainerStyle={{ padding: 15 }}>
 
                     {/* DATE */}
-                    <Text style={styles.label}>Reference Date*</Text>
+                    <Text style={styles.label}>Referral Date*</Text>
                     <TouchableOpacity
                         style={styles.input}
                         onPress={() => setShowDate(true)}
@@ -177,7 +177,7 @@ const AddReferenceScreen = ({ navigation }: any) => {
                     />
 
                     {/* REFERRAL */}
-                    <Text style={styles.label}>Referral*</Text>
+                    <Text style={styles.label}>Referral Details*</Text>
                     <TextInput
                         placeholder="Enter Referral Details"
                         placeholderTextColor="#999"
@@ -186,14 +186,14 @@ const AddReferenceScreen = ({ navigation }: any) => {
                     />
 
                     {/* REF TYPE */}
-                    <Text style={styles.label}>Reference Type*</Text>
+                    <Text style={styles.label}>Referral Type*</Text>
 
                     <Dropdown
                         style={styles.input}
                         data={referralTypes}
                         labelField="label"
                         valueField="value"
-                        placeholder="Select Reference Type"
+                        placeholder="Select Referral Type"
                         placeholderStyle={{ color: '#999' }}
                         value={form.ref_type}
                         onChange={(item) => handleChange('ref_type', item.value)}
@@ -223,7 +223,7 @@ const AddReferenceScreen = ({ navigation }: any) => {
 
                     {/* SUBMIT */}
                     <TouchableOpacity style={styles.button} onPress={handleSubmit}>
-                        <Text style={styles.btnText}>Add Reference</Text>
+                        <Text style={styles.btnText}>Add Referral</Text>
                     </TouchableOpacity>
                 </ScrollView>
             </View>
@@ -231,4 +231,4 @@ const AddReferenceScreen = ({ navigation }: any) => {
     );
 };
 
-export default AddReferenceScreen;
+export default AddReferralScreen;

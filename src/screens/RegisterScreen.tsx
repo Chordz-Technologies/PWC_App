@@ -13,7 +13,6 @@ const RegisterScreen = ({ navigation }: any) => {
     const [secureText, setSecureText] = useState(true);
     const [chapters, setChapters] = useState([]);
     const [showPicker, setShowPicker] = useState<null | 'dob' | 'joining' | 'expiry'>(null);
-
     const [dates, setDates] = useState({
         dob: new Date(),
         joining: new Date(),
@@ -71,8 +70,8 @@ const RegisterScreen = ({ navigation }: any) => {
     }
 
     const handleRegister = async () => {
-        if (!form.name || !form.email || !form.password) {
-            Alert.alert('Error', 'Name, Email and Password are required');
+        if (!form.name || !form.email || !form.password || !form.phone || !form.role || !form.chapter) {
+            Alert.alert('Error', 'Please fill all required fields');
             return;
         }
 
