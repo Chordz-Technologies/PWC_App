@@ -98,13 +98,57 @@ export const styles = StyleSheet.create({
         marginTop: 2,
     },
 
-    company: {
-        marginTop: 2,
+    convertBtn: {
+        marginTop: 12,
+        backgroundColor: '#4361ee',
+        paddingVertical: 10,
+        borderRadius: 8,
+        alignItems: 'center',
     },
 
-    newTag: {
-        color: 'red',
-        marginTop: 5,
+    convertBtnText: {
+        color: '#fff',
         fontWeight: 'bold',
+    },
+
+    modalContainer: {
+        flex: 1,
+        backgroundColor: 'rgba(0,0,0,0.5)',
+        justifyContent: 'center',
+        padding: 20,
+    },
+
+    modalCard: {
+        backgroundColor: '#fff',
+        borderRadius: 15,
+        padding: 20,
+    },
+
+    modalTitle: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        marginBottom: 15,
+    },
+
+    modalInput: {
+        borderWidth: 1,
+        borderColor: '#ddd',
+        borderRadius: 10,
+        padding: 12,
+        marginTop: 10,
+    },
+
+    cancelBtn: {
+        backgroundColor: '#eee',
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        borderRadius: 8,
+    },
+
+    submitBtn: {
+        backgroundColor: '#4361ee',
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        borderRadius: 8,
     },
 });

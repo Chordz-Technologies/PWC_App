@@ -151,3 +151,41 @@ export const getReceivedReferrals = async (memberId) => {
         throw error.response?.data || { message: 'Error fetching received referrals' };
     }
 };
+
+// get all referrals converted by a member
+export const getConvertedReferrals = async (memberId) => {
+    try {
+        const response = await axios.get(`${BASE_URL}/referral/all-converted-referrals/${memberId}/`);
+        return response.data;
+    } catch (error) {
+        throw error.response?.data || { message: 'Error fetching converted referrals' };
+    }
+};
+
+// convert referral to points
+export const convertReferral = async (referralId, data) => {
+    try {
+        const response = await axios.post(`${BASE_URL}/referral/convert-referral/${referralId}/`, data);
+        return response.data;
+    } catch (error) {
+        if (error.response) {
+            throw error.response.data;
+        } else {
+            throw { message: 'Network Error' };
+        }
+    }
+};
+
+// event registration
+export const registerForEvent = async (data) => {
+    try {
+        const response = await axios.post(`${BASE_URL}/event/addparticipant/`, data);
+        return response.data;
+    } catch (error) {
+        if (error.response) {
+            throw error.response.data;
+        } else {
+            throw { message: 'Network Error' };
+        }
+    }
+};

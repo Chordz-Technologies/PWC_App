@@ -10,6 +10,7 @@ import AddReferralScreen from '../screens/AddReferralScreen';
 import EventScreen from '../screens/EventScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import EditProfileScreen from '../screens/EditProfileScreen';
+import EventRegisterScreen from '../screens/EventRegisterScreen';
 
 export type RootStackParamList = {
     Splash: undefined;
@@ -21,6 +22,7 @@ export type RootStackParamList = {
     Events: undefined;
     Profile: undefined;
     EditProfile: undefined;
+    EventRegister: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -38,6 +40,7 @@ const AppNavigator = () => {
                 <Stack.Screen name="Events" component={EventScreen} />
                 <Stack.Screen name="Profile" component={ProfileScreen} />
                 <Stack.Screen name="EditProfile" component={EditProfileScreen} />
+                <Stack.Screen name="EventRegister" component={EventRegisterScreen} />
             </Stack.Navigator>
         </NavigationContainer>
     );

@@ -1,19 +1,26 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity, ScrollView, ActivityIndicator, TextInput, } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView, ActivityIndicator, TextInput, Alert, } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { styles } from '../styles/ReferralScreenStyle';
 import SafeAreaWrapper from './SafeAreaWrapper';
-import { getGivenReferrals, getReceivedReferrals, } from '../services/authApi';
+import { getGivenReferrals, getReceivedReferrals, getConvertedReferrals, convertReferral } from '../services/authApi';
 import { LinearGradient } from 'react-native-linear-gradient';
+import { Modal } from 'react-native';
 
 const ReferralScreen = ({ navigation }: any) => {
-
-    const [activeTab, setActiveTab] = useState<'given' | 'received'>('given');
+    const [activeTab, setActiveTab] = useState<'given' | 'received' | 'converted'>('given');
     const [loading, setLoading] = useState(true);
     const [data, setData] = useState<any[]>([]);
     const [userId, setUserId] = useState<string | null>(null);
     const [search, setSearch] = useState('');
+    const [showModal, setShowModal] = useState(false);
+    const [selectedReferralId, setSelectedReferralId] = useState<number | null>(null);
+
+    const [convertForm, setConvertForm] = useState({
+        amount: '',
+        note: '',
+    });
 
     useEffect(() => {
         loadUser();
@@ -38,12 +45,14 @@ const ReferralScreen = ({ navigation }: any) => {
 
             if (activeTab === 'given') {
                 res = await getGivenReferrals(userId);
-            } else {
+            } else if (activeTab === 'received') {
                 res = await getReceivedReferrals(userId);
+            } else if (activeTab === 'converted') {
+                res = await getConvertedReferrals(userId);
             }
 
-            if (res?.my_referrals) {
-                setData(res.my_referrals);
+            if (res?.my_referrals || res?.converted_referrals) {
+                setData(res.my_referrals || res.converted_referrals);
             }
 
         } catch (err) {
@@ -66,6 +75,38 @@ const ReferralScreen = ({ navigation }: any) => {
         item.referral_to?.toLowerCase().includes(search.toLowerCase()) ||
         item.referral_from?.toLowerCase().includes(search.toLowerCase())
     );
+
+    const handleConvert = async () => {
+        try {
+
+            if (!convertForm.amount || !convertForm.note) {
+                Alert.alert('Error', 'Please fill all required fields');
+                return;
+            }
+
+            const payload = {
+                amount: convertForm.amount,
+                note: convertForm.note,
+            };
+
+            await convertReferral(selectedReferralId, payload);
+
+            Alert.alert('Success', 'Referral converted to business successfully');
+
+            setShowModal(false);
+
+            setConvertForm({
+                amount: '',
+                note: '',
+            });
+
+            fetchData();
+
+        } catch (error) {
+            console.log(error);
+            Alert.alert('Error', 'Conversion Failed');
+        }
+    };
 
     return (
         <SafeAreaWrapper>
@@ -101,6 +142,16 @@ const ReferralScreen = ({ navigation }: any) => {
                                 Received
                             </Text>
                             {activeTab === 'received' && <View style={styles.underline} />}
+                        </TouchableOpacity>
+
+                        <TouchableOpacity onPress={() => setActiveTab('converted')}>
+                            <Text style={[
+                                styles.tabText,
+                                activeTab === 'converted' && styles.activeTab
+                            ]}>
+                                Converted
+                            </Text>
+                            {activeTab === 'converted' && <View style={styles.underline} />}
                         </TouchableOpacity>
                     </View>
 
@@ -155,18 +206,122 @@ const ReferralScreen = ({ navigation }: any) => {
                                         {item.ref_type}
                                     </Text>
 
-                                    <Text style={styles.company}>
+                                    <Text style={styles.type}>
                                         <Text style={styles.labelBold}>Details : </Text>
                                         {item.referral}
                                     </Text>
 
-                                    {/* <Text style={styles.newTag}>New</Text> */}
+                                    {/* 🔷 CONVERTED TAB EXTRA DATA */}
+                                    {activeTab === 'converted' && (
+                                        <View>
+
+                                            <Text style={styles.type}>
+                                                <Text style={styles.labelBold}>Amount : </Text>
+                                                ₹ {item.amount}
+                                            </Text>
+
+                                            <Text style={styles.type}>
+                                                <Text style={styles.labelBold}>Note : </Text>
+                                                {item.note}
+                                            </Text>
+
+                                            <Text style={styles.type}>
+                                                <Text style={styles.labelBold}>Converted At : </Text>
+                                                {new Date(item.converted_at).toLocaleString('en-IN')}
+                                            </Text>
+                                        </View>
+                                    )}
+
+                                    {/* 🔷 RECEIVED TAB BUTTON */}
+                                    {activeTab === 'received' && (
+                                        <TouchableOpacity
+                                            style={styles.convertBtn}
+                                            onPress={() => {
+                                                setSelectedReferralId(item.id);
+                                                setShowModal(true);
+                                            }}
+                                        >
+                                            <Text style={styles.convertBtnText}>
+                                                Convert To Business
+                                            </Text>
+                                        </TouchableOpacity>
+                                    )}
                                 </View>
                             ))
                         )}
                     </ScrollView>
                 </ScrollView>
             </View>
+
+            {/* 🔷 CONVERT MODAL */}
+            <Modal
+                visible={showModal}
+                transparent
+                animationType="slide"
+            >
+                <View style={styles.modalContainer}>
+                    <View style={styles.modalCard}>
+                        <Text style={styles.modalTitle}>
+                            Convert Referral to Business
+                        </Text>
+                        <TextInput
+                            placeholder="Enter Business Amount*"
+                            placeholderTextColor="#999"
+                            keyboardType="numeric"
+                            value={convertForm.amount}
+                            onChangeText={(v) =>
+                                setConvertForm({
+                                    ...convertForm,
+                                    amount: v
+                                })
+                            }
+                            style={styles.modalInput}
+                        />
+
+                        <TextInput
+                            placeholder="Enter details about the business conversion (note)*"
+                            placeholderTextColor="#999"
+                            multiline
+                            value={convertForm.note}
+                            onChangeText={(v) =>
+                                setConvertForm({
+                                    ...convertForm,
+                                    note: v
+                                })
+                            }
+                            style={[
+                                styles.modalInput,
+                                { height: 100, textAlignVertical: 'top' }
+                            ]}
+                        />
+
+                        <View style={{
+                            flexDirection: 'row',
+                            justifyContent: 'space-between',
+                            marginTop: 15,
+                        }}>
+
+                            <TouchableOpacity
+                                style={styles.cancelBtn}
+                                onPress={() => setShowModal(false)}
+                            >
+                                <Text style={{ color: '#000' }}>
+                                    Cancel
+                                </Text>
+                            </TouchableOpacity>
+
+                            <TouchableOpacity
+                                style={styles.submitBtn}
+                                onPress={handleConvert}
+                            >
+                                <Text style={{ color: '#fff' }}>
+                                    Submit
+                                </Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </View>
+            </Modal>
         </SafeAreaWrapper>
     );
 };

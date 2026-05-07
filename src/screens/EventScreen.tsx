@@ -120,7 +120,8 @@ const EventScreen = ({ navigation }: any) => {
                                     </Text>
 
                                     {/* 🔹 BUTTON */}
-                                    <TouchableOpacity style={styles.button}>
+                                    <TouchableOpacity style={styles.button}
+                                        onPress={() => navigation.navigate('EventRegister', { eventId: item.id })}>
                                         <Text style={styles.btnText}>Register Now</Text>
                                     </TouchableOpacity>
                                 </View>
