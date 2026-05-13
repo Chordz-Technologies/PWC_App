@@ -169,7 +169,6 @@ const ReferralScreen = ({ navigation }: any) => {
 
                     {/* 🔷 LIST */}
                     <ScrollView showsVerticalScrollIndicator={false}>
-
                         {loading ? (
                             <ActivityIndicator size="large" color="#4361ee" style={{ marginTop: 20 }} />
                         ) : filteredData.length === 0 ? (
@@ -179,33 +178,27 @@ const ReferralScreen = ({ navigation }: any) => {
                         ) : (
                             filteredData.map((item) => (
                                 <View key={item.id} style={styles.card}>
-
                                     <View style={styles.rowBetween}>
                                         <Text style={styles.name}>
                                             {activeTab === 'given'
                                                 ? item.referral_to
                                                 : item.referral_from}
                                         </Text>
-
                                         <Text style={styles.date}>
                                             {formatDate(item.ref_date)}
                                         </Text>
                                     </View>
-
                                     <Text style={styles.location}>
                                         📍 {item.address}
                                     </Text>
-
                                     <Text style={styles.label}>
                                         <Text style={styles.labelBold}>Contact Name : </Text>
                                         {item.referral_from}
                                     </Text>
-
                                     <Text style={styles.type}>
                                         <Text style={styles.labelBold}>Type : </Text>
                                         {item.ref_type}
                                     </Text>
-
                                     <Text style={styles.type}>
                                         <Text style={styles.labelBold}>Details : </Text>
                                         {item.referral}
@@ -214,17 +207,14 @@ const ReferralScreen = ({ navigation }: any) => {
                                     {/* 🔷 CONVERTED TAB EXTRA DATA */}
                                     {activeTab === 'converted' && (
                                         <View>
-
                                             <Text style={styles.type}>
                                                 <Text style={styles.labelBold}>Amount : </Text>
                                                 ₹ {item.amount}
                                             </Text>
-
                                             <Text style={styles.type}>
                                                 <Text style={styles.labelBold}>Note : </Text>
                                                 {item.note}
                                             </Text>
-
                                             <Text style={styles.type}>
                                                 <Text style={styles.labelBold}>Converted At : </Text>
                                                 {new Date(item.converted_at).toLocaleString('en-IN')}
@@ -277,7 +267,6 @@ const ReferralScreen = ({ navigation }: any) => {
                             }
                             style={styles.modalInput}
                         />
-
                         <TextInput
                             placeholder="Enter details about the business conversion (note)*"
                             placeholderTextColor="#999"
@@ -294,13 +283,11 @@ const ReferralScreen = ({ navigation }: any) => {
                                 { height: 100, textAlignVertical: 'top' }
                             ]}
                         />
-
                         <View style={{
                             flexDirection: 'row',
                             justifyContent: 'space-between',
                             marginTop: 15,
                         }}>
-
                             <TouchableOpacity
                                 style={styles.cancelBtn}
                                 onPress={() => setShowModal(false)}
@@ -309,7 +296,6 @@ const ReferralScreen = ({ navigation }: any) => {
                                     Cancel
                                 </Text>
                             </TouchableOpacity>
-
                             <TouchableOpacity
                                 style={styles.submitBtn}
                                 onPress={handleConvert}

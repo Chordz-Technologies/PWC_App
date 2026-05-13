@@ -11,6 +11,10 @@ import EventScreen from '../screens/EventScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import EditProfileScreen from '../screens/EditProfileScreen';
 import EventRegisterScreen from '../screens/EventRegisterScreen';
+import AnalyticsScreen from '../screens/AnalyticsScreen';
+import AllMeetingsScreen from '../screens/AllMeetingsScreen';
+import ClientsScreen from '../screens/ClientsScreen';
+import BusinessProfileScreen from '../screens/BusinessProfileScreen';
 
 export type RootStackParamList = {
     Splash: undefined;
@@ -23,6 +27,10 @@ export type RootStackParamList = {
     Profile: undefined;
     EditProfile: undefined;
     EventRegister: undefined;
+    Analytics: undefined;
+    AllMeetings: undefined;
+    Clients: undefined;
+    BusinessProfile: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -41,6 +49,10 @@ const AppNavigator = () => {
                 <Stack.Screen name="Profile" component={ProfileScreen} />
                 <Stack.Screen name="EditProfile" component={EditProfileScreen} />
                 <Stack.Screen name="EventRegister" component={EventRegisterScreen} />
+                <Stack.Screen name="Analytics" component={AnalyticsScreen} />
+                <Stack.Screen name="AllMeetings" component={AllMeetingsScreen} />
+                <Stack.Screen name="Clients" component={ClientsScreen} />
+                <Stack.Screen name="BusinessProfile" component={BusinessProfileScreen} />
             </Stack.Navigator>
         </NavigationContainer>
     );

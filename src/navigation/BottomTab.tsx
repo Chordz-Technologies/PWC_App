@@ -4,9 +4,9 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import HomeScreen from '../screens/HomeScreen';
 import OneToOneScreen from '../screens/OneToOneScreen';
-import EventScreen from '../screens/EventScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import ReferralScreen from '../screens/ReferralScreen';
+import MembersScreen from '../screens/MembersScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -36,8 +36,8 @@ const BottomTab = () => {
 
                     if (route.name === 'Home') iconName = 'home';
                     else if (route.name === 'OneToOne') iconName = 'calendar';
+                    else if (route.name === 'Members') iconName = 'people';
                     else if (route.name === 'Referrals') iconName = 'book';
-                    else if (route.name === 'Events') iconName = 'calendar-clear';
                     else if (route.name === 'Profile') iconName = 'person';
 
                     return <Icon name={iconName} size={size} color={color} />;
@@ -46,8 +46,8 @@ const BottomTab = () => {
         >
             <Tab.Screen name="Home" component={HomeScreen} />
             <Tab.Screen name="OneToOne" component={OneToOneScreen} />
+            <Tab.Screen name="Members" component={MembersScreen} />
             <Tab.Screen name="Referrals" component={ReferralScreen} />
-            <Tab.Screen name="Events" component={EventScreen} />
             <Tab.Screen name="Profile" component={ProfileScreen} />
         </Tab.Navigator>
     );

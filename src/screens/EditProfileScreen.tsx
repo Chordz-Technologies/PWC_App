@@ -8,11 +8,8 @@ import { getMemberDetails, updateMemberDetails, getAllChapters } from '../servic
 import { styles } from '../styles/OneToOneScreenStyle';
 
 const EditProfileScreen = ({ route, navigation }: any) => {
-
     const { userId } = route.params;
-
     const [loading, setLoading] = useState(true);
-    // const [showDate, setShowDate] = useState<null | string>(null);
     const [chapters, setChapters] = useState<any[]>([]);
     const [showPicker, setShowPicker] = useState<null | 'dob' | 'joining' | 'expiry'>(null);
     const [dates, setDates] = useState({
@@ -108,13 +105,10 @@ const EditProfileScreen = ({ route, navigation }: any) => {
             Alert.alert('Error', 'Please fill all required fields');
             return;
         }
-
         try {
             setLoading(true);
-
             await updateMemberDetails(userId, form);
-
-            Alert.alert('Success', 'Profile Updated');
+            Alert.alert('Success', 'Profile Updated Successfully');
             navigation.goBack();
 
         } catch (err) {
@@ -137,7 +131,7 @@ const EditProfileScreen = ({ route, navigation }: any) => {
                     <Icon name="arrow-back" size={24} color="#fff" />
                 </TouchableOpacity>
 
-                <Text style={styles.headerTitle}>Edit Profile</Text>
+                <Text style={styles.headerTitle}>Update Personal Profile</Text>
             </LinearGradient>
 
             <ScrollView contentContainerStyle={{ padding: 15 }}>
@@ -168,6 +162,8 @@ const EditProfileScreen = ({ route, navigation }: any) => {
                     style={styles.input}
                     value={form.phone}
                     placeholder="Mobile Number*"
+                    maxLength={10}
+                    keyboardType="phone-pad"
                     placeholderTextColor="#8d99ae"
                     onChangeText={(v) => handleChange('phone', v)}
                 />

@@ -69,8 +69,33 @@ const ProfileScreen = ({ navigation }: any) => {
 
                     {/* NAME */}
                     <Text style={styles.name}>{userName}</Text>
-
                 </View>
+
+                {/* ANALYTICS CARD */}
+                <TouchableOpacity
+                    style={styles.editProfileCard}
+                    onPress={() => navigation.navigate('Analytics', { userId })}
+                >
+                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                        <Icon name="analytics-outline" size={20} color="#4361ee" />
+                        <Text style={styles.editProfileText}>Analytics</Text>
+                    </View>
+
+                    <Icon name="chevron-forward" size={20} color="#999" />
+                </TouchableOpacity>
+
+                {/* TOP 5 CLIENTS CARD */}
+                <TouchableOpacity
+                    style={styles.editProfileCard}
+                    onPress={() => navigation.navigate('Clients', { userId })}
+                >
+                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                        <Icon name="people-outline" size={20} color="#4361ee" />
+                        <Text style={styles.editProfileText}>Top 5 Clients</Text>
+                    </View>
+
+                    <Icon name="chevron-forward" size={20} color="#999" />
+                </TouchableOpacity>
 
                 {/* EDIT PROFILE CARD */}
                 <TouchableOpacity
@@ -79,7 +104,20 @@ const ProfileScreen = ({ navigation }: any) => {
                 >
                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                         <Icon name="person-outline" size={20} color="#4361ee" />
-                        <Text style={styles.editProfileText}>Edit Profile</Text>
+                        <Text style={styles.editProfileText}>Personal Details</Text>
+                    </View>
+
+                    <Icon name="chevron-forward" size={20} color="#999" />
+                </TouchableOpacity>
+
+                {/* BUSINESS DETAILS CARD */}
+                <TouchableOpacity
+                    style={styles.editProfileCard}
+                    onPress={() => navigation.navigate('BusinessProfile', { userId })}
+                >
+                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                        <Icon name="business-outline" size={20} color="#4361ee" />
+                        <Text style={styles.editProfileText}>Business Details</Text>
                     </View>
 
                     <Icon name="chevron-forward" size={20} color="#999" />

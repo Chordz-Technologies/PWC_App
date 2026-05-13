@@ -114,8 +114,9 @@ const HomeScreen = ({ navigation }: any) => {
 
                     {/* 🔷 EXPLORE */}
                     <Text style={styles.sectionTitle}>Explore</Text>
-
                     <View style={styles.cardRow}>
+
+                        {/* 1:1 */}
                         <TouchableOpacity
                             style={styles.card}
                             onPress={() => navigation.navigate('OneToOne')}
@@ -123,10 +124,15 @@ const HomeScreen = ({ navigation }: any) => {
                             <View style={styles.iconBox}>
                                 <Icon name="calendar-outline" size={24} color="#4361ee" />
                             </View>
-                            <Text style={styles.cardTitle}>Schedule 1:1</Text>
-                            <Text style={styles.cardSub}>Plan meaningful business meetings</Text>
+                            <Text style={styles.cardTitle}>
+                                Schedule 1:1
+                            </Text>
+                            <Text style={styles.cardSub}>
+                                Plan meaningful business meetings
+                            </Text>
                         </TouchableOpacity>
 
+                        {/* REFERRAL */}
                         <TouchableOpacity
                             style={styles.card}
                             onPress={() => navigation.navigate('AddReferral')}
@@ -134,16 +140,53 @@ const HomeScreen = ({ navigation }: any) => {
                             <View style={styles.iconBox}>
                                 <Icon name="book-outline" size={24} color="#4361ee" />
                             </View>
-                            <Text style={styles.cardTitle}>Add Referral</Text>
-                            <Text style={styles.cardSub}>Recommend reliable members easily</Text>
+                            <Text style={styles.cardTitle}>
+                                Add Referral
+                            </Text>
+                            <Text style={styles.cardSub}>
+                                Recommend reliable members easily
+                            </Text>
                         </TouchableOpacity>
                     </View>
+
+                    {/* 🔷 UPCOMING EVENTS CARD */}
+                    <TouchableOpacity
+                        style={styles.eventCard}
+                        activeOpacity={0.8}
+                        onPress={() => navigation.navigate('Events')}
+                    >
+                        <View style={styles.eventLeft}>
+                            <View style={styles.eventIconBox}>
+                                <Icon name="calendar" size={24} color="#4361ee" />
+                            </View>
+                            <View style={{ marginLeft: 12 }}>
+                                <Text style={styles.eventTitle}>
+                                    Upcoming Events
+                                </Text>
+                                <Text style={styles.eventSub}>
+                                    Check all upcoming events
+                                </Text>
+                            </View>
+                        </View>
+                        <Icon name="chevron-forward" size={24} color="#4361ee" />
+                    </TouchableOpacity>
 
                     {/* 🔷 UPCOMING */}
                     <View style={styles.rowBetween}>
                         <Text style={styles.sectionTitle}>Upcoming Meetings</Text>
-                        {/* <Text style={styles.viewAll}>View All</Text> */}
+                        <TouchableOpacity
+                            onPress={() =>
+                                navigation.navigate('AllMeetings', {
+                                    meetings: meetings
+                                })
+                            }
+                        >
+                            <Text style={styles.viewAll}>
+                                View All
+                            </Text>
+                        </TouchableOpacity>
                     </View>
+
                     <View style={{ paddingHorizontal: 15, marginTop: 10 }}>
 
                         {meetings.length === 0 ? (
@@ -151,7 +194,7 @@ const HomeScreen = ({ navigation }: any) => {
                                 No Meetings Found
                             </Text>
                         ) : (
-                            meetings.map((item) => (
+                            meetings.slice(0, 2).map((item) => (
                                 <View key={item.id} style={styles.meetingCard}>
 
                                     {/* Avatar (default image) */}

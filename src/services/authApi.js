@@ -162,7 +162,7 @@ export const getConvertedReferrals = async (memberId) => {
     }
 };
 
-// convert referral to points
+// convert referral to business
 export const convertReferral = async (referralId, data) => {
     try {
         const response = await axios.post(`${BASE_URL}/referral/convert-referral/${referralId}/`, data);
@@ -180,6 +180,138 @@ export const convertReferral = async (referralId, data) => {
 export const registerForEvent = async (data) => {
     try {
         const response = await axios.post(`${BASE_URL}/event/addparticipant/`, data);
+        return response.data;
+    } catch (error) {
+        if (error.response) {
+            throw error.response.data;
+        } else {
+            throw { message: 'Network Error' };
+        }
+    }
+};
+
+// search members by name
+export const searchMemberByName = async (search) => {
+    try {
+        const response = await axios.get(`${BASE_URL}/member/searchName/?search_term=${search}`);
+        return response.data;
+    } catch (error) {
+        throw error.response?.data || { message: 'Error searching members' };
+    }
+};
+
+// search members by business category
+export const searchMemberByCategory = async (search) => {
+    try {
+        const response = await axios.get(`${BASE_URL}/member/searchCategory/?search_term=${search}`);
+        return response.data;
+    } catch (error) {
+        throw error.response?.data || { message: 'Error searching members by category' };
+    }
+};
+
+// get dashboard analytics for a member
+export const getDashboardAnalytics = async (memberId) => {
+    try {
+        const response = await axios.get(`${BASE_URL}/referral/dashboard/${memberId}/`);
+        return response.data;
+    } catch (error) {
+        throw error.response?.data || { message: 'Error fetching dashboard analytics' };
+    }
+};
+
+// add clients for a member
+export const addClients = async (data) => {
+    try {
+        const response = await axios.post(`${BASE_URL}/client/addClient/`, data);
+        return response.data;
+    } catch (error) {
+        if (error.response) {
+            throw error.response.data;
+        } else {
+            throw { message: 'Network Error' };
+        }
+    }
+};
+
+// get clients of a member
+export const getClients = async (memberId) => {
+    try {
+        const response = await axios.get(`${BASE_URL}/client/clientDetails/${memberId}/`);
+        return response.data;
+    } catch (error) {
+        throw error.response?.data || { message: 'Error fetching clients' };
+    }
+};
+
+// update a client
+export const updateClient = async (clientId, data) => {
+    try {
+        const response = await axios.put(`${BASE_URL}/client/updateClient/${clientId}/`, data);
+        return response.data;
+    } catch (error) {
+        if (error.response) {
+            throw error.response.data;
+        } else {
+            throw { message: 'Network Error' };
+        }
+    }
+};
+
+// delete a client
+export const deleteClient = async (clientId) => {
+    try {
+        const response = await axios.delete(`${BASE_URL}/client/deleteClient/${clientId}/`);
+        return response.data;
+    } catch (error) {
+        if (error.response) {
+            throw error.response.data;
+        } else {
+            throw { message: 'Network Error' };
+        }
+    }
+};
+
+// add business profile for a member
+export const addBusinessProfile = async (data) => {
+    try {
+        const response = await axios.post(`${BASE_URL}/profile/addprofile/`, data, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        });
+        return response.data;
+    } catch (error) {
+        if (error.response) {
+            throw error.response.data;
+        } else {
+            throw { message: 'Network Error' };
+        }
+    }
+};
+
+// get business profile of a member
+export const getBusinessProfile = async (memberId) => {
+    try {
+        const response = await axios.get(`${BASE_URL}/profile/myprofile/${memberId}/`);
+        return response.data;
+    } catch (error) {
+        if (error.response) {
+            throw error.response.data;
+        } else {
+            throw { message: 'Network Error' };
+        }
+    }
+};
+
+// update business profile of a member
+export const updateBusinessProfile = async (profileId, data) => {
+    try {
+        const response = await axios.put(`${BASE_URL}/profile/updateprofile/${profileId}/`, data, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        });
         return response.data;
     } catch (error) {
         if (error.response) {

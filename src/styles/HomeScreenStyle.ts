@@ -120,8 +120,8 @@ export const styles = StyleSheet.create({
 
     viewAll: {
         color: '#4361ee',
-        fontWeight: '500',
-        paddingHorizontal: 15,
+        fontWeight: '700',
+        paddingHorizontal: 18,
         marginTop: 15,
     },
 
@@ -163,5 +163,43 @@ export const styles = StyleSheet.create({
         fontSize: 12,
         color: '#4361ee',
         marginTop: 4,
+    },
+
+    eventCard: {
+        backgroundColor: '#fff',
+        marginHorizontal: 15,
+        marginTop: 15,
+        borderRadius: 16,
+        padding: 16,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        elevation: 2,
+    },
+
+    eventLeft: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+
+    eventIconBox: {
+        width: 50,
+        height: 50,
+        borderRadius: 25,
+        backgroundColor: '#eef2ff',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+
+    eventTitle: {
+        fontSize: 15,
+        fontWeight: 'bold',
+        color: '#222',
+    },
+
+    eventSub: {
+        fontSize: 13,
+        color: '#666',
+        marginTop: 3,
     },
 });

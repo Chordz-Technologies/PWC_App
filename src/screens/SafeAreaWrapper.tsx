@@ -34,7 +34,7 @@ const SafeAreaWrapper: React.FC<SafeAreaWrapperProps> = ({
                     {
                         paddingTop:
                             Platform.OS === 'android'
-                                ? Math.max(insets.top, 5) // auto adjusts
+                                ? Math.max(insets.top, 0) // auto adjusts
                                 : insets.top,
                     },
                 ]}
