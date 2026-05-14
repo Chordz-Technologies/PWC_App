@@ -197,7 +197,7 @@ const MembersScreen = ({ navigation }: any) => {
                                     <TouchableOpacity
                                         style={styles.viewButton}
                                         onPress={() =>
-                                            navigation.navigate('MemberDetails', {
+                                            navigation.navigate('MemberProfileDetails', {
                                                 memberId: item.id
                                             })
                                         }
