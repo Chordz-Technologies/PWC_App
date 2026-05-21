@@ -78,24 +78,64 @@ const MembersScreen = ({ navigation }: any) => {
                     showsVerticalScrollIndicator={false}
                 >
 
-                    {/* 🔍 SEARCH */}
-                    <View style={styles.searchContainer}>
-                        <Icon
-                            name="search"
-                            size={20}
-                            color="#8d99ae"
-                        />
-                        <TextInput
-                            placeholder={
-                                searchType === 'name'
-                                    ? 'Search Member Name'
-                                    : 'Search Business Category'
+                    <View
+                        style={{
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            marginBottom: 15,
+                        }}
+                    >
+
+                        {/* SEARCH */}
+                        <View
+                            style={[
+                                styles.searchContainer,
+                                {
+                                    flex: 1,
+                                    marginBottom: 0,
+                                }
+                            ]}
+                        >
+                            <Icon
+                                name="search"
+                                size={20}
+                                color="#8d99ae"
+                            />
+
+                            <TextInput
+                                placeholder={
+                                    searchType === 'name'
+                                        ? 'Search Member Name'
+                                        : 'Search Business Category'
+                                }
+                                placeholderTextColor="#999"
+                                style={styles.searchInput}
+                                value={search}
+                                onChangeText={setSearch}
+                            />
+                        </View>
+
+                        {/* CHAPTER BUTTON */}
+                        <TouchableOpacity
+                            style={{
+                                width: 48,
+                                height: 48,
+                                backgroundColor: '#4361ee',
+                                borderRadius: 12,
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                marginLeft: 10,
+                            }}
+                            onPress={() =>
+                                navigation.navigate('ChapterMembers')
                             }
-                            placeholderTextColor="#999"
-                            style={styles.searchInput}
-                            value={search}
-                            onChangeText={setSearch}
-                        />
+                        >
+                            <Icon
+                                name="people"
+                                size={22}
+                                color="#fff"
+                            />
+                        </TouchableOpacity>
                     </View>
 
                     {/* 🔷 BUTTONS */}

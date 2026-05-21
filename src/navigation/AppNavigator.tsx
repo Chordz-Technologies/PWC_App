@@ -16,6 +16,7 @@ import AllMeetingsScreen from '../screens/AllMeetingsScreen';
 import ClientsScreen from '../screens/ClientsScreen';
 import BusinessProfileScreen from '../screens/BusinessProfileScreen';
 import MemberProfileDetailsScreen from '../screens/MemberProfileDetailsScreen';
+import ChapterMembersScreen from '../screens/ChapterMembersScreen';
 
 export type RootStackParamList = {
     Splash: undefined;
@@ -33,6 +34,7 @@ export type RootStackParamList = {
     Clients: undefined;
     BusinessProfile: undefined;
     MemberProfileDetails: undefined;
+    ChapterMembers: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -56,6 +58,7 @@ const AppNavigator = () => {
                 <Stack.Screen name="Clients" component={ClientsScreen} />
                 <Stack.Screen name="BusinessProfile" component={BusinessProfileScreen} />
                 <Stack.Screen name="MemberProfileDetails" component={MemberProfileDetailsScreen} />
+                <Stack.Screen name="ChapterMembers" component={ChapterMembersScreen} />
             </Stack.Navigator>
         </NavigationContainer>
     );

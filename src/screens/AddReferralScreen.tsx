@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, ScrollView, Alert, } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, ScrollView, Alert, Keyboard, KeyboardAvoidingView, TouchableWithoutFeedback, Platform } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/Ionicons';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -26,13 +26,36 @@ const AddReferralScreen = ({ navigation }: any) => {
         ref_to: Number(null),
     });
 
+    const [keyboardOpen, setKeyboardOpen] = useState(false);
+
     const handleChange = (key: string, value: string) => {
         setForm({ ...form, [key]: value });
     };
 
     useEffect(() => {
+
+        const showSubscription = Keyboard.addListener(
+            'keyboardDidShow',
+            () => {
+                setKeyboardOpen(true);
+            }
+        );
+
+        const hideSubscription = Keyboard.addListener(
+            'keyboardDidHide',
+            () => {
+                setKeyboardOpen(false);
+            }
+        );
+
         loadUser();
         fetchMembers();
+
+        return () => {
+            showSubscription.remove();
+            hideSubscription.remove();
+        };
+
     }, []);
 
     // ✅ Get logged-in user
@@ -111,122 +134,147 @@ const AddReferralScreen = ({ navigation }: any) => {
 
     return (
         <SafeAreaWrapper>
-            <View style={styles.container}>
+            <KeyboardAvoidingView
+                style={{ flex: 1 }}
+                behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+                keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 0}
+            >
+                <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                    <View style={{ flex: 1, backgroundColor: '#f5f6fa' }}>
 
-                {/* 🔷 HEADER */}
-                <LinearGradient colors={['#4361ee', '#3f37c9']} style={styles.header}>
-                    <TouchableOpacity onPress={() => navigation.goBack()}>
-                        <Icon name="arrow-back" size={24} color="#fff" />
-                    </TouchableOpacity>
+                        {/* HEADER */}
+                        <LinearGradient
+                            colors={['#4361ee', '#3f37c9']}
+                            style={styles.header}
+                        >
+                            <TouchableOpacity onPress={() => navigation.goBack()}>
+                                <Icon
+                                    name="arrow-back"
+                                    size={24}
+                                    color="#fff"
+                                />
+                            </TouchableOpacity>
 
-                    <Text style={styles.headerTitle}>Add Referral</Text>
-                </LinearGradient>
+                            <Text style={styles.headerTitle}>
+                                Add Referral
+                            </Text>
+                        </LinearGradient>
 
-                <ScrollView contentContainerStyle={{ padding: 15 }}>
-
-                    {/* DATE */}
-                    <Text style={styles.label}>Referral Date*</Text>
-                    <TouchableOpacity
-                        style={styles.input}
-                        onPress={() => setShowDate(true)}
-                    >
-                        <Text style={{ color: form.ref_date ? '#000' : '#999' }}>
-                            {form.ref_date || 'Select Date'}
-                        </Text>
-                    </TouchableOpacity>
-
-                    {showDate && (
-                        <DateTimePicker
-                            mode="date"
-                            display="calendar"
-                            value={new Date()}
-                            onChange={(event, date) => {
-                                setShowDate(false);
-                                if (date) {
-                                    const formatted = date.toISOString().split('T')[0];
-                                    handleChange('ref_date', formatted);
-                                }
+                        <ScrollView
+                            showsVerticalScrollIndicator={false}
+                            keyboardShouldPersistTaps="handled"
+                            contentContainerStyle={{
+                                padding: 15,
+                                flexGrow: 1,
+                                paddingBottom: keyboardOpen ? 70 : 30,
                             }}
-                        />
-                    )}
+                        >
 
-                    {/* ✅ REFERRAL FROM */}
-                    <Text style={styles.label}>Referral From*</Text>
-                    <TextInput
-                        value={userName}
-                        editable={false}
-                        style={[styles.input, { backgroundColor: '#f0f0f0' }]} />
+                            {/* DATE */}
+                            <Text style={styles.label}>Referral Date*</Text>
+                            <TouchableOpacity
+                                style={styles.input}
+                                onPress={() => setShowDate(true)}
+                            >
+                                <Text style={{ color: form.ref_date ? '#000' : '#999' }}>
+                                    {form.ref_date || 'Select Date'}
+                                </Text>
+                            </TouchableOpacity>
 
-                    {/* ✅ REFERRAL TO (DROPDOWN) */}
-                    <Text style={styles.label}>Referral To*</Text>
-                    <Dropdown
-                        style={styles.input}
-                        data={members}
-                        labelField="label"
-                        valueField="value"
-                        placeholder="Select Member"
-                        placeholderStyle={{ color: '#999' }}
-                        value={form.ref_to}
-                        onChange={(item) => {
-                            setForm(prev => ({
-                                ...prev,
-                                ref_to: Number(item.value),   // ✅ FORCE NUMBER
-                                referral_to: item.label
-                            }));
-                        }}
-                    />
+                            {showDate && (
+                                <DateTimePicker
+                                    mode="date"
+                                    display="calendar"
+                                    value={new Date()}
+                                    onChange={(event, date) => {
+                                        setShowDate(false);
+                                        if (date) {
+                                            const formatted = date.toISOString().split('T')[0];
+                                            handleChange('ref_date', formatted);
+                                        }
+                                    }}
+                                />
+                            )}
 
-                    {/* REFERRAL */}
-                    <Text style={styles.label}>Referral Details*</Text>
-                    <TextInput
-                        placeholder="Enter Referral Details"
-                        placeholderTextColor="#999"
-                        style={styles.input}
-                        onChangeText={(v) => handleChange('referral', v)}
-                    />
+                            {/* ✅ REFERRAL FROM */}
+                            <Text style={styles.label}>Referral From*</Text>
+                            <TextInput
+                                value={userName}
+                                editable={false}
+                                style={[styles.input, { backgroundColor: '#f0f0f0' }]} />
 
-                    {/* REF TYPE */}
-                    <Text style={styles.label}>Referral Type*</Text>
+                            {/* ✅ REFERRAL TO (DROPDOWN) */}
+                            <Text style={styles.label}>Referral To*</Text>
+                            <Dropdown
+                                style={styles.input}
+                                data={members}
+                                labelField="label"
+                                valueField="value"
+                                placeholder="Select Member"
+                                placeholderStyle={{ color: '#999' }}
+                                value={form.ref_to}
+                                onChange={(item) => {
+                                    setForm(prev => ({
+                                        ...prev,
+                                        ref_to: Number(item.value),   // ✅ FORCE NUMBER
+                                        referral_to: item.label
+                                    }));
+                                }}
+                            />
 
-                    <Dropdown
-                        style={styles.input}
-                        data={referralTypes}
-                        labelField="label"
-                        valueField="value"
-                        placeholder="Select Referral Type"
-                        placeholderStyle={{ color: '#999' }}
-                        value={form.ref_type}
-                        onChange={(item) => handleChange('ref_type', item.value)}
-                    />
+                            {/* REFERRAL */}
+                            <Text style={styles.label}>Referral Details*</Text>
+                            <TextInput
+                                placeholder="Enter Referral Details"
+                                placeholderTextColor="#999"
+                                style={styles.input}
+                                onChangeText={(v) => handleChange('referral', v)}
+                            />
 
-                    {/* ADDRESS */}
-                    <Text style={styles.label}>Address</Text>
-                    <TextInput
-                        placeholder="Enter Address"
-                        placeholderTextColor="#999"
-                        style={[styles.input, { height: 100 }]}
-                        multiline
-                        textAlignVertical="top"
-                        onChangeText={(v) => handleChange('address', v)}
-                    />
+                            {/* REF TYPE */}
+                            <Text style={styles.label}>Referral Type*</Text>
 
-                    {/* COMMENT */}
-                    <Text style={styles.label}>Comment</Text>
-                    <TextInput
-                        placeholder="Enter Comment"
-                        placeholderTextColor="#999"
-                        style={[styles.input, { height: 100 }]}
-                        multiline
-                        textAlignVertical="top"
-                        onChangeText={(v) => handleChange('comment', v)}
-                    />
+                            <Dropdown
+                                style={styles.input}
+                                data={referralTypes}
+                                labelField="label"
+                                valueField="value"
+                                placeholder="Select Referral Type"
+                                placeholderStyle={{ color: '#999' }}
+                                value={form.ref_type}
+                                onChange={(item) => handleChange('ref_type', item.value)}
+                            />
 
-                    {/* SUBMIT */}
-                    <TouchableOpacity style={styles.button} onPress={handleSubmit}>
-                        <Text style={styles.btnText}>Add Referral</Text>
-                    </TouchableOpacity>
-                </ScrollView>
-            </View>
+                            {/* ADDRESS */}
+                            <Text style={styles.label}>Address</Text>
+                            <TextInput
+                                placeholder="Enter Address"
+                                placeholderTextColor="#999"
+                                style={[styles.input, { height: 100 }]}
+                                multiline
+                                textAlignVertical="top"
+                                onChangeText={(v) => handleChange('address', v)}
+                            />
+
+                            {/* COMMENT */}
+                            <Text style={styles.label}>Comment</Text>
+                            <TextInput
+                                placeholder="Enter Comment"
+                                placeholderTextColor="#999"
+                                style={[styles.input, { height: 100 }]}
+                                multiline
+                                textAlignVertical="top"
+                                onChangeText={(v) => handleChange('comment', v)}
+                            />
+
+                            {/* SUBMIT */}
+                            <TouchableOpacity style={styles.button} onPress={handleSubmit}>
+                                <Text style={styles.btnText}>Add Referral</Text>
+                            </TouchableOpacity>
+                        </ScrollView>
+                    </View>
+                </TouchableWithoutFeedback>
+            </KeyboardAvoidingView>
         </SafeAreaWrapper>
     );
 };

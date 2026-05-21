@@ -1,7 +1,12 @@
 import React, { ReactNode } from 'react';
-import { StatusBar, Platform, StyleSheet, View, } from 'react-native';
+import {
+    StatusBar,
+    StyleSheet,
+    View,
+    Platform,
+} from 'react-native';
+
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 interface SafeAreaWrapperProps {
     children: ReactNode;
@@ -10,37 +15,31 @@ interface SafeAreaWrapperProps {
 
 const SafeAreaWrapper: React.FC<SafeAreaWrapperProps> = ({
     children,
-    backgroundColor = '#FFFFFF',
+    backgroundColor = '#ffffff',
 }) => {
-    const insets = useSafeAreaInsets();
-
-    const androidVersion =
-        Platform.OS === 'android' ? Number(Platform.Version) : null;
 
     return (
-        <SafeAreaView style={[styles.container, { backgroundColor }]}>
+        <SafeAreaView
+            style={[
+                styles.container,
+                { backgroundColor }
+            ]}
+            edges={['top', 'left', 'right']}
+        >
             <StatusBar
+                translucent={false}
+                backgroundColor={backgroundColor}
                 barStyle={
-                    androidVersion !== null && androidVersion >= 34
+                    Platform.OS === 'android'
                         ? 'dark-content'
                         : 'light-content'
                 }
-                backgroundColor={backgroundColor}
             />
 
-            <View
-                style={[
-                    styles.content,
-                    {
-                        paddingTop:
-                            Platform.OS === 'android'
-                                ? Math.max(insets.top, 0) // auto adjusts
-                                : insets.top,
-                    },
-                ]}
-            >
+            <View style={styles.content}>
                 {children}
             </View>
+
         </SafeAreaView>
     );
 };
@@ -51,6 +50,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
     },
+
     content: {
         flex: 1,
     },

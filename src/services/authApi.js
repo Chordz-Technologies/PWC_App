@@ -321,3 +321,13 @@ export const updateBusinessProfile = async (profileId, data) => {
         }
     }
 };
+
+// get members by chapter
+export const getMembersByChapter = async (chapterId) => {
+    try {
+        const response = await axios.get(`${BASE_URL}/member/allmembers/?chapter_id=${chapterId}`);
+        return response.data;
+    } catch (error) {
+        throw error.response?.data || { message: 'Error fetching members by chapter' };
+    }
+};

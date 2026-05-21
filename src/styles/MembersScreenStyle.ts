@@ -82,6 +82,21 @@ export const styles = StyleSheet.create({
         alignItems: 'center',
     },
 
+    label: {
+        marginTop: 15,
+        marginBottom: 5,
+        fontWeight: '600',
+    },
+
+    input: {
+        backgroundColor: '#fff',
+        borderRadius: 10,
+        padding: 12,
+        borderWidth: 1,
+        borderColor: '#ddd',
+        color: '#000',
+    },
+
     avatar: {
         width: 55,
         height: 55,
