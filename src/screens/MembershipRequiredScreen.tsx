@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, Linking, } from 'react-native';
+import { Text, TouchableOpacity, Linking, } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/Ionicons';
 import SafeAreaWrapper from './SafeAreaWrapper';
@@ -7,11 +7,7 @@ import SafeAreaWrapper from './SafeAreaWrapper';
 const MembershipRequiredScreen = ({ navigation }: any) => {
     return (
         <SafeAreaWrapper>
-            <LinearGradient
-                colors={[
-                    '#4361ee',
-                    '#3f37c9'
-                ]}
+            <LinearGradient colors={['#4361ee', '#3f37c9']}
                 style={{
                     flex: 1,
                     justifyContent: 'center',
@@ -19,7 +15,6 @@ const MembershipRequiredScreen = ({ navigation }: any) => {
                     padding: 25,
                 }}
             >
-
                 <Icon
                     name="lock-closed"
                     size={90}
@@ -119,9 +114,7 @@ const MembershipRequiredScreen = ({ navigation }: any) => {
                         Go Back
                     </Text>
                 </TouchableOpacity>
-
             </LinearGradient>
-
         </SafeAreaWrapper>
     );
 };

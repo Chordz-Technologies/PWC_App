@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Image, TouchableOpacity, Dimensions } from 'react-native';
+import { View, Text, Image, TouchableOpacity } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import { styles } from '../styles/SplashScreenStyle';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import SafeAreaWrapper from './SafeAreaWrapper';
-
-const { width } = Dimensions.get('window');
 
 const SplashScreen = ({ navigation }: any) => {
 
@@ -29,10 +27,8 @@ const SplashScreen = ({ navigation }: any) => {
 
     return (
         <SafeAreaWrapper>
-            <LinearGradient
-                colors={['#4361ee', '#3f37c9']}
-                style={styles.container}
-            >
+            <LinearGradient colors={['#4361ee', '#3f37c9']}
+                style={styles.container} >
 
                 {/* 🔵 BACKGROUND SHAPES */}
                 <View style={styles.circleTop} />

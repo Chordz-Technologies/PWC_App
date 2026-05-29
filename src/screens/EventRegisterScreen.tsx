@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, ScrollView, ActivityIndicator, Alert, } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, ScrollView, Alert, } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { styles } from '../styles/EventRegisterScreenStyle';

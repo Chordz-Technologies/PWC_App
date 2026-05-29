@@ -8,13 +8,6 @@ import { styles } from '../styles/NotificationsScreenStyle';
 import { getNotifications, clearNotifications, markAllAsRead } from "../services/notificationStorage";
 import notifee from "@notifee/react-native";
 
-// interface NotificationItem {
-//     id: string | number;
-//     title: string;
-//     body: string;
-//     timestamp: number | string;
-// }
-
 const NotificationsScreen = ({ navigation }: any) => {
     const [notifications, setNotifications] = useState<any[]>([]);
 
