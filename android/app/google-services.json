@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "710057470655",
+    "project_id": "pwcapp-b8633",
+    "storage_bucket": "pwcapp-b8633.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:710057470655:android:72c2d75c355a599031740a",
+        "android_client_info": {
+          "package_name": "com.chordz.pwc"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCO3fNBWd020NPB2nGmFNM-crH46sZmuIE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

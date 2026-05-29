@@ -6,6 +6,7 @@ import { Dropdown } from 'react-native-element-dropdown';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { styles } from '../styles/RegisterScreenStyle';
 import { registerUser, getAllChapters } from '../services/authApi';
+import messaging from "@react-native-firebase/messaging";
 import SafeAreaWrapper from './SafeAreaWrapper';
 
 const RegisterScreen = ({ navigation }: any) => {
@@ -15,6 +16,8 @@ const RegisterScreen = ({ navigation }: any) => {
     const [keyboardOpen, setKeyboardOpen] = useState(false);
     const [showPicker, setShowPicker] = useState<null | 'dob'>(null);
     const [dates, setDates] = useState({ dob: new Date() });
+    const [fcmToken, setFcmToken] = useState("");
+
     const [form, setForm] = useState({
         name: '',
         email: '',
@@ -72,6 +75,7 @@ const RegisterScreen = ({ navigation }: any) => {
             }
         );
 
+        fetchFcmToken();
         fetchChapters();
 
         return () => {
@@ -80,6 +84,15 @@ const RegisterScreen = ({ navigation }: any) => {
         };
 
     }, []);
+
+    const fetchFcmToken = async () => {
+        try {
+            const token = await messaging().getToken();
+            setFcmToken(token);
+        } catch (error) {
+            console.error("Error getting FCM token:", error);
+        }
+    };
 
     const fetchChapters = async () => {
         try {
@@ -106,6 +119,7 @@ const RegisterScreen = ({ navigation }: any) => {
                 ...form,
                 subscription_status: 'TRIAL',
                 chapter: form.chapter,
+                fcm_token: fcmToken,
             };
 
             const response = await registerUser(payload);

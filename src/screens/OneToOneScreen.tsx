@@ -7,6 +7,7 @@ import { styles } from '../styles/OneToOneScreenStyle';
 import { Dropdown } from 'react-native-element-dropdown';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getAllMembers, addMeeting } from '../services/authApi';
+import { canAddMeeting, increaseMeetingCount } from '../utils/visitorAccess';
 import SafeAreaWrapper from './SafeAreaWrapper';
 
 const OneToOneScreen = ({ navigation }: any) => {
@@ -31,6 +32,26 @@ const OneToOneScreen = ({ navigation }: any) => {
     const handleChange = (key: string, value: string) => {
         setForm({ ...form, [key]: value });
     };
+
+    useEffect(() => {
+
+        checkMeetingAccess();
+
+    }, []);
+
+    const checkMeetingAccess =
+        async () => {
+
+            const allowed =
+                await canAddMeeting();
+
+            if (!allowed) {
+
+                navigation.replace(
+                    'MembershipRequired'
+                );
+            }
+        };
 
     useEffect(() => {
 
@@ -122,6 +143,7 @@ const OneToOneScreen = ({ navigation }: any) => {
 
             const res = await addMeeting(form);
             Alert.alert('Success', 'Meeting Scheduled');
+            await increaseMeetingCount();
             navigation.reset({
                 index: 0,
                 routes: [{ name: 'Home' }],

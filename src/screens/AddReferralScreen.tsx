@@ -7,6 +7,7 @@ import { Dropdown } from 'react-native-element-dropdown';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { styles } from '../styles/AddReferenceScreenStyle';
 import { addReferral, getAllMembers } from '../services/authApi';
+import { canAddReferral, increaseReferralCount, } from '../utils/visitorAccess';
 import SafeAreaWrapper from './SafeAreaWrapper';
 
 const AddReferralScreen = ({ navigation }: any) => {
@@ -31,6 +32,26 @@ const AddReferralScreen = ({ navigation }: any) => {
     const handleChange = (key: string, value: string) => {
         setForm({ ...form, [key]: value });
     };
+
+    useEffect(() => {
+
+        checkReferralAccess();
+
+    }, []);
+
+    const checkReferralAccess =
+        async () => {
+
+            const allowed =
+                await canAddReferral();
+
+            if (!allowed) {
+
+                navigation.replace(
+                    'MembershipRequired'
+                );
+            }
+        };
 
     useEffect(() => {
 
@@ -121,6 +142,8 @@ const AddReferralScreen = ({ navigation }: any) => {
             const res = await addReferral(payload);
 
             Alert.alert('Success', 'Reference Added');
+
+            await increaseReferralCount();
 
             navigation.reset({
                 index: 0,

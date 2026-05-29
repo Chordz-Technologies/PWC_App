@@ -36,7 +36,10 @@ const ProfileScreen = ({ navigation }: any) => {
                 {
                     text: 'Yes',
                     onPress: async () => {
-                        await AsyncStorage.clear();
+                        await AsyncStorage.removeItem('userId');
+                        await AsyncStorage.removeItem('userName');
+                        await AsyncStorage.removeItem('token');
+                        await AsyncStorage.removeItem('role');
                         navigation.replace('Login');
                     },
                 },

@@ -1,4 +1,4 @@
-package com.pwc
+package com.chordz.pwc
 
 import android.app.Application
 import com.facebook.react.PackageList

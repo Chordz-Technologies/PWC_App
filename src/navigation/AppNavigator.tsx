@@ -17,6 +17,8 @@ import ClientsScreen from '../screens/ClientsScreen';
 import BusinessProfileScreen from '../screens/BusinessProfileScreen';
 import MemberProfileDetailsScreen from '../screens/MemberProfileDetailsScreen';
 import ChapterMembersScreen from '../screens/ChapterMembersScreen';
+import NotificationsScreen from '../screens/NotificationsScreen';
+import MembershipRequiredScreen from '../screens/MembershipRequiredScreen';
 
 export type RootStackParamList = {
     Splash: undefined;
@@ -35,6 +37,8 @@ export type RootStackParamList = {
     BusinessProfile: undefined;
     MemberProfileDetails: undefined;
     ChapterMembers: undefined;
+    Notifications: undefined;
+    MembershipRequired: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -59,6 +63,8 @@ const AppNavigator = () => {
                 <Stack.Screen name="BusinessProfile" component={BusinessProfileScreen} />
                 <Stack.Screen name="MemberProfileDetails" component={MemberProfileDetailsScreen} />
                 <Stack.Screen name="ChapterMembers" component={ChapterMembersScreen} />
+                <Stack.Screen name="Notifications" component={NotificationsScreen} />
+                <Stack.Screen name="MembershipRequired" component={MembershipRequiredScreen} />
             </Stack.Navigator>
         </NavigationContainer>
     );

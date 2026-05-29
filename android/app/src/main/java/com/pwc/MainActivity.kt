@@ -1,4 +1,4 @@
-package com.pwc
+package com.chordz.pwc
 
 import com.facebook.react.ReactActivity
 import com.facebook.react.ReactActivityDelegate

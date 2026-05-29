@@ -7,15 +7,55 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { styles } from '../styles/HomeScreenStyle';
 import { getCarouselImages, getMyMeetings } from '../services/authApi';
 import SafeAreaWrapper from './SafeAreaWrapper';
+import { getUnreadCount, markAllAsRead, showLocalNotification, notificationEmitter } from "../services/notificationStorage";
+import messaging, { FirebaseMessagingTypes } from '@react-native-firebase/messaging';
 
 const HomeScreen = ({ navigation }: any) => {
     const [images, setImages] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [userName, setUserName] = useState('');
     const [meetings, setMeetings] = useState<any[]>([]);
+    const [notificationCount, setNotificationCount] = useState(0);
+
+    const loadNotificationCount = async () => {
+        try {
+            const count = await getUnreadCount();
+            setNotificationCount(count);
+        } catch (error) {
+            console.error('Error loading notification count:', error);
+        }
+    };
 
     useEffect(() => {
+
         loadAllData();
+        loadNotificationCount();
+
+        // Listen for updates via emitter
+        const updateBadge = async () => {
+            const count = await getUnreadCount();
+            setNotificationCount(count);
+        };
+        notificationEmitter.on('newNotification', updateBadge);
+
+        // Handle FCM foreground messages - FIXED VERSION
+        const unsubscribe = messaging().onMessage(async (remoteMessage: FirebaseMessagingTypes.RemoteMessage) => {
+            console.log('Foreground message:', remoteMessage);
+            const notificationRaw = remoteMessage.notification || {
+                title: remoteMessage.data?.title,
+                body: remoteMessage.data?.body,
+            };
+            const notification = {
+                title: typeof notificationRaw.title === 'string' ? notificationRaw.title : JSON.stringify(notificationRaw.title),
+                body: typeof notificationRaw.body === 'string' ? notificationRaw.body : JSON.stringify(notificationRaw.body),
+            };
+            await showLocalNotification(notification);
+        });
+
+        return () => {
+            unsubscribe();
+            notificationEmitter.removeListener('newNotification', updateBadge);
+        };
     }, []);
 
     const loadAllData = async () => {
@@ -91,9 +131,48 @@ const HomeScreen = ({ navigation }: any) => {
                         {/* RIGHT SIDE ICONS */}
                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
 
-                            {/* Notification */}
-                            <TouchableOpacity style={{ marginRight: 5 }}>
-                                <Icon name="notifications-outline" size={26} color="#fff" />
+                            <TouchableOpacity
+                                style={{ marginRight: 5 }}
+                                onPress={async () => {
+                                    await markAllAsRead();
+                                    setNotificationCount(0);
+                                    navigation.navigate('Notifications');
+                                }}
+                            >
+                                <View>
+                                    <Icon
+                                        name="notifications-outline"
+                                        size={26}
+                                        color="#fff"
+                                    />
+
+                                    {notificationCount > 0 && (
+                                        <View
+                                            style={{
+                                                position: 'absolute',
+                                                top: -5,
+                                                right: -5,
+                                                backgroundColor: 'red',
+                                                borderRadius: 10,
+                                                minWidth: 18,
+                                                height: 18,
+                                                justifyContent: 'center',
+                                                alignItems: 'center',
+                                                paddingHorizontal: 4,
+                                            }}
+                                        >
+                                            <Text
+                                                style={{
+                                                    color: '#fff',
+                                                    fontSize: 10,
+                                                    fontWeight: 'bold',
+                                                }}
+                                            >
+                                                {notificationCount}
+                                            </Text>
+                                        </View>
+                                    )}
+                                </View>
                             </TouchableOpacity>
                         </View>
                     </View>
