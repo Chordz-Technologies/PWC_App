@@ -19,6 +19,7 @@ import MemberProfileDetailsScreen from '../screens/MemberProfileDetailsScreen';
 import ChapterMembersScreen from '../screens/ChapterMembersScreen';
 import NotificationsScreen from '../screens/NotificationsScreen';
 import MembershipRequiredScreen from '../screens/MembershipRequiredScreen';
+import SuggestionScreen from '../screens/SuggestionScreen';
 
 export type RootStackParamList = {
     Splash: undefined;
@@ -39,6 +40,7 @@ export type RootStackParamList = {
     ChapterMembers: undefined;
     Notifications: undefined;
     MembershipRequired: undefined;
+    Suggestion: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -65,6 +67,7 @@ const AppNavigator = () => {
                 <Stack.Screen name="ChapterMembers" component={ChapterMembersScreen} />
                 <Stack.Screen name="Notifications" component={NotificationsScreen} />
                 <Stack.Screen name="MembershipRequired" component={MembershipRequiredScreen} />
+                <Stack.Screen name="Suggestion" component={SuggestionScreen} />
             </Stack.Navigator>
         </NavigationContainer>
     );

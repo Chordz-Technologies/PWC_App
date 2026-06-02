@@ -348,3 +348,18 @@ export const updateFCMToken = async (memberId: any, fcmToken: any) => {
         }
     }
 }
+
+// add suggestion
+export const addSuggestion = async (data: any) => {
+    try {
+        const response = await axios.post(`${BASE_URL}/suggestion/addSuggestion/`, data);
+        return response.data;
+    }
+    catch (error: any) {
+        if (error.response) {
+            throw error.response.data;
+        } else {
+            throw { message: 'Network Error' };
+        }
+    }
+};

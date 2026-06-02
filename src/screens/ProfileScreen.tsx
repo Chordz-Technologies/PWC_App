@@ -126,6 +126,18 @@ const ProfileScreen = ({ navigation }: any) => {
                     <Icon name="chevron-forward" size={20} color="#999" />
                 </TouchableOpacity>
 
+                {/* SUGGESTION CARD */}
+                <TouchableOpacity
+                    style={styles.editProfileCard}
+                    onPress={() => navigation.navigate('Suggestion')}
+                >
+                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                        <Icon name="bulb-outline" size={20} color="#4361ee" />
+                        <Text style={styles.editProfileText}>Suggestions</Text>
+                    </View>
+                    <Icon name="chevron-forward" size={20} color="#999" />
+                </TouchableOpacity>
+
                 {/* LOGOUT PROFILE CARD */}
                 <TouchableOpacity
                     style={styles.editProfileCard}
