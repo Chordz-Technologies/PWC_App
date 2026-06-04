@@ -45,12 +45,20 @@ export const styles = StyleSheet.create({
         color: '#000',
     },
 
-    dropdown: {
-        borderWidth: 1,
-        borderColor: '#bababa',
-        borderRadius: 10,
-        padding: 10,
-        marginBottom: 12,
+    dropdownInput: {
+        flex: 1,
+        padding: 11,
+        color: '#000',
+    },
+
+    dropdownPlaceholder: {
+        color: '#8d99ae',
+        fontSize: 14,
+    },
+
+    dropdownText: {
+        color: '#000',
+        fontSize: 14,
     },
 
     button: {

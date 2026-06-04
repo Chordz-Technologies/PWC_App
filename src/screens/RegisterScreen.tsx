@@ -330,6 +330,67 @@ const RegisterScreen = ({ navigation }: any) => {
                                         />
                                     )}
 
+                                    {/* 🔹 ROLE */}
+                                    <View style={styles.inputContainer}>
+                                        <Icon
+                                            name="person-outline"
+                                            size={20}
+                                            color="#8d99ae"
+                                        />
+
+                                        <Dropdown
+                                            style={styles.dropdownInput}
+                                            data={roles}
+                                            labelField="label"
+                                            valueField="value"
+                                            placeholder="Select Role*"
+                                            placeholderStyle={styles.dropdownPlaceholder}
+                                            selectedTextStyle={styles.dropdownText}
+                                            value={form.role}
+                                            onChange={(item) =>
+                                                handleChange('role', item.value)
+                                            }
+                                            renderRightIcon={() => (
+                                                <Icon
+                                                    name="chevron-down-outline"
+                                                    size={20}
+                                                    color="#8d99ae"
+                                                />
+                                            )}
+                                        />
+                                    </View>
+
+                                    {/* 🔹 CHAPTER */}
+                                    <View style={styles.inputContainer}>
+                                        <Icon
+                                            name="people-outline"
+                                            size={20}
+                                            color="#8d99ae"
+                                        />
+
+                                        <Dropdown
+                                            style={styles.dropdownInput}
+                                            data={chapters}
+                                            labelField="label"
+                                            valueField="value"
+                                            placeholder="Select Chapter*"
+                                            placeholderStyle={styles.dropdownPlaceholder}
+                                            selectedTextStyle={styles.dropdownText}
+                                            value={form.chapter}
+                                            onChange={(item) =>
+                                                handleChange('chapter', item.value)
+                                            }
+                                            maxHeight={200}
+                                            renderRightIcon={() => (
+                                                <Icon
+                                                    name="chevron-down-outline"
+                                                    size={20}
+                                                    color="#8d99ae"
+                                                />
+                                            )}
+                                        />
+                                    </View>
+
                                     {/* 🔹 PAN */}
                                     <View style={styles.inputContainer}>
                                         <Icon
@@ -491,39 +552,6 @@ const RegisterScreen = ({ navigation }: any) => {
                                             }
                                         />
                                     </View>
-
-                                    {/* 🔹 ROLE */}
-                                    <Dropdown
-                                        style={styles.dropdown}
-                                        data={roles}
-                                        labelField="label"
-                                        valueField="value"
-                                        placeholder="Select Role*"
-                                        placeholderStyle={{
-                                            color: '#8d99ae'
-                                        }}
-                                        value={form.role}
-                                        onChange={(item) =>
-                                            handleChange('role', item.value)
-                                        }
-                                    />
-
-                                    {/* 🔹 CHAPTER */}
-                                    <Dropdown
-                                        style={styles.dropdown}
-                                        data={chapters}
-                                        labelField="label"
-                                        valueField="value"
-                                        placeholder="Select Chapter*"
-                                        placeholderStyle={{
-                                            color: '#8d99ae'
-                                        }}
-                                        value={form.chapter}
-                                        onChange={(item) =>
-                                            handleChange('chapter', item.value)
-                                        }
-                                        maxHeight={200}
-                                    />
 
                                     {/* 🔹 BUTTON */}
                                     <TouchableOpacity
