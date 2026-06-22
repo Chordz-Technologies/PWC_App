@@ -20,6 +20,9 @@ import ChapterMembersScreen from '../screens/ChapterMembersScreen';
 import NotificationsScreen from '../screens/NotificationsScreen';
 import MembershipRequiredScreen from '../screens/MembershipRequiredScreen';
 import SuggestionScreen from '../screens/SuggestionScreen';
+import CertificateScreen from '../screens/CertificateScreen';
+import PWCCellsScreen from '../screens/PwcCellsScreen';
+import AddVisitorScreen from '../screens/AddVisitorScreen';
 
 export type RootStackParamList = {
     Splash: undefined;
@@ -41,6 +44,9 @@ export type RootStackParamList = {
     Notifications: undefined;
     MembershipRequired: undefined;
     Suggestion: undefined;
+    Certificate: undefined;
+    PWCCells: undefined;
+    AddVisitor: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -68,6 +74,9 @@ const AppNavigator = () => {
                 <Stack.Screen name="Notifications" component={NotificationsScreen} />
                 <Stack.Screen name="MembershipRequired" component={MembershipRequiredScreen} />
                 <Stack.Screen name="Suggestion" component={SuggestionScreen} />
+                <Stack.Screen name="Certificate" component={CertificateScreen} />
+                <Stack.Screen name="PWCCells" component={PWCCellsScreen} />
+                <Stack.Screen name="AddVisitor" component={AddVisitorScreen} />
             </Stack.Navigator>
         </NavigationContainer>
     );

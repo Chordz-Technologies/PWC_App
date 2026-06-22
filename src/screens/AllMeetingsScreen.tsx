@@ -51,34 +51,60 @@ const AllMeetingsScreen = ({ navigation, route }: any) => {
                                 key={item.id}
                                 style={styles.card}
                             >
-                                {/* AVATAR */}
-                                <View style={styles.avatarIcon}>
-                                    <Icon
-                                        name="person"
-                                        size={22}
-                                        color="#4361ee"
-                                    />
-                                </View>
+                                <View style={styles.cardContent}>
 
-                                {/* DETAILS */}
-                                <View
-                                    style={{
-                                        flex: 1,
-                                        marginLeft: 12,
-                                    }}
-                                >
-                                    <Text style={styles.meetingTitle}>
-                                        {item.title || 'Meeting'}
-                                    </Text>
-                                    <Text style={styles.memberName}>
-                                        {item.person2}
-                                    </Text>
-                                    <Text style={styles.meetingTime}>
-                                        {formatDateTime(item.date, item.time)}
-                                    </Text>
-                                    <Text style={styles.venue}>
-                                        📍 {item.venue}
-                                    </Text>
+                                    <View style={{ flexDirection: 'row' }}>
+
+                                        <View style={styles.avatarIcon}>
+                                            <Icon
+                                                name="person"
+                                                size={22}
+                                                color="#4361ee"
+                                            />
+                                        </View>
+
+                                        <View
+                                            style={{
+                                                flex: 1,
+                                                marginLeft: 12,
+                                            }}
+                                        >
+                                            <Text style={styles.meetingTitle}>
+                                                {item.title || 'Meeting'}
+                                            </Text>
+
+                                            <Text style={styles.memberName}>
+                                                {item.person2}
+                                            </Text>
+
+                                            <Text style={styles.meetingTime}>
+                                                {formatDateTime(item.date, item.time)}
+                                            </Text>
+
+                                            <Text style={styles.venue}>
+                                                📍 {item.venue}
+                                            </Text>
+                                        </View>
+
+                                    </View>
+
+                                    <TouchableOpacity
+                                        style={styles.addVisitorButton}
+                                        onPress={() =>
+                                            navigation.navigate('AddVisitor')
+                                        }
+                                    >
+                                        <Icon
+                                            name="person-add-outline"
+                                            size={18}
+                                            color="#fff"
+                                        />
+
+                                        <Text style={styles.addVisitorText}>
+                                            Add Visitor
+                                        </Text>
+                                    </TouchableOpacity>
+
                                 </View>
                             </View>
                         ))

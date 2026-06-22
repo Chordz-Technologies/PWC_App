@@ -47,6 +47,7 @@ export const styles = StyleSheet.create({
         backgroundColor: '#eef2ff',
         justifyContent: 'center',
         alignItems: 'center',
+        marginTop: 5
     },
 
     meetingTitle: {
@@ -72,4 +73,26 @@ export const styles = StyleSheet.create({
         color: '#666',
         marginTop: 4,
     },
+
+    cardContent: {
+        flex: 1,
+    },
+
+    addVisitorButton: {
+        marginTop: 15,
+        backgroundColor: '#4361ee',
+        height: 45,
+        borderRadius: 10,
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+
+    addVisitorText: {
+        color: '#fff',
+        fontSize: 15,
+        fontWeight: '600',
+        marginLeft: 8,
+    },
+
 });

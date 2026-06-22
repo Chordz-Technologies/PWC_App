@@ -282,7 +282,7 @@ const AddReferralScreen = ({ navigation }: any) => {
                             {/* COMMENT */}
                             <Text style={styles.label}>Comment</Text>
                             <TextInput
-                                placeholder="Enter Comment"
+                                placeholder="Enter Comment (If ref type is outside then enter mobile number, contact info, etc.)"
                                 placeholderTextColor="#999"
                                 style={[styles.input, { height: 100 }]}
                                 multiline
