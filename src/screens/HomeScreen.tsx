@@ -5,10 +5,11 @@ import LinearGradient from 'react-native-linear-gradient';
 import Swiper from 'react-native-swiper';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { styles } from '../styles/HomeScreenStyle';
-import { getCarouselImages, getMyMeetings } from '../services/authApi';
+import { getCarouselImages, getAllMeetings } from '../services/authApi';
 import SafeAreaWrapper from './SafeAreaWrapper';
 import { getUnreadCount, markAllAsRead, showLocalNotification, notificationEmitter } from "../services/notificationStorage";
 import messaging, { FirebaseMessagingTypes } from '@react-native-firebase/messaging';
+import { useFocusEffect } from '@react-navigation/native';
 
 const HomeScreen = ({ navigation }: any) => {
     const [images, setImages] = useState<any[]>([]);
@@ -25,6 +26,12 @@ const HomeScreen = ({ navigation }: any) => {
             console.error('Error loading notification count:', error);
         }
     };
+
+    useFocusEffect(
+        React.useCallback(() => {
+            loadMeetings();
+        }, [])
+    );
 
     useEffect(() => {
 
@@ -58,6 +65,18 @@ const HomeScreen = ({ navigation }: any) => {
         };
     }, []);
 
+    const loadMeetings = async () => {
+        try {
+            const meetingRes = await getAllMeetings();
+
+            if (meetingRes?.all_meetings) {
+                setMeetings(meetingRes.all_meetings);
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
     const loadAllData = async () => {
         try {
             const name = await AsyncStorage.getItem('userName');
@@ -66,18 +85,23 @@ const HomeScreen = ({ navigation }: any) => {
                 setUserName(name);
             }
 
-            const [carouselRes, meetingRes] = await Promise.all([
+            const [carouselRes] = await Promise.all([
                 getCarouselImages(),
-                name ? getMyMeetings(name) : Promise.resolve(null),
+                // name ? getMyMeetings(name) : Promise.resolve(null),
+                // getAllMeetings()
             ]);
 
             if (carouselRes?.all_images) {
                 setImages(carouselRes.all_images);
             }
 
-            if (meetingRes?.person1_meetings) {
-                setMeetings(meetingRes.person1_meetings);
-            }
+            // if (meetingRes?.all_meetings) {
+            //     setMeetings(meetingRes.all_meetings);
+            // }
+
+            // if (meetingRes?.person1_meetings) {
+            //     setMeetings(meetingRes.person1_meetings);
+            // }
 
         } catch (error) {
             console.log('Home API Error', error);
@@ -256,7 +280,7 @@ const HomeScreen = ({ navigation }: any) => {
                         <TouchableOpacity
                             onPress={() =>
                                 navigation.navigate('AllMeetings', {
-                                    meetings: meetings
+                                    meetings
                                 })
                             }
                         >

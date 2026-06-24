@@ -1,12 +1,16 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, ScrollView, } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView, Switch, Alert } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/Ionicons';
 import SafeAreaWrapper from './SafeAreaWrapper';
 import { styles } from '../styles/AllMeetingsScreenStyle';
+import { updateMeetingAttendance } from '../services/authApi';
 
 const AllMeetingsScreen = ({ navigation, route }: any) => {
     const meetings = route.params?.meetings || [];
+    const [attending, setAttending] = React.useState<{
+        [key: number]: boolean;
+    }>({});
     const formatDateTime = (date: string, time: string) => {
         const d = new Date(`${date}T${time}`);
         const formattedDate = d.toLocaleDateString('en-IN', {
@@ -20,6 +24,43 @@ const AllMeetingsScreen = ({ navigation, route }: any) => {
         });
 
         return `${formattedDate} at ${formattedTime}`;
+    };
+
+    React.useEffect(() => {
+        const initialState: any = {};
+
+        meetings.forEach((item: any) => {
+            initialState[item.id] = item.attending === 1;
+        });
+
+        setAttending(initialState);
+    }, []);
+
+    const handleAttendance = async (
+        meetingId: number,
+        value: boolean,
+    ) => {
+        // Smooth UI update
+        setAttending(prev => ({
+            ...prev,
+            [meetingId]: value,
+        }));
+
+        try {
+            await updateMeetingAttendance(
+                meetingId,
+                value ? 1 : 0,
+            );
+
+            setAttending(prev => ({
+                ...prev,
+                [meetingId]: value,
+            }));
+
+        } catch (error: any) {
+            Alert.alert('Error', error?.message || 'Unable to update attendance',
+            );
+        }
     };
 
     return (
@@ -52,9 +93,7 @@ const AllMeetingsScreen = ({ navigation, route }: any) => {
                                 style={styles.card}
                             >
                                 <View style={styles.cardContent}>
-
                                     <View style={{ flexDirection: 'row' }}>
-
                                         <View style={styles.avatarIcon}>
                                             <Icon
                                                 name="person"
@@ -62,7 +101,6 @@ const AllMeetingsScreen = ({ navigation, route }: any) => {
                                                 color="#4361ee"
                                             />
                                         </View>
-
                                         <View
                                             style={{
                                                 flex: 1,
@@ -85,26 +123,44 @@ const AllMeetingsScreen = ({ navigation, route }: any) => {
                                                 📍 {item.venue}
                                             </Text>
                                         </View>
-
                                     </View>
 
-                                    <TouchableOpacity
-                                        style={styles.addVisitorButton}
-                                        onPress={() =>
-                                            navigation.navigate('AddVisitor')
-                                        }
-                                    >
-                                        <Icon
-                                            name="person-add-outline"
-                                            size={18}
-                                            color="#fff"
-                                        />
+                                    <View style={styles.bottomActions}>
 
-                                        <Text style={styles.addVisitorText}>
-                                            Add Visitor
-                                        </Text>
-                                    </TouchableOpacity>
+                                        {/* Meeting Attending Toggle */}
+                                        <View style={styles.attendingContainer}>
+                                            <Switch
+                                                value={attending[item.id] || false}
+                                                onValueChange={(value) =>
+                                                    handleAttendance(item.id, value)
+                                                }
+                                                trackColor={{
+                                                    false: '#d1d5db',
+                                                    true: '#0fab21',
+                                                }}
+                                                thumbColor="#fff"
+                                            />
+                                            <Text style={styles.attendingText}>
+                                                Attending
+                                            </Text>
+                                        </View>
 
+                                        {/* Add Visitor Button */}
+                                        <TouchableOpacity
+                                            style={styles.addVisitorButton}
+                                            onPress={() =>
+                                                navigation.navigate('AddVisitor')
+                                            }>
+                                            <Icon
+                                                name="person-add-outline"
+                                                size={18}
+                                                color="#fff"
+                                            />
+                                            <Text style={styles.addVisitorText}>
+                                                Add Visitor
+                                            </Text>
+                                        </TouchableOpacity>
+                                    </View>
                                 </View>
                             </View>
                         ))

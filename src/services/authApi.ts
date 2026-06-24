@@ -51,9 +51,19 @@ export const getCarouselImages = async () => {
 };
 
 // get one-to-one meetings for a person
-export const getMyMeetings = async (person1: any) => {
+// export const getMyMeetings = async (person1: any) => {
+//     try {
+//         const res = await axios.get(`${BASE_URL}/one-to-one/allMeetings/${person1}/`);
+//         return res.data;
+//     } catch (error: any) {
+//         throw error;
+//     }
+// };
+
+// get all meetings
+export const getAllMeetings = async () => {
     try {
-        const res = await axios.get(`${BASE_URL}/one-to-one/myMeetings/${person1}/`);
+        const res = await axios.get(`${BASE_URL}/one-to-one/allMeetings/`);
         return res.data;
     } catch (error: any) {
         throw error;
@@ -64,6 +74,22 @@ export const getMyMeetings = async (person1: any) => {
 export const addMeeting = async (data: any) => {
     try {
         const response = await axios.post(`${BASE_URL}/one-to-one/addMeeting/`, data);
+        return response.data;
+    } catch (error: any) {
+        if (error.response) {
+            throw error.response.data;
+        } else {
+            throw { message: 'Network Error' };
+        }
+    }
+};
+
+// update meeting attendance 
+export const updateMeetingAttendance = async (meetingId: number, attending: number) => {
+    try {
+        const response = await axios.put(`${BASE_URL}/one-to-one/updateMeeting/${meetingId}/`, {
+            attending: attending,
+        });
         return response.data;
     } catch (error: any) {
         if (error.response) {
