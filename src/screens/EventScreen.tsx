@@ -106,6 +106,14 @@ const EventScreen = ({ navigation }: any) => {
                                         </Text>
                                     </View>
 
+                                    {/* 🔹 PRICE */}
+                                    <View style={styles.row}>
+                                        <Icon name="cash-outline" size={16} color="#666" />
+                                        <Text style={styles.eventText}>
+                                            {item.price}
+                                        </Text>
+                                    </View>
+
                                     {/* 🔹 ORGANIZER */}
                                     <View style={styles.row}>
                                         <Icon name="people-outline" size={16} color="#666" />

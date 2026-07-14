@@ -40,6 +40,7 @@ const ProfileScreen = ({ navigation }: any) => {
                         await AsyncStorage.removeItem('userName');
                         await AsyncStorage.removeItem('token');
                         await AsyncStorage.removeItem('role');
+                        await AsyncStorage.removeItem('chapter_id');
                         navigation.replace('Login');
                     },
                 },

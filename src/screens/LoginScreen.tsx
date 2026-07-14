@@ -55,6 +55,7 @@ const LoginScreen = ({ navigation }: any) => {
                 await AsyncStorage.setItem('userName', response.name);
                 await AsyncStorage.setItem('token', response.token);
                 await AsyncStorage.setItem('role', response.role);
+                await AsyncStorage.setItem('chapter_id', response.chapter_id.toString());
 
                 navigation.replace('Home');
             } else {

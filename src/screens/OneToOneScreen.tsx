@@ -24,7 +24,9 @@ const OneToOneScreen = ({ navigation }: any) => {
         date: '',
         time: '',
         venue: '',
+        price: '',
         description: '',
+        chapter: 0,
     });
 
     const [keyboardOpen, setKeyboardOpen] = useState(false);
@@ -81,14 +83,16 @@ const OneToOneScreen = ({ navigation }: any) => {
 
     const loadUser = async () => {
         const name = await AsyncStorage.getItem('userName');
+        const chapter = await AsyncStorage.getItem('chapter_id');
+
+        setForm(prev => ({
+            ...prev,
+            person1: name || '',
+            chapter: chapter ? Number(chapter) : 0,
+        }));
 
         if (name) {
             setUserName(name);
-
-            setForm(prev => ({
-                ...prev,
-                person1: name, // ✅ auto set
-            }));
         }
     };
 
@@ -136,12 +140,17 @@ const OneToOneScreen = ({ navigation }: any) => {
 
     const handleSubmit = async () => {
         try {
-            if (!form.person1 || !form.person2 || !form.title || !form.date || !form.time || !form.venue) {
+            if (!form.person1 || !form.person2 || !form.title || !form.date || !form.time || !form.venue || !form.price) {
                 Alert.alert('Error', 'Please fill all required fields');
                 return;
             }
 
-            const res = await addMeeting(form);
+            const payload = {
+                ...form,
+                chapter: form.chapter,
+            };
+
+            const res = await addMeeting(payload);
             Alert.alert('Success', 'Meeting Scheduled');
             await increaseMeetingCount();
             navigation.reset({
@@ -326,6 +335,20 @@ const OneToOneScreen = ({ navigation }: any) => {
                                 style={styles.input}
                                 onChangeText={(v) =>
                                     handleChange('venue', v)
+                                }
+                            />
+
+                            {/* PRICE */}
+                            <Text style={styles.label}>
+                                Price*
+                            </Text>
+
+                            <TextInput
+                                placeholder="Enter Price"
+                                placeholderTextColor="#999"
+                                style={styles.input}
+                                onChangeText={(v) =>
+                                    handleChange('price', v)
                                 }
                             />
 

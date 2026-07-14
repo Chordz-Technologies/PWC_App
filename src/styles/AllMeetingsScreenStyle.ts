@@ -88,27 +88,31 @@ export const styles = StyleSheet.create({
     attendingContainer: {
         flexDirection: 'row',
         alignItems: 'center',
+        flex: 1,
     },
 
     attendingText: {
-        fontSize: 15,
+        marginLeft: 6,
+        fontSize: 13,
+        color: '#333',
         fontWeight: '600',
-        color: '#374151',
-        marginRight: 8,
     },
 
-    addVisitorButton: {
+    actionButton: {
         flexDirection: 'row',
         alignItems: 'center',
+        justifyContent: 'center',
         backgroundColor: '#4361ee',
-        paddingVertical: 10,
-        paddingHorizontal: 18,
-        borderRadius: 10,
+        borderRadius: 8,
+        paddingHorizontal: 10,
+        height: 38,
+        marginLeft: 8,
     },
 
-    addVisitorText: {
+    actionButtonText: {
         color: '#fff',
+        fontSize: 12,
         fontWeight: '600',
-        marginLeft: 6,
+        marginLeft: 4,
     },
 });

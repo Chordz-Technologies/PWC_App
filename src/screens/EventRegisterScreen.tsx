@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, ScrollView, Alert, } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, ScrollView, Alert, Linking } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { styles } from '../styles/EventRegisterScreenStyle';
@@ -7,10 +7,9 @@ import SafeAreaWrapper from './SafeAreaWrapper';
 import { registerForEvent } from '../services/authApi';
 
 const EventRegisterScreen = ({ navigation, route }: any) => {
-
     const { eventId } = route.params;
-
     const [loading, setLoading] = useState(false);
+    const [paymentDone, setPaymentDone] = useState(false);
 
     const [form, setForm] = useState({
         name: '',
@@ -25,6 +24,29 @@ const EventRegisterScreen = ({ navigation, route }: any) => {
             ...form,
             [key]: value,
         });
+    };
+
+    const handlePayment = async () => {
+        try {
+
+            await Linking.openURL(
+                'https://razorpay.me/@punewomensclub'
+            );
+
+            Alert.alert(
+                'Payment',
+                'After completing the payment, come back and click "I Have Completed Payment".'
+            );
+
+            setPaymentDone(true);
+
+        } catch (e) {
+
+            Alert.alert(
+                'Error',
+                'Unable to open payment page.'
+            );
+        }
     };
 
     const handleSubmit = async () => {
@@ -144,9 +166,26 @@ const EventRegisterScreen = ({ navigation, route }: any) => {
                     />
 
                     {/* BUTTON */}
-                    <TouchableOpacity style={styles.button} onPress={handleSubmit}>
-                        <Text style={styles.btnText}>Register Now</Text>
+                    <TouchableOpacity style={styles.button} onPress={handlePayment}>
+                        <Text style={styles.btnText}>Pay Now</Text>
                     </TouchableOpacity>
+
+                    {paymentDone && (
+                        <TouchableOpacity
+                            style={[
+                                styles.button,
+                                {
+                                    marginTop: 15,
+                                    backgroundColor: '#10b981',
+                                },
+                            ]}
+                            onPress={handleSubmit}
+                        >
+                            <Text style={styles.btnText}>
+                                I Have Completed Payment
+                            </Text>
+                        </TouchableOpacity>
+                    )}
                 </ScrollView>
             </View>
         </SafeAreaWrapper>
