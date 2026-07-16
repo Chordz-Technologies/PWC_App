@@ -23,6 +23,7 @@ const AddReferralScreen = ({ navigation }: any) => {
         ref_type: '',
         comment: '',
         address: '',
+        contact_no: '',
         ref_from: Number(null),
         ref_to: Number(null),
     });
@@ -34,19 +35,13 @@ const AddReferralScreen = ({ navigation }: any) => {
     };
 
     useEffect(() => {
-
         checkReferralAccess();
-
     }, []);
 
     const checkReferralAccess =
         async () => {
-
-            const allowed =
-                await canAddReferral();
-
+            const allowed = await canAddReferral();
             if (!allowed) {
-
                 navigation.replace(
                     'MembershipRequired'
                 );
@@ -102,14 +97,11 @@ const AddReferralScreen = ({ navigation }: any) => {
     const fetchMembers = async () => {
         try {
             const res = await getAllMembers();
-
             const formatted = res.all_members.map((item: any) => ({
                 label: item.name,
                 value: item.id,
             }));
-
             setMembers(formatted);
-
         } catch (error) {
             console.log('Members API error', error);
         }
@@ -122,7 +114,7 @@ const AddReferralScreen = ({ navigation }: any) => {
 
     const handleSubmit = async () => {
         try {
-            if (!form.ref_date || !form.referral_from || !form.referral_to || !form.referral || !form.ref_type) {
+            if (!form.ref_date || !form.referral_from || !form.referral_to || !form.referral || !form.ref_type || !form.contact_no) {
                 Alert.alert('Error', 'Please fill required fields');
                 return;
             }
@@ -135,6 +127,7 @@ const AddReferralScreen = ({ navigation }: any) => {
                 ref_type: form.ref_type,
                 comment: form.comment,
                 address: form.address,
+                contact_no: form.contact_no,
                 ref_from: Number(form.ref_from),
                 ref_to: Number(form.ref_to),
             };
@@ -256,7 +249,6 @@ const AddReferralScreen = ({ navigation }: any) => {
 
                             {/* REF TYPE */}
                             <Text style={styles.label}>Referral Type*</Text>
-
                             <Dropdown
                                 style={styles.input}
                                 data={referralTypes}
@@ -266,6 +258,16 @@ const AddReferralScreen = ({ navigation }: any) => {
                                 placeholderStyle={{ color: '#999' }}
                                 value={form.ref_type}
                                 onChange={(item) => handleChange('ref_type', item.value)}
+                            />
+
+                            {/* CONTACT NUMBER */}
+                            <Text style={styles.label}>Contact Number*</Text>
+                            <TextInput
+                                placeholder="Enter Contact Number"
+                                placeholderTextColor="#999"
+                                style={styles.input}
+                                keyboardType="phone-pad"
+                                onChangeText={(v) => handleChange('contact_no', v)}
                             />
 
                             {/* ADDRESS */}

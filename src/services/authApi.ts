@@ -389,3 +389,82 @@ export const addSuggestion = async (data: any) => {
         }
     }
 };
+
+// get all birthdays
+export const getAllBirthdays = async () => {
+    try {
+        const response = await axios.get(`${BASE_URL}/member/allBirthdays/`);
+        return response.data;
+    }
+    catch (error: any) {
+        if (error.response) {
+            throw error.response.data;
+        } else {
+            throw { message: 'Network Error' };
+        }
+    }
+};
+
+// get all training videos
+export const getTrainingVideos = async () => {
+    try {
+        const response = await axios.get(`${BASE_URL}/training/allVideos/`);
+        return response.data;
+    }
+    catch (error: any) {
+        if (error.response) {
+            throw error.response.data;
+        } else {
+            throw { message: 'Network Error' };
+        }
+    }
+};
+
+// add training video
+export const addTrainingVideo = async (data: any) => {
+    try {
+        const response = await axios.post(`${BASE_URL}/training/addVideo/`, data);
+        return response.data;
+    }
+    catch (error: any) {
+        if (error.response) {
+            throw error.response.data;
+        } else {
+            throw { message: 'Network Error' };
+        }
+    }
+};
+
+// get all success stories
+export const getSuccessStories = async () => {
+    try {
+        const response = await axios.get(`${BASE_URL}/success/allStories/`);
+        return response.data;
+    }
+    catch (error: any) {
+        if (error.response) {
+            throw error.response.data;
+        } else {
+            throw { message: 'Network Error' };
+        }
+    }
+};
+
+// add success story
+export const addSuccessStory = async (data: any) => {
+    try {
+        const response = await axios.post(`${BASE_URL}/success/addStory/`, data, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        });
+        return response.data;
+    }
+    catch (error: any) {
+        if (error.response) {
+            throw error.response.data;
+        } else {
+            throw { message: 'Network Error' };
+        }
+    }
+};

@@ -76,6 +76,19 @@ const ProfileScreen = ({ navigation }: any) => {
                 </View>
 
                 <ScrollView contentContainerStyle={{ paddingBottom: 30 }}>
+                    {/* ABOUT PWC CARD */}
+                    <TouchableOpacity
+                        style={styles.editProfileCard}
+                        onPress={() => navigation.navigate('AboutPWC')}
+                    >
+                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                            <Icon name="information-circle-outline" size={20} color="#4361ee" />
+                            <Text style={styles.editProfileText}>About PWC</Text>
+                        </View>
+
+                        <Icon name="chevron-forward" size={20} color="#999" />
+                    </TouchableOpacity>
+
                     {/* ANALYTICS CARD */}
                     <TouchableOpacity
                         style={styles.editProfileCard}
@@ -84,6 +97,19 @@ const ProfileScreen = ({ navigation }: any) => {
                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                             <Icon name="analytics-outline" size={20} color="#4361ee" />
                             <Text style={styles.editProfileText}>Analytics</Text>
+                        </View>
+
+                        <Icon name="chevron-forward" size={20} color="#999" />
+                    </TouchableOpacity>
+
+                    {/* BIRTHDAYS CARD */}
+                    <TouchableOpacity
+                        style={styles.editProfileCard}
+                        onPress={() => navigation.navigate('Birthdays')}
+                    >
+                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                            <Icon name="calendar-outline" size={20} color="#4361ee" />
+                            <Text style={styles.editProfileText}>Birthdays</Text>
                         </View>
 
                         <Icon name="chevron-forward" size={20} color="#999" />
@@ -162,6 +188,32 @@ const ProfileScreen = ({ navigation }: any) => {
                             <Icon name="document-text-outline" size={20} color="#4361ee" />
                             <Text style={styles.editProfileText}>Certificate</Text>
                         </View>
+                        <Icon name="chevron-forward" size={20} color="#999" />
+                    </TouchableOpacity>
+
+                    {/* TRAINING AND DEVELOPMENT CARD */}
+                    <TouchableOpacity
+                        style={styles.editProfileCard}
+                        onPress={() => navigation.navigate('TrainingDevelopment')}
+                    >
+                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                            <Icon name="book-outline" size={20} color="#4361ee" />
+                            <Text style={styles.editProfileText}>Training and Development</Text>
+                        </View>
+
+                        <Icon name="chevron-forward" size={20} color="#999" />
+                    </TouchableOpacity>
+
+                    {/* SUCCESS STORY CARD */}
+                    <TouchableOpacity
+                        style={styles.editProfileCard}
+                        onPress={() => navigation.navigate('SuccessStories')}
+                    >
+                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                            <Icon name="ribbon-outline" size={20} color="#4361ee" />
+                            <Text style={styles.editProfileText}>Success Story</Text>
+                        </View>
+
                         <Icon name="chevron-forward" size={20} color="#999" />
                     </TouchableOpacity>
 

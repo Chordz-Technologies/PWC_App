@@ -23,6 +23,10 @@ import SuggestionScreen from '../screens/SuggestionScreen';
 import CertificateScreen from '../screens/CertificateScreen';
 import PWCCellsScreen from '../screens/PwcCellsScreen';
 import AddVisitorScreen from '../screens/AddVisitorScreen';
+import AboutPWCScreen from '../screens/AboutPWCScreen';
+import BirthdayScreen from '../screens/BirthdayScreen';
+import TrainingDevelopmentScreen from '../screens/TrainingDevelopmentScreen';
+import SuccessStoriesScreen from '../screens/SuccessStories';
 
 export type RootStackParamList = {
     Splash: undefined;
@@ -47,6 +51,10 @@ export type RootStackParamList = {
     Certificate: undefined;
     PWCCells: undefined;
     AddVisitor: undefined;
+    AboutPWC: undefined;
+    Birthdays: undefined;
+    TrainingDevelopment: undefined;
+    SuccessStories: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -77,6 +85,10 @@ const AppNavigator = () => {
                 <Stack.Screen name="Certificate" component={CertificateScreen} />
                 <Stack.Screen name="PWCCells" component={PWCCellsScreen} />
                 <Stack.Screen name="AddVisitor" component={AddVisitorScreen} />
+                <Stack.Screen name="AboutPWC" component={AboutPWCScreen} />
+                <Stack.Screen name="Birthdays" component={BirthdayScreen} />
+                <Stack.Screen name="TrainingDevelopment" component={TrainingDevelopmentScreen} />
+                <Stack.Screen name="SuccessStories" component={SuccessStoriesScreen} />
             </Stack.Navigator>
         </NavigationContainer>
     );
