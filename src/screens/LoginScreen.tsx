@@ -56,12 +56,10 @@ const LoginScreen = ({ navigation }: any) => {
                 await AsyncStorage.setItem('token', response.token);
                 await AsyncStorage.setItem('role', response.role);
                 await AsyncStorage.setItem('chapter_id', response.chapter_id.toString());
-
                 navigation.replace('Home');
             } else {
                 Alert.alert('Error', response?.message || 'Login failed');
             }
-
         } catch (error: any) {
             setLoading(false);
             Alert.alert('Error', error?.message || 'Something went wrong');
@@ -76,12 +74,7 @@ const LoginScreen = ({ navigation }: any) => {
                 keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 0}
             >
                 <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-
-                    <LinearGradient
-                        colors={['#4361ee', '#3f37c9']}
-                        style={{ flex: 1 }}
-                    >
-
+                    <LinearGradient colors={['#4361ee', '#3f37c9']} style={{ flex: 1 }}>
                         <ScrollView
                             keyboardShouldPersistTaps="handled"
                             showsVerticalScrollIndicator={false}
@@ -92,7 +85,6 @@ const LoginScreen = ({ navigation }: any) => {
                                 paddingBottom: keyboardOpen ? 50 : 20,
                             }}
                         >
-
                             <View style={styles.circleTop} />
                             <View style={styles.circleBottom} />
 
@@ -166,19 +158,6 @@ const LoginScreen = ({ navigation }: any) => {
                                         />
                                     </TouchableOpacity>
                                 </View>
-
-                                {/* FORGOT PASSWORD */}
-                                <TouchableOpacity
-                                    onPress={() =>
-                                        navigation.navigate(
-                                            'ForgotPassword'
-                                        )
-                                    }
-                                >
-                                    <Text style={styles.forgot}>
-                                        Forgot Password?
-                                    </Text>
-                                </TouchableOpacity>
 
                                 {/* BUTTON */}
                                 <TouchableOpacity

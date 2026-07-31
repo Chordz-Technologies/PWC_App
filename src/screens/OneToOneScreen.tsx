@@ -72,7 +72,6 @@ const OneToOneScreen = ({ navigation }: any) => {
         );
 
         loadUser();
-        fetchMembers();
 
         return () => {
             showSubscription.remove();
@@ -94,19 +93,22 @@ const OneToOneScreen = ({ navigation }: any) => {
         if (name) {
             setUserName(name);
         }
+
+        fetchMembers(name || '');
     };
 
-    const fetchMembers = async () => {
+    const fetchMembers = async (loggedInUser: string) => {
         try {
             const res = await getAllMembers();
 
-            const formatted = res.all_members.map((item: any) => ({
-                label: item.name,
-                value: item.name, // for meeting API we only need name
-            }));
+            const formatted = res.all_members
+                .filter((item: any) => item.name !== loggedInUser)
+                .map((item: any) => ({
+                    label: item.name,
+                    value: item.name,
+                }));
 
             setMembers(formatted);
-
         } catch (error) {
             console.log('Members API error', error);
         }
@@ -140,7 +142,7 @@ const OneToOneScreen = ({ navigation }: any) => {
 
     const handleSubmit = async () => {
         try {
-            if (!form.person1 || !form.person2 || !form.title || !form.date || !form.time || !form.venue || !form.price) {
+            if (!form.person1 || !form.person2 || !form.date || !form.time || !form.venue) {
                 Alert.alert('Error', 'Please fill all required fields');
                 return;
             }
@@ -228,6 +230,10 @@ const OneToOneScreen = ({ navigation }: any) => {
                                 placeholder="Select Member"
                                 placeholderStyle={{ color: '#999' }}
                                 value={form.person2}
+                                search
+                                searchPlaceholder="Search member here..."
+                                autoScroll={false}
+                                maxHeight={300}
                                 onChange={(item) => {
                                     handleChange('person2', item.value);
                                 }}
@@ -235,7 +241,7 @@ const OneToOneScreen = ({ navigation }: any) => {
 
                             {/* TITLE */}
                             <Text style={styles.label}>
-                                Meeting Title*
+                                Meeting Title
                             </Text>
 
                             <TextInput
@@ -339,7 +345,7 @@ const OneToOneScreen = ({ navigation }: any) => {
                             />
 
                             {/* PRICE */}
-                            <Text style={styles.label}>
+                            {/* <Text style={styles.label}>
                                 Price*
                             </Text>
 
@@ -350,7 +356,7 @@ const OneToOneScreen = ({ navigation }: any) => {
                                 onChangeText={(v) =>
                                     handleChange('price', v)
                                 }
-                            />
+                            />  */}
 
                             {/* DESCRIPTION */}
                             <Text style={styles.label}>

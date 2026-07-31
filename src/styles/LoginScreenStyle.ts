@@ -83,18 +83,12 @@ export const styles = StyleSheet.create({
         color: '#2b2d42',
     },
 
-    forgot: {
-        textAlign: 'right',
-        color: '#4361ee',
-        marginBottom: 20,
-        fontSize: 13,
-    },
-
     button: {
         backgroundColor: '#4361ee',
         padding: 15,
         borderRadius: 12,
         alignItems: 'center',
+        marginTop: 15,
     },
 
     btnText: {

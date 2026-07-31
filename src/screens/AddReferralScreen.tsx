@@ -65,7 +65,6 @@ const AddReferralScreen = ({ navigation }: any) => {
         );
 
         loadUser();
-        fetchMembers();
 
         return () => {
             showSubscription.remove();
@@ -91,16 +90,19 @@ const AddReferralScreen = ({ navigation }: any) => {
                 ref_from: numericId, // ✅ number
             }));
         }
+        fetchMembers(name || '');
     };
 
     // ✅ Fetch members for dropdown
-    const fetchMembers = async () => {
+    const fetchMembers = async (loggedInUser: string) => {
         try {
             const res = await getAllMembers();
-            const formatted = res.all_members.map((item: any) => ({
-                label: item.name,
-                value: item.id,
-            }));
+            const formatted = res.all_members
+                .filter((item: any) => item.name !== loggedInUser)
+                .map((item: any) => ({
+                    label: item.name,
+                    value: item.id,
+                }));
             setMembers(formatted);
         } catch (error) {
             console.log('Members API error', error);
@@ -229,6 +231,10 @@ const AddReferralScreen = ({ navigation }: any) => {
                                 placeholder="Select Member"
                                 placeholderStyle={{ color: '#999' }}
                                 value={form.ref_to}
+                                search
+                                searchPlaceholder="Search member here..."
+                                autoScroll={false}
+                                maxHeight={300}
                                 onChange={(item) => {
                                     setForm(prev => ({
                                         ...prev,

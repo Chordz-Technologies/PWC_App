@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const BASE_URL = 'https://pwcapi.beatsacademy.in/api';
+const BASE_URL = 'https://api.pwcadmin.in/api';
 
 // login users
 export const loginUser = async (data: any) => {
@@ -50,20 +50,10 @@ export const getCarouselImages = async () => {
     }
 };
 
-// get one-to-one meetings for a person
-// export const getMyMeetings = async (person1: any) => {
-//     try {
-//         const res = await axios.get(`${BASE_URL}/one-to-one/allMeetings/${person1}/`);
-//         return res.data;
-//     } catch (error: any) {
-//         throw error;
-//     }
-// };
-
-// get all meetings
-export const getAllMeetings = async () => {
+// get chapter wise meetings
+export const getChapterWiseMeetings = async (chapterId: any) => {
     try {
-        const res = await axios.get(`${BASE_URL}/one-to-one/allMeetings/`);
+        const res = await axios.get(`${BASE_URL}/chapter/allChapterMeets/chapter/${chapterId}/`);
         return res.data;
     } catch (error: any) {
         throw error;
@@ -87,8 +77,8 @@ export const addMeeting = async (data: any) => {
 // update meeting attendance 
 export const updateMeetingAttendance = async (meetingId: number, attending: number) => {
     try {
-        const response = await axios.put(`${BASE_URL}/one-to-one/updateMeeting/${meetingId}/`, {
-            attending: attending,
+        const response = await axios.patch(`${BASE_URL}/chapter/partialUpdateChapterMeet/${meetingId}/`, {
+            attending,
         });
         return response.data;
     } catch (error: any) {
@@ -458,6 +448,94 @@ export const addSuccessStory = async (data: any) => {
                 'Content-Type': 'multipart/form-data',
             },
         });
+        return response.data;
+    }
+    catch (error: any) {
+        if (error.response) {
+            throw error.response.data;
+        } else {
+            throw { message: 'Network Error' };
+        }
+    }
+};
+
+// get my one-to-one meetings
+export const getMyMeetings = async (person1: any) => {
+    try {
+        const response = await axios.get(`${BASE_URL}/one-to-one/myMeetings/self/${person1}/`);
+        return response.data;
+    } catch (error: any) {
+        if (error.response) {
+            throw error.response.data;
+        } else {
+            throw { message: 'Network Error' };
+        }
+    }
+};
+
+// get other one-to-one meetings
+export const getOtherMeetings = async (person2: any) => {
+    try {
+        const response = await axios.get(`${BASE_URL}/one-to-one/myMeetings/others/${person2}/`);
+        return response.data;
+    } catch (error: any) {
+        if (error.response) {
+            throw error.response.data;
+        } else {
+            throw { message: 'Network Error' };
+        }
+    }
+};
+
+// add attendee to meeting
+export const addAttendee = async (data: any) => {
+    try {
+        const response = await axios.post(`${BASE_URL}/chapter/addAttendee/`, data);
+        return response.data;
+    }
+    catch (error: any) {
+        if (error.response) {
+            throw error.response.data;
+        } else {
+            throw { message: 'Network Error' };
+        }
+    }
+};
+
+// delete attendees of a meeting
+export const deleteAttendee = async (id: any) => {
+    try {
+        const response = await axios.delete(`${BASE_URL}/chapter/deleteAttendee/${id}/`);
+        return response.data;
+    }
+    catch (error: any) {
+        if (error.response) {
+            throw error.response.data;
+        } else {
+            throw { message: 'Network Error' };
+        }
+    }
+};
+
+// get all chapter meetings
+export const getAllChapterMeetings = async () => {
+    try {
+        const response = await axios.get(`${BASE_URL}/chapter/allChapterMeets/`);
+        return response.data;
+    }
+    catch (error: any) {
+        if (error.response) {
+            throw error.response.data;
+        } else {
+            throw { message: 'Network Error' };
+        }
+    }
+};
+
+// delete account
+export const deleteAccount = async (memberId: any) => {
+    try {
+        const response = await axios.delete(`${BASE_URL}/member/deletemember/${memberId}/`);
         return response.data;
     }
     catch (error: any) {

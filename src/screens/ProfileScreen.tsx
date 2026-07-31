@@ -5,9 +5,9 @@ import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { styles } from '../styles/ProfileScreenStyle';
 import SafeAreaWrapper from './SafeAreaWrapper';
+import { deleteAccount } from '../services/authApi';
 
 const ProfileScreen = ({ navigation }: any) => {
-
     const [userName, setUserName] = useState('');
     const [userId, setUserId] = useState('');
 
@@ -45,6 +45,53 @@ const ProfileScreen = ({ navigation }: any) => {
                     },
                 },
             ]
+        );
+    };
+
+    const handleDeleteAccount = async () => {
+        Alert.alert(
+            'Delete Account',
+            'Are you sure you want to permanently delete your account?\n\nThis action cannot be undone.',
+            [{
+                text: 'Cancel',
+                style: 'cancel',
+            },
+            {
+                text: 'Delete',
+                style: 'destructive',
+                onPress: async () => {
+                    try {
+                        if (!userId) {
+                            Alert.alert('Error', 'User ID not found.');
+                            return;
+                        }
+
+                        await deleteAccount(userId);
+
+                        // Clear local storage
+                        await AsyncStorage.multiRemove([
+                            'userId',
+                            'userName',
+                            'token',
+                            'role',
+                            'chapter_id',
+                        ]);
+
+                        Alert.alert('Success', 'Your account has been deleted.',
+                            [{
+                                text: 'OK',
+                                onPress: () =>
+                                    navigation.reset({
+                                        index: 0,
+                                        routes: [{ name: 'Login' }],
+                                    }),
+                            }],
+                        );
+                    } catch (error: any) {
+                        Alert.alert('Error', error?.message || 'Unable to delete account.');
+                    }
+                },
+            }]
         );
     };
 
@@ -102,14 +149,14 @@ const ProfileScreen = ({ navigation }: any) => {
                         <Icon name="chevron-forward" size={20} color="#999" />
                     </TouchableOpacity>
 
-                    {/* BIRTHDAYS CARD */}
+                    {/* CALENDAR CARD */}
                     <TouchableOpacity
                         style={styles.editProfileCard}
-                        onPress={() => navigation.navigate('Birthdays')}
+                        onPress={() => navigation.navigate('Calendar')}
                     >
                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                             <Icon name="calendar-outline" size={20} color="#4361ee" />
-                            <Text style={styles.editProfileText}>Birthdays</Text>
+                            <Text style={styles.editProfileText}>Calendar</Text>
                         </View>
 
                         <Icon name="chevron-forward" size={20} color="#999" />
@@ -149,6 +196,19 @@ const ProfileScreen = ({ navigation }: any) => {
                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                             <Icon name="business-outline" size={20} color="#4361ee" />
                             <Text style={styles.editProfileText}>Business Details</Text>
+                        </View>
+
+                        <Icon name="chevron-forward" size={20} color="#999" />
+                    </TouchableOpacity>
+
+                    {/* BIRTHDAYS CARD */}
+                    <TouchableOpacity
+                        style={styles.editProfileCard}
+                        onPress={() => navigation.navigate('Birthdays')}
+                    >
+                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                            <Icon name="gift-outline" size={20} color="#4361ee" />
+                            <Text style={styles.editProfileText}>Birthdays</Text>
                         </View>
 
                         <Icon name="chevron-forward" size={20} color="#999" />
@@ -225,6 +285,19 @@ const ProfileScreen = ({ navigation }: any) => {
                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                             <Icon name="log-out-outline" size={20} color="#4361ee" />
                             <Text style={styles.editProfileText}>Logout</Text>
+                        </View>
+
+                        <Icon name="chevron-forward" size={20} color="#999" />
+                    </TouchableOpacity>
+
+                    {/* DELETE ACCOUNT PROFILE CARD */}
+                    <TouchableOpacity
+                        style={styles.editProfileCard}
+                        onPress={handleDeleteAccount}
+                    >
+                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                            <Icon name="trash-outline" size={20} color="#4361ee" />
+                            <Text style={styles.editProfileText}>Delete Account</Text>
                         </View>
 
                         <Icon name="chevron-forward" size={20} color="#999" />

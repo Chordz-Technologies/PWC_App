@@ -5,7 +5,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import Swiper from 'react-native-swiper';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { styles } from '../styles/HomeScreenStyle';
-import { getCarouselImages, getAllMeetings } from '../services/authApi';
+import { getCarouselImages, getChapterWiseMeetings, } from '../services/authApi';
 import SafeAreaWrapper from './SafeAreaWrapper';
 import { getUnreadCount, markAllAsRead, showLocalNotification, notificationEmitter } from "../services/notificationStorage";
 import messaging, { FirebaseMessagingTypes } from '@react-native-firebase/messaging';
@@ -34,7 +34,6 @@ const HomeScreen = ({ navigation }: any) => {
     );
 
     useEffect(() => {
-
         loadAllData();
         loadNotificationCount();
 
@@ -66,11 +65,12 @@ const HomeScreen = ({ navigation }: any) => {
     }, []);
 
     const loadMeetings = async () => {
+        const chapterId = await AsyncStorage.getItem('chapter_id');
         try {
-            const meetingRes = await getAllMeetings();
+            const meetingRes = await getChapterWiseMeetings(chapterId);
 
-            if (meetingRes?.all_meetings) {
-                setMeetings(meetingRes.all_meetings);
+            if (meetingRes?.meetings) {
+                setMeetings(meetingRes.meetings);
             }
         } catch (error) {
             console.log(error);
@@ -87,22 +87,11 @@ const HomeScreen = ({ navigation }: any) => {
 
             const [carouselRes] = await Promise.all([
                 getCarouselImages(),
-                // name ? getMyMeetings(name) : Promise.resolve(null),
-                // getAllMeetings()
             ]);
 
             if (carouselRes?.all_images) {
                 setImages(carouselRes.all_images);
             }
-
-            // if (meetingRes?.all_meetings) {
-            //     setMeetings(meetingRes.all_meetings);
-            // }
-
-            // if (meetingRes?.person1_meetings) {
-            //     setMeetings(meetingRes.person1_meetings);
-            // }
-
         } catch (error) {
             console.log('Home API Error', error);
         } finally {
@@ -110,20 +99,24 @@ const HomeScreen = ({ navigation }: any) => {
         }
     }
 
-    const formatDateTime = (date: string, time: string) => {
-        const d = new Date(`${date}T${time}`);
+    const formatDate = (date: string) => {
+        const d = new Date(date);
 
-        const formattedDate = d.toLocaleDateString('en-IN', {
-            month: 'short',
+        return d.toLocaleDateString('en-IN', {
             day: 'numeric',
+            month: 'short',
+            year: 'numeric',
         });
+    };
 
-        const formattedTime = d.toLocaleTimeString('en-IN', {
-            hour: '2-digit',
+    const formatTime = (time: string) => {
+        const d = new Date(`1970-01-01T${time}`);
+
+        return d.toLocaleTimeString('en-IN', {
+            hour: 'numeric',
             minute: '2-digit',
+            hour12: true,
         });
-
-        return `${formattedDate} at ${formattedTime}`;
     };
 
     if (loading) {
@@ -222,7 +215,7 @@ const HomeScreen = ({ navigation }: any) => {
                         {/* 1:1 */}
                         <TouchableOpacity
                             style={styles.card}
-                            onPress={() => navigation.navigate('OneToOne')}
+                            onPress={() => navigation.navigate('AddOneToOne')}
                         >
                             <View style={styles.iconBox}>
                                 <Icon name="calendar-outline" size={24} color="#4361ee" />
@@ -310,15 +303,12 @@ const HomeScreen = ({ navigation }: any) => {
                                             {item.title || 'Meeting'}
                                         </Text>
 
-                                        <Text style={styles.meetingName}>
-                                            {item.person2}
+                                        <Text style={styles.meetingTime}>
+                                            {formatDate(item.date)} | {formatTime(item.start_time)} - {formatTime(item.end_time)}
                                         </Text>
 
-                                        <Text style={styles.meetingTime}>
-                                            {formatDateTime(item.date, item.time)}
-                                        </Text>
                                         <Text style={styles.meetingName}>
-                                            {item.venue}
+                                            📍 {item.venue}
                                         </Text>
                                     </View>
                                 </View>

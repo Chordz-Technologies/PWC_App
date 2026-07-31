@@ -3,7 +3,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import HomeScreen from '../screens/HomeScreen';
-import OneToOneScreen from '../screens/OneToOneScreen';
+import OneToOneMeetings from '../screens/OneToOneMeetings';
 import ProfileScreen from '../screens/ProfileScreen';
 import ReferralScreen from '../screens/ReferralScreen';
 import MembersScreen from '../screens/MembersScreen';
@@ -45,7 +45,7 @@ const BottomTab = () => {
             })}
         >
             <Tab.Screen name="Home" component={HomeScreen} />
-            <Tab.Screen name="OneToOne" component={OneToOneScreen} />
+            <Tab.Screen name="OneToOne" component={OneToOneMeetings} />
             <Tab.Screen name="Members" component={MembersScreen} />
             <Tab.Screen name="Referrals" component={ReferralScreen} />
             <Tab.Screen name="Profile" component={ProfileScreen} />

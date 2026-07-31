@@ -27,13 +27,15 @@ import AboutPWCScreen from '../screens/AboutPWCScreen';
 import BirthdayScreen from '../screens/BirthdayScreen';
 import TrainingDevelopmentScreen from '../screens/TrainingDevelopmentScreen';
 import SuccessStoriesScreen from '../screens/SuccessStories';
+import CalendarScreen from '../screens/CalendarScreen';
+import RegularMeetingsScreen from '../screens/RegularMeetingsScreen';
 
 export type RootStackParamList = {
     Splash: undefined;
     Login: undefined;
     Register: undefined;
     Home: undefined;
-    OneToOne: undefined;
+    AddOneToOne: undefined;
     AddReferral: undefined;
     Events: undefined;
     Profile: undefined;
@@ -55,6 +57,8 @@ export type RootStackParamList = {
     Birthdays: undefined;
     TrainingDevelopment: undefined;
     SuccessStories: undefined;
+    Calendar: undefined;
+    RegularMeetings: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -67,7 +71,7 @@ const AppNavigator = () => {
                 <Stack.Screen name="Login" component={LoginScreen} />
                 <Stack.Screen name="Register" component={RegisterScreen} />
                 <Stack.Screen name="Home" component={BottomTab} />
-                <Stack.Screen name="OneToOne" component={OneToOneScreen} />
+                <Stack.Screen name="AddOneToOne" component={OneToOneScreen} />
                 <Stack.Screen name="AddReferral" component={AddReferralScreen} />
                 <Stack.Screen name="Events" component={EventScreen} />
                 <Stack.Screen name="Profile" component={ProfileScreen} />
@@ -89,6 +93,8 @@ const AppNavigator = () => {
                 <Stack.Screen name="Birthdays" component={BirthdayScreen} />
                 <Stack.Screen name="TrainingDevelopment" component={TrainingDevelopmentScreen} />
                 <Stack.Screen name="SuccessStories" component={SuccessStoriesScreen} />
+                <Stack.Screen name="Calendar" component={CalendarScreen} />
+                <Stack.Screen name="RegularMeetings" component={RegularMeetingsScreen} />
             </Stack.Navigator>
         </NavigationContainer>
     );

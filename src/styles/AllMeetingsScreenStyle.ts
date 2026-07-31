@@ -79,40 +79,41 @@ export const styles = StyleSheet.create({
     },
 
     bottomActions: {
+        marginTop: 15,
+    },
+
+    buttonRow: {
         flexDirection: 'row',
-        alignItems: 'center',
         justifyContent: 'space-between',
         marginTop: 15,
+    },
+
+    actionButton: {
+        flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#4361ee',
+        paddingVertical: 10,
+        borderRadius: 10,
+        marginHorizontal: 5,
+    },
+
+    actionButtonText: {
+        color: '#fff',
+        fontSize: 14,
+        fontWeight: '600',
+        marginLeft: 6,
     },
 
     attendingContainer: {
         flexDirection: 'row',
         alignItems: 'center',
-        flex: 1,
     },
 
     attendingText: {
-        marginLeft: 6,
-        fontSize: 13,
-        color: '#333',
-        fontWeight: '600',
-    },
-
-    actionButton: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: '#4361ee',
-        borderRadius: 8,
-        paddingHorizontal: 10,
-        height: 38,
         marginLeft: 8,
-    },
-
-    actionButtonText: {
-        color: '#fff',
-        fontSize: 12,
+        fontSize: 15,
         fontWeight: '600',
-        marginLeft: 4,
     },
 });
