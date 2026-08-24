@@ -50,12 +50,13 @@ const LoginScreen = ({ navigation }: any) => {
             });
 
             setLoading(false);
-            if (response?.token) {
+            if (response?.status === 'success') {
                 await AsyncStorage.setItem('userId', String(response.id));
                 await AsyncStorage.setItem('userName', response.name);
                 await AsyncStorage.setItem('token', response.token);
                 await AsyncStorage.setItem('role', response.role);
                 await AsyncStorage.setItem('chapter_id', response.chapter_id.toString());
+                await AsyncStorage.setItem('subscription_status', response.subscription_status);
                 navigation.replace('Home');
             } else {
                 Alert.alert('Error', response?.message || 'Login failed');

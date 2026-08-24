@@ -133,14 +133,7 @@ const RegularMeetingsScreen = ({ navigation, route }: any) => {
                             paddingBottom: 30,
                         }}
                         ListEmptyComponent={() => (
-                            <Text
-                                style={{
-                                    textAlign: 'center',
-                                    marginTop: 40,
-                                    fontSize: 16,
-                                    color: '#666',
-                                }}
-                            >
+                            <Text style={{ textAlign: 'center', marginTop: 40, fontSize: 16, color: '#666', }}>
                                 No Meetings Found
                             </Text>
                         )}
@@ -148,18 +141,11 @@ const RegularMeetingsScreen = ({ navigation, route }: any) => {
                             <View style={styles.card}>
 
                                 {/* Title & Fees */}
-                                <View
-                                    style={{
-                                        flexDirection: 'row',
-                                        justifyContent: 'space-between',
-                                        alignItems: 'center',
-                                    }}
-                                >
-                                    <Text style={styles.title}>
+                                <View style={{ flexDirection: 'row', alignItems: 'flex-start', width: '100%', }}>
+                                    <Text style={[styles.title, { flex: 1, marginRight: 10, }]}>
                                         {item.title}
                                     </Text>
-
-                                    <Text style={styles.fees}>
+                                    <Text style={[styles.fees, { flexShrink: 0, textAlign: 'right', }]}>
                                         ₹ {item.fees}
                                     </Text>
                                 </View>

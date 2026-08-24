@@ -65,6 +65,7 @@ const AddReferralScreen = ({ navigation }: any) => {
         );
 
         loadUser();
+        fetchMembers();
 
         return () => {
             showSubscription.remove();
@@ -90,19 +91,16 @@ const AddReferralScreen = ({ navigation }: any) => {
                 ref_from: numericId, // ✅ number
             }));
         }
-        fetchMembers(name || '');
     };
 
     // ✅ Fetch members for dropdown
-    const fetchMembers = async (loggedInUser: string) => {
+    const fetchMembers = async () => {
         try {
             const res = await getAllMembers();
-            const formatted = res.all_members
-                .filter((item: any) => item.name !== loggedInUser)
-                .map((item: any) => ({
-                    label: item.name,
-                    value: item.id,
-                }));
+            const formatted = res.all_members.map((item: any) => ({
+                label: item.name,
+                value: item.id,
+            }));
             setMembers(formatted);
         } catch (error) {
             console.log('Members API error', error);
@@ -217,9 +215,11 @@ const AddReferralScreen = ({ navigation }: any) => {
                             {/* ✅ REFERRAL FROM */}
                             <Text style={styles.label}>Referral From*</Text>
                             <TextInput
-                                value={userName}
-                                editable={false}
-                                style={[styles.input, { backgroundColor: '#f0f0f0' }]} />
+                                placeholder="Enter Referral From"
+                                placeholderTextColor="#999"
+                                style={styles.input}
+                                onChangeText={(v) => handleChange('referral_from', v)}
+                            />
 
                             {/* ✅ REFERRAL TO (DROPDOWN) */}
                             <Text style={styles.label}>Referral To*</Text>
@@ -231,10 +231,6 @@ const AddReferralScreen = ({ navigation }: any) => {
                                 placeholder="Select Member"
                                 placeholderStyle={{ color: '#999' }}
                                 value={form.ref_to}
-                                search
-                                searchPlaceholder="Search member here..."
-                                autoScroll={false}
-                                maxHeight={300}
                                 onChange={(item) => {
                                     setForm(prev => ({
                                         ...prev,

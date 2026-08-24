@@ -44,10 +44,13 @@ export const styles = StyleSheet.create({
         borderRadius: 10,
         marginTop: 20,
         alignItems: 'center',
+        flexDirection: 'row',
+        justifyContent: 'center',
     },
 
     btnText: {
         color: '#fff',
         fontWeight: 'bold',
+        marginLeft: 5
     },
 });

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity, Image, ScrollView, ActivityIndicator } from 'react-native';
+import { View, Text, TouchableOpacity, Image, ScrollView, ActivityIndicator, Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import LinearGradient from 'react-native-linear-gradient';
 import Swiper from 'react-native-swiper';
@@ -119,6 +119,34 @@ const HomeScreen = ({ navigation }: any) => {
         });
     };
 
+    const checkSubscriptionAndNavigate = async (screenName: string) => {
+        try {
+            const status = await AsyncStorage.getItem('subscription_status');
+            if (status?.toUpperCase() === 'ACTIVE') {
+                navigation.navigate(screenName);
+            } else {
+                Alert.alert(
+                    'Subscription Required',
+                    'Please subscribe yourself first to use this feature.',
+                    [
+                        {
+                            text: 'Cancel',
+                            style: 'cancel',
+                        },
+                        {
+                            text: 'Subscribe Now',
+                            onPress: () => {
+                                navigation.navigate('Subscriptions');
+                            },
+                        },
+                    ],
+                );
+            }
+        } catch (error) {
+            Alert.alert('Error', 'Unable to check subscription status.');
+        }
+    };
+
     if (loading) {
         return (
             <SafeAreaWrapper>
@@ -215,7 +243,7 @@ const HomeScreen = ({ navigation }: any) => {
                         {/* 1:1 */}
                         <TouchableOpacity
                             style={styles.card}
-                            onPress={() => navigation.navigate('AddOneToOne')}
+                            onPress={() => checkSubscriptionAndNavigate('AddOneToOne')}
                         >
                             <View style={styles.iconBox}>
                                 <Icon name="calendar-outline" size={24} color="#4361ee" />
@@ -231,7 +259,7 @@ const HomeScreen = ({ navigation }: any) => {
                         {/* REFERRAL */}
                         <TouchableOpacity
                             style={styles.card}
-                            onPress={() => navigation.navigate('AddReferral')}
+                            onPress={() => checkSubscriptionAndNavigate('AddReferral')}
                         >
                             <View style={styles.iconBox}>
                                 <Icon name="book-outline" size={24} color="#4361ee" />
@@ -264,7 +292,14 @@ const HomeScreen = ({ navigation }: any) => {
                                 </Text>
                             </View>
                         </View>
-                        <Icon name="chevron-forward" size={24} color="#4361ee" />
+                        <View style={styles.eventRight}>
+                            <View style={styles.notificationBadge}>
+                                <Text style={styles.notificationBadgeText}>
+                                    1
+                                </Text>
+                            </View>
+                            <Icon name="chevron-forward" size={24} color="#4361ee" />
+                        </View>
                     </TouchableOpacity>
 
                     {/* 🔷 UPCOMING */}

@@ -202,4 +202,26 @@ export const styles = StyleSheet.create({
         color: '#666',
         marginTop: 3,
     },
+
+    eventRight: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 8,
+    },
+
+    notificationBadge: {
+        minWidth: 22,
+        height: 22,
+        paddingHorizontal: 6,
+        borderRadius: 11,
+        backgroundColor: '#ef4444',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+
+    notificationBadgeText: {
+        color: '#fff',
+        fontSize: 11,
+        fontWeight: 'bold',
+    },
 });

@@ -532,6 +532,53 @@ export const getAllChapterMeetings = async () => {
     }
 };
 
+// get all subscriptions
+export const getAllSubscriptions = async () => {
+    try {
+        const response = await axios.get(`${BASE_URL}/subscription/allSubscriptions/`);
+        return response.data;
+    } catch (error: any) {
+        if (error.response) {
+            throw error.response.data;
+        } else {
+            throw { message: 'Network Error' };
+        }
+    }
+};
+
+// create subscription payment
+export const createSubscriptionPayment = async (memberId: string, subscriptionId: number,) => {
+    try {
+        const response = await axios.post(`${BASE_URL}/subscription/create-payment/`, {
+            member_id: memberId,
+            subscription_id: subscriptionId,
+        });
+        return response.data;
+    }
+    catch (error: any) {
+        if (error.response) {
+            throw error.response.data;
+        } else {
+            throw { message: 'Network Error' };
+        }
+    }
+};
+
+// verify subscription payment
+export const verifySubscriptionPayment = async (data: any) => {
+    try {
+        const response = await axios.post(`${BASE_URL}/subscription/verify-payment/`, data);
+        return response.data;
+    }
+    catch (error: any) {
+        if (error.response) {
+            throw error.response.data;
+        } else {
+            throw { message: 'Network Error' };
+        }
+    }
+};
+
 // delete account
 export const deleteAccount = async (memberId: any) => {
     try {

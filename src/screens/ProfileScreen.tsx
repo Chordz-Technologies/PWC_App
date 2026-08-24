@@ -136,6 +136,18 @@ const ProfileScreen = ({ navigation }: any) => {
                         <Icon name="chevron-forward" size={20} color="#999" />
                     </TouchableOpacity>
 
+                    <TouchableOpacity
+                        style={styles.editProfileCard}
+                        onPress={() => navigation.navigate('Subscriptions', { userId })}
+                    >
+                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                            <Icon name="card-outline" size={20} color="#4361ee" />
+                            <Text style={styles.editProfileText}>Subscriptions</Text>
+                        </View>
+
+                        <Icon name="chevron-forward" size={20} color="#999" />
+                    </TouchableOpacity>
+
                     {/* ANALYTICS CARD */}
                     <TouchableOpacity
                         style={styles.editProfileCard}

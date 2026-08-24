@@ -253,15 +253,15 @@ const EditProfileScreen = ({ route, navigation }: any) => {
 
                 <Text style={styles.label}>Joining Date</Text>
 
-                <TouchableOpacity style={styles.input} onPress={() => setShowPicker('joining')}>
-                    <Text style={{ color: form.joining_date ? '#000' : '#999' }}>
+                <TouchableOpacity style={[styles.input, { backgroundColor: '#f0f0f0' }]} disabled={true}>
+                    <Text style={{ color: form.joining_date ? '#000' : '#999', }}>
                         {form.joining_date || 'Joining Date'}
                     </Text>
                 </TouchableOpacity>
 
                 <Text style={styles.label}>Expiry Date</Text>
 
-                <TouchableOpacity style={styles.input} onPress={() => setShowPicker('expiry')}>
+                <TouchableOpacity style={[styles.input, { backgroundColor: '#f0f0f0' }]} disabled={true}>
                     <Text style={{ color: form.expiry_date ? '#000' : '#999' }}>
                         {form.expiry_date || 'Expiry Date'}
                     </Text>
@@ -269,11 +269,11 @@ const EditProfileScreen = ({ route, navigation }: any) => {
 
                 <Text style={styles.label}>Subscription Status</Text>
                 <TextInput
-                    style={styles.input}
+                    style={[styles.input, { backgroundColor: '#f0f0f0' }]}
                     value={form.subscription_status}
                     placeholder='Subscription Status'
                     placeholderTextColor="#8d99ae"
-                    onChangeText={(v) => handleChange('subscription_status', v)}
+                    editable={false}
                 />
 
                 {/* ADDRESS */}

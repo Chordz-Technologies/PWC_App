@@ -46,15 +46,17 @@ export const styles = StyleSheet.create({
     },
 
     title: {
-        fontSize: 18,
-        fontWeight: '700',
+        fontSize: 16,
+        fontWeight: 'bold',
         color: '#222',
+        flex: 1,
     },
 
     fees: {
-        fontSize: 18,
-        fontWeight: '700',
+        fontSize: 16,
+        fontWeight: 'bold',
         color: '#4361ee',
+        flexShrink: 0,
     },
 
     infoRow: {
@@ -71,7 +73,7 @@ export const styles = StyleSheet.create({
     buttonRow: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        marginTop: 18,
+        marginTop: 15,
     },
 
     addVisitorButton: {

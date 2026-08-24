@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, TextInput, ScrollView, ActivityIndicator, } from 'react-native';
+import { View, Text, TouchableOpacity, TextInput, ScrollView, ActivityIndicator, Alert, } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/Ionicons';
 import SafeAreaWrapper from './SafeAreaWrapper';
 import { styles } from '../styles/MembersScreenStyle';
 import { searchMemberByName, searchMemberByCategory, } from '../services/authApi';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const MembersScreen = ({ navigation }: any) => {
     const [loading, setLoading] = useState(false);
@@ -50,6 +51,37 @@ const MembersScreen = ({ navigation }: any) => {
             setMembers([]);
         } finally {
             setLoading(false);
+        }
+    };
+
+    const checkSubscriptionAndNavigate = async (
+        screenName: string,
+        params: any = {},
+    ) => {
+        try {
+            const status = await AsyncStorage.getItem('subscription_status');
+            if (status?.toUpperCase() === 'ACTIVE') {
+                navigation.navigate(screenName, params);
+            } else {
+                Alert.alert(
+                    'Subscription Required',
+                    'Please subscribe yourself first to use this feature.',
+                    [
+                        {
+                            text: 'Cancel',
+                            style: 'cancel',
+                        },
+                        {
+                            text: 'Subscribe Now',
+                            onPress: () => {
+                                navigation.navigate('Subscriptions');
+                            },
+                        },
+                    ],
+                );
+            }
+        } catch (error) {
+            Alert.alert('Error', 'Unable to check subscription status.',);
         }
     };
 
@@ -251,13 +283,13 @@ const MembersScreen = ({ navigation }: any) => {
                                             View Details
                                         </Text>
                                     </TouchableOpacity>
-                                    <View style={styles.bottomButtons}>
 
+                                    <View style={styles.bottomButtons}>
                                         {/* GIVE REFERENCE */}
                                         <TouchableOpacity
                                             style={styles.referenceButton}
                                             onPress={() =>
-                                                navigation.navigate('AddReferral', {
+                                                checkSubscriptionAndNavigate('AddReferral', {
                                                     memberId: item.id,
                                                     memberName: item.name,
                                                 })
@@ -277,7 +309,7 @@ const MembersScreen = ({ navigation }: any) => {
                                         <TouchableOpacity
                                             style={styles.meetingButton}
                                             onPress={() =>
-                                                navigation.navigate('OneToOne', {
+                                                checkSubscriptionAndNavigate('AddOneToOne', {
                                                     memberId: item.id,
                                                     memberName: item.name,
                                                 })

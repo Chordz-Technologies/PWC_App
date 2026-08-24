@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity, ScrollView, ActivityIndicator, } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView, ActivityIndicator, Alert, } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { Dropdown } from 'react-native-element-dropdown';
 import SafeAreaWrapper from './SafeAreaWrapper';
 import { styles } from '../styles/MembersScreenStyle';
 import { getAllChapters, getMembersByChapter, } from '../services/authApi';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const ChapterMembersScreen = ({ navigation }: any) => {
     const [loading, setLoading] = useState(false);
@@ -47,6 +48,37 @@ const ChapterMembersScreen = ({ navigation }: any) => {
             setMembers([]);
         } finally {
             setLoading(false);
+        }
+    };
+
+    const checkSubscriptionAndNavigate = async (
+        screenName: string,
+        params: any = {},
+    ) => {
+        try {
+            const status = await AsyncStorage.getItem('subscription_status');
+            if (status?.toUpperCase() === 'ACTIVE') {
+                navigation.navigate(screenName, params);
+            } else {
+                Alert.alert(
+                    'Subscription Required',
+                    'Please subscribe yourself first to use this feature.',
+                    [
+                        {
+                            text: 'Cancel',
+                            style: 'cancel',
+                        },
+                        {
+                            text: 'Subscribe Now',
+                            onPress: () => {
+                                navigation.navigate('Subscriptions');
+                            },
+                        },
+                    ],
+                );
+            }
+        } catch (error) {
+            Alert.alert('Error', 'Unable to check subscription status.',);
         }
     };
 
@@ -215,7 +247,7 @@ const ChapterMembersScreen = ({ navigation }: any) => {
                                                 styles.referenceButton
                                             }
                                             onPress={() =>
-                                                navigation.navigate(
+                                                checkSubscriptionAndNavigate(
                                                     'AddReferral',
                                                     {
                                                         memberId: item.id,
@@ -245,8 +277,8 @@ const ChapterMembersScreen = ({ navigation }: any) => {
                                                 styles.meetingButton
                                             }
                                             onPress={() =>
-                                                navigation.navigate(
-                                                    'OneToOne',
+                                                checkSubscriptionAndNavigate(
+                                                    'AddOneToOne',
                                                     {
                                                         memberId: item.id,
                                                         memberName: item.name,
