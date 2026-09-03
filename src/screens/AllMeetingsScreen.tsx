@@ -239,7 +239,11 @@ const AllMeetingsScreen = ({ navigation, route }: any) => {
 
                                                 <TouchableOpacity
                                                     style={styles.actionButton}
-                                                    onPress={() => navigation.navigate('AddVisitor')}
+                                                    onPress={() =>
+                                                        navigation.navigate('AddVisitor', {
+                                                            meetingId: item.id,
+                                                        })
+                                                    }
                                                 >
                                                     <Icon
                                                         name="person-add-outline"

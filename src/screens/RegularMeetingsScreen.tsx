@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity, Alert, Linking, FlatList, ActivityIndicator, ScrollView, } from 'react-native';
+import { View, Text, TouchableOpacity, Alert, Linking, FlatList, ActivityIndicator, ScrollView, TextInput } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/Ionicons';
 import SafeAreaWrapper from './SafeAreaWrapper';
 import { styles } from '../styles/RegularMeetingsScreenStyle';
 import { getAllChapterMeetings } from '../services/authApi';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const RegularMeetingsScreen = ({ navigation, route }: any) => {
     const [meetings, setMeetings] = useState([]);
     const [filteredMeetings, setFilteredMeetings] = useState([]);
-    // const [search, setSearch] = useState('');
+    const [search, setSearch] = useState('');
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -18,31 +19,45 @@ const RegularMeetingsScreen = ({ navigation, route }: any) => {
 
     const fetchMeetings = async () => {
         try {
-
-            const res = await getAllChapterMeetings();
-
-            if (res?.all_chapter_meet) {
-                setMeetings(res.all_chapter_meet);
-                setFilteredMeetings(res.all_chapter_meet);
+            setLoading(true);
+            const chapterId = await AsyncStorage.getItem('chapter_id');
+            if (!chapterId) {
+                setMeetings([]);
+                setFilteredMeetings([]);
+                return;
             }
 
+            const userChapterId = Number(chapterId);
+            const res = await getAllChapterMeetings();
+
+            if (res?.all_chapter_meet && Array.isArray(res.all_chapter_meet)) {
+                const otherChapterMeetings = res.all_chapter_meet.filter(
+                    (item: any) =>
+                        Number(item.chapter) !== userChapterId
+                );
+                setMeetings(otherChapterMeetings);
+                setFilteredMeetings(otherChapterMeetings);
+            } else {
+                setMeetings([]);
+                setFilteredMeetings([]);
+            }
         } catch (error) {
-            console.log(error);
+            setMeetings([]);
+            setFilteredMeetings([]);
         } finally {
             setLoading(false);
         }
     };
 
-    // const handleSearch = (text: string) => {
-    //     setSearch(text);
-    //     const filtered = meetings.filter((item: any) =>
-    //         item.title
-    //             ?.toLowerCase()
-    //             .includes(text.toLowerCase())
-    //     );
-
-    //     setFilteredMeetings(filtered);
-    // };
+    const handleSearch = (text: string) => {
+        setSearch(text);
+        const filtered = meetings.filter((item: any) =>
+            item.title
+                ?.toLowerCase()
+                .includes(text.toLowerCase())
+        );
+        setFilteredMeetings(filtered);
+    };
 
     const formatDate = (date: string) => {
         return new Date(date).toLocaleDateString(
@@ -105,17 +120,16 @@ const RegularMeetingsScreen = ({ navigation, route }: any) => {
                 </LinearGradient>
 
                 {/* Search */}
-                {/* <View style={styles.searchBox}>
+                <View style={styles.searchBox}>
                     <Icon name="search" size={18} color="#888" />
                     <TextInput
-                        placeholder="Search Member"
+                        placeholder="Search Meetings"
                         placeholderTextColor="#999"
                         style={styles.searchInput}
                         value={search}
-                        onChangeText={setSearch}
+                        onChangeText={handleSearch}
                     />
-                </View> */}
-
+                </View>
 
                 {loading ? (
                     <ActivityIndicator size="large" color="#4361ee" style={{ marginTop: 20 }} />
@@ -236,4 +250,3 @@ const RegularMeetingsScreen = ({ navigation, route }: any) => {
 };
 
 export default RegularMeetingsScreen;
-

@@ -4,15 +4,16 @@ import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/Ionicons';
 import SafeAreaWrapper from './SafeAreaWrapper';
 import { styles } from '../styles/AddVisitorScreenStyle';
-import { registerUser } from '../services/authApi';
+import { addAttendee } from '../services/authApi';
 
-const AddVisitorScreen = ({ navigation }: any) => {
+const AddVisitorScreen = ({ navigation, route }: any) => {
     const [loading, setLoading] = useState(false);
+    const meetingId = route.params?.meetingId;
     const [form, setForm] = useState({
         name: '',
-        email: '',
+        email_id: '',
         phone: '',
-        gst_no: '',
+        gst_number: '',
         business_category: '',
     });
 
@@ -39,29 +40,20 @@ const AddVisitorScreen = ({ navigation }: any) => {
 
             const payload = {
                 name: form.name,
-                email: form.email,
+                email_id: form.email_id,
                 phone: form.phone,
-                gst_no: form.gst_no,
+                gst_number: form.gst_number,
                 business_category: form.business_category,
                 role: 'VISITOR',
+                attending: 1,
+                meet: meetingId,
             };
 
-            const response = await registerUser(payload);
-            console.log('Response', response);
-            Alert.alert(
-                'Success',
-                'Visitor added successfully'
-            );
-
+            const response = await addAttendee(payload);
+            Alert.alert('Success', 'Visitor added successfully');
             navigation.goBack();
-
         } catch (error: any) {
-
-            Alert.alert(
-                'Error',
-                error?.message || 'Something went wrong'
-            );
-
+            Alert.alert('Error', error?.message || 'Something went wrong');
         } finally {
             setLoading(false);
         }
@@ -133,11 +125,11 @@ const AddVisitorScreen = ({ navigation }: any) => {
                                 keyboardType="email-address"
                                 placeholderTextColor="#999"
                                 style={styles.input}
-                                value={form.email}
+                                value={form.email_id}
                                 onChangeText={(v) =>
                                     setForm({
                                         ...form,
-                                        email: v,
+                                        email_id: v,
                                     })
                                 }
                             />
@@ -151,11 +143,11 @@ const AddVisitorScreen = ({ navigation }: any) => {
                                 placeholder="Enter GST Number"
                                 placeholderTextColor="#999"
                                 style={styles.input}
-                                value={form.gst_no}
+                                value={form.gst_number}
                                 onChangeText={(v) =>
                                     setForm({
                                         ...form,
-                                        gst_no: v,
+                                        gst_number: v,
                                     })
                                 }
                             />

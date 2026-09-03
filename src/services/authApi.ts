@@ -579,6 +579,36 @@ export const verifySubscriptionPayment = async (data: any) => {
     }
 };
 
+// create event payment
+export const createEventPayment = async (data: any) => {
+    try {
+        const response = await axios.post(`${BASE_URL}/event/create-event-payment/`, data);
+        return response.data;
+    }
+    catch (error: any) {
+        if (error.response) {
+            throw error.response.data;
+        } else {
+            throw { message: 'Network Error' };
+        }
+    }
+};
+
+// verify event payment
+export const verifyEventPayment = async (data: any) => {
+    try {
+        const response = await axios.post(`${BASE_URL}/event/verify-event-payment/`, data);
+        return response.data;
+    }
+    catch (error: any) {
+        if (error.response) {
+            throw error.response.data;
+        } else {
+            throw { message: 'Network Error' };
+        }
+    }
+};
+
 // delete account
 export const deleteAccount = async (memberId: any) => {
     try {

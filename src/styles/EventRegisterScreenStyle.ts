@@ -36,6 +36,7 @@ export const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: '#ddd',
         color: '#000',
+        marginBottom: 5,
     },
 
     button: {

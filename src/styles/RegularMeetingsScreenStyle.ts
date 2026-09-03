@@ -23,19 +23,20 @@ export const styles = StyleSheet.create({
         marginLeft: 10,
     },
 
-    // searchBox: {
-    //     flexDirection: 'row',
-    //     alignItems: 'center',
-    //     backgroundColor: '#fff',
-    //     borderRadius: 10,
-    //     paddingHorizontal: 10,
-    //     marginBottom: 15,
-    // },
+    searchBox: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: '#fff',
+        borderRadius: 10,
+        paddingHorizontal: 10,
+        marginTop: 10,
+        marginHorizontal: 15,
+    },
 
-    // searchInput: {
-    //     flex: 1,
-    //     padding: 10,
-    // },
+    searchInput: {
+        flex: 1,
+        padding: 10,
+    },
 
     card: {
         backgroundColor: '#fff',
