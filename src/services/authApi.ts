@@ -16,6 +16,20 @@ export const loginUser = async (data: any) => {
     }
 };
 
+// forgot password
+export const forgotPassword = async (data: any) => {
+    try {
+        const response = await axios.post(`${BASE_URL}/member/forgot-password/`, data);
+        return response.data;
+    } catch (error: any) {
+        if (error.response) {
+            throw error.response.data;
+        } else {
+            throw { message: 'Network Error' };
+        }
+    }
+};
+
 // register users
 export const registerUser = async (data: any) => {
     try {
@@ -601,6 +615,92 @@ export const verifyEventPayment = async (data: any) => {
         return response.data;
     }
     catch (error: any) {
+        if (error.response) {
+            throw error.response.data;
+        } else {
+            throw { message: 'Network Error' };
+        }
+    }
+};
+
+// add presentation
+export const addPresentationRequest = async (data: any) => {
+    try {
+        const response = await axios.post(`${BASE_URL}/presentation/addPresentation/`, data);
+        return response.data;
+    }
+    catch (error: any) {
+        if (error.response) {
+            throw error.response.data;
+        } else {
+            throw { message: 'Network Error' };
+        }
+    }
+};
+
+// get presentation notifications
+export const getPresentationNotifications = async () => {
+    try {
+        const response = await axios.get(`${BASE_URL}/presentation/allNotifications/`);
+        return response.data;
+    }
+    catch (error: any) {
+        if (error.response) {
+            throw error.response.data;
+        } else {
+            throw { message: 'Network Error' };
+        }
+    }
+};
+
+// update member location
+export const updateMemberLocation = async (payload: { member_id: number; latitude: number; longitude: number; is_tracking_enabled: boolean }) => {
+    try {
+        const response = await axios.post(`${BASE_URL}/member/update-location/`, payload);
+        return response.data;
+    } catch (error: any) {
+        if (error.response) {
+            throw error.response.data;
+        } else {
+            throw { message: 'Network Error' };
+        }
+    }
+};
+
+// get nearby members
+export const getNearbyMembers = async (memberId: number, radiusKm: number = 10) => {
+    try {
+        const response = await axios.get(`${BASE_URL}/member/nearby-members/?member_id=${memberId}&radius_km=${radiusKm}`);
+        return response.data;
+    } catch (error: any) {
+        if (error.response) {
+            throw error.response.data;
+        } else {
+            throw { message: 'Network Error' };
+        }
+    }
+};
+
+// create meeting payment
+export const createMeetingPayment = async (data: any) => {
+    try {
+        const response = await axios.post(`${BASE_URL}/chapter/create-payment/`, data);
+        return response.data;
+    } catch (error: any) {
+        if (error.response) {
+            throw error.response.data;
+        } else {
+            throw { message: 'Network Error' };
+        }
+    }
+};
+
+// verify meeting payment
+export const verifyMeetingPayment = async (data: any) => {
+    try {
+        const response = await axios.post(`${BASE_URL}/chapter/verify-payment/`, data);
+        return response.data;
+    } catch (error: any) {
         if (error.response) {
             throw error.response.data;
         } else {

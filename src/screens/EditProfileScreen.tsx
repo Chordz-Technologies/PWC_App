@@ -101,7 +101,7 @@ const EditProfileScreen = ({ route, navigation }: any) => {
     };
 
     const handleUpdate = async () => {
-        if (!form.name || !form.email || !form.phone || !form.role || !form.chapter) {
+        if (!form.name || !form.email || !form.phone || !form.office_address || !form.role || !form.chapter || !form.dob) {
             Alert.alert('Error', 'Please fill all required fields');
             return;
         }
@@ -169,7 +169,7 @@ const EditProfileScreen = ({ route, navigation }: any) => {
                 />
 
                 {/* DOB */}
-                <Text style={styles.label}>Date of Birth</Text>
+                <Text style={styles.label}>Date of Birth*</Text>
 
                 <TouchableOpacity style={styles.input} onPress={() => setShowPicker('dob')}>
                     <Text style={{ color: form.dob ? '#000' : '#999' }}>
@@ -213,6 +213,16 @@ const EditProfileScreen = ({ route, navigation }: any) => {
                         }}
                     />
                 )}
+
+                {/* ADDRESS */}
+                <Text style={styles.label}>Office Address*</Text>
+                <TextInput
+                    style={styles.input}
+                    value={form.office_address}
+                    placeholder='Office Address'
+                    placeholderTextColor="#8d99ae"
+                    onChangeText={(v) => handleChange('office_address', v)}
+                />
 
                 {/* BUSINESS */}
                 <Text style={styles.label}>PAN Number</Text>
@@ -274,16 +284,6 @@ const EditProfileScreen = ({ route, navigation }: any) => {
                     placeholder='Subscription Status'
                     placeholderTextColor="#8d99ae"
                     editable={false}
-                />
-
-                {/* ADDRESS */}
-                <Text style={styles.label}>Office Address</Text>
-                <TextInput
-                    style={styles.input}
-                    value={form.office_address}
-                    placeholder='Office Address'
-                    placeholderTextColor="#8d99ae"
-                    onChangeText={(v) => handleChange('office_address', v)}
                 />
 
                 <Text style={styles.label}>Facebook Profile</Text>

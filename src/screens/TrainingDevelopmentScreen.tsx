@@ -98,15 +98,29 @@ const TrainingDevelopmentScreen = ({ navigation }: any) => {
                         showsVerticalScrollIndicator={false}
                         contentContainerStyle={{ padding: 15 }}
                     >
-                        {videos.map((item) => (
-                            <View key={item.id} style={styles.videoCard}>
-                                <YoutubePlayer
-                                    height={220}
-                                    play={false}
-                                    videoId={getYoutubeId(item.link)}
+                        {videos.length === 0 ? (
+                            <View style={styles.emptyContainer}>
+                                <Icon
+                                    name="videocam-off-outline"
+                                    size={50}
+                                    color="#999"
                                 />
+
+                                <Text style={styles.emptyText}>
+                                    No Videos Found
+                                </Text>
                             </View>
-                        ))}
+                        ) : (
+                            videos.map((item) => (
+                                <View key={item.id} style={styles.videoCard}>
+                                    <YoutubePlayer
+                                        height={220}
+                                        play={false}
+                                        videoId={getYoutubeId(item.link)}
+                                    />
+                                </View>
+                            ))
+                        )}
 
                         <Modal
                             visible={modalVisible}

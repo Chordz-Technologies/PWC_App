@@ -115,6 +115,7 @@ const SubscriptionScreen = ({ navigation }: any) => {
                 Alert.alert('Payment Cancelled', 'You cancelled the payment.',);
             } else {
                 Alert.alert('Payment Failed', error?.message || error?.description || 'Unable to complete payment.',);
+                console.error('Payment Error:', error);
             }
         } finally {
             setPaymentLoading(false);

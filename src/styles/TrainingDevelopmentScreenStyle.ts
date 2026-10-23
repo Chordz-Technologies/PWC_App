@@ -50,4 +50,18 @@ export const styles = StyleSheet.create({
         shadowOpacity: 0.3,
         shadowRadius: 4,
     },
+
+    emptyContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        minHeight: 300,
+    },
+
+    emptyText: {
+        marginTop: 12,
+        fontSize: 17,
+        fontWeight: '600',
+        color: '#777',
+    },
 });

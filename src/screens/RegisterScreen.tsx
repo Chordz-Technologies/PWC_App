@@ -109,7 +109,7 @@ const RegisterScreen = ({ navigation }: any) => {
     };
 
     const handleRegister = async () => {
-        if (!form.name || !form.email || !form.password || !form.phone || !form.role || !form.chapter || !form.dob) {
+        if (!form.name || !form.email || !form.password || !form.phone || !form.office_address || !form.role || !form.chapter || !form.dob) {
             Alert.alert('Error', 'Please fill all required fields');
             return;
         }
@@ -391,6 +391,24 @@ const RegisterScreen = ({ navigation }: any) => {
                                         />
                                     </View>
 
+                                    {/* 🔹 ADDRESS */}
+                                    <View style={styles.inputContainer}>
+                                        <Icon
+                                            name="location-outline"
+                                            size={20}
+                                            color="#8d99ae"
+                                        />
+
+                                        <TextInput
+                                            placeholder="Office Address*"
+                                            placeholderTextColor="#8d99ae"
+                                            style={styles.input}
+                                            onChangeText={(v) =>
+                                                handleChange('office_address', v)
+                                            }
+                                        />
+                                    </View>
+
                                     {/* 🔹 PAN */}
                                     <View style={styles.inputContainer}>
                                         <Icon
@@ -459,24 +477,6 @@ const RegisterScreen = ({ navigation }: any) => {
                                             style={styles.input}
                                             onChangeText={(v) =>
                                                 handleChange('business_category', v)
-                                            }
-                                        />
-                                    </View>
-
-                                    {/* 🔹 ADDRESS */}
-                                    <View style={styles.inputContainer}>
-                                        <Icon
-                                            name="location-outline"
-                                            size={20}
-                                            color="#8d99ae"
-                                        />
-
-                                        <TextInput
-                                            placeholder="Office Address"
-                                            placeholderTextColor="#8d99ae"
-                                            style={styles.input}
-                                            onChangeText={(v) =>
-                                                handleChange('office_address', v)
                                             }
                                         />
                                     </View>

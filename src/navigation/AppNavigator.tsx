@@ -30,6 +30,7 @@ import SuccessStoriesScreen from '../screens/SuccessStories';
 import CalendarScreen from '../screens/CalendarScreen';
 import RegularMeetingsScreen from '../screens/RegularMeetingsScreen';
 import SubscriptionScreen from '../screens/SubscriptionScreen';
+import PresentationScreen from '../screens/PresentationScreen';
 
 export type RootStackParamList = {
     Splash: undefined;
@@ -61,6 +62,7 @@ export type RootStackParamList = {
     Calendar: undefined;
     RegularMeetings: undefined;
     Subscriptions: undefined;
+    Presentation: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -98,6 +100,7 @@ const AppNavigator = () => {
                 <Stack.Screen name="Calendar" component={CalendarScreen} />
                 <Stack.Screen name="RegularMeetings" component={RegularMeetingsScreen} />
                 <Stack.Screen name="Subscriptions" component={SubscriptionScreen} />
+                <Stack.Screen name="Presentation" component={PresentationScreen} />
             </Stack.Navigator>
         </NavigationContainer>
     );

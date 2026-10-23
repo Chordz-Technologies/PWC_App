@@ -97,7 +97,6 @@ const ProfileScreen = ({ navigation }: any) => {
 
     return (
         <SafeAreaWrapper>
-
             <View style={styles.container}>
 
                 {/* HEADER */}
@@ -221,6 +220,19 @@ const ProfileScreen = ({ navigation }: any) => {
                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                             <Icon name="gift-outline" size={20} color="#4361ee" />
                             <Text style={styles.editProfileText}>Birthdays</Text>
+                        </View>
+
+                        <Icon name="chevron-forward" size={20} color="#999" />
+                    </TouchableOpacity>
+
+                    {/* PRESENTATION REQUEST CARD */}
+                    <TouchableOpacity
+                        style={styles.editProfileCard}
+                        onPress={() => navigation.navigate('Presentation')}
+                    >
+                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                            <Icon name="mic-outline" size={20} color="#4361ee" />
+                            <Text style={styles.editProfileText}>Presentation Request</Text>
                         </View>
 
                         <Icon name="chevron-forward" size={20} color="#999" />

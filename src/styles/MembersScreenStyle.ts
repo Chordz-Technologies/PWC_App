@@ -43,7 +43,7 @@ export const styles = StyleSheet.create({
     tabContainer: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        marginBottom: 20,
+        marginBottom: 15,
     },
 
     tabButton: {
@@ -189,5 +189,72 @@ export const styles = StyleSheet.create({
         fontSize: 12,
         fontWeight: 'bold',
         marginLeft: 5,
+    },
+
+    nearbyLocationContainer: {
+        marginBottom: 15,
+        marginHorizontal: 15,
+        paddingHorizontal: 15,
+        paddingVertical: 8,
+        backgroundColor: '#fff',
+        borderRadius: 12,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        elevation: 3,
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+    },
+
+    nearbyLocationLeft: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        flex: 1,
+    },
+
+    nearbyLocationTextContainer: {
+        marginLeft: 10,
+        flex: 1,
+    },
+
+    nearbyLocationTitle: {
+        fontSize: 16,
+        fontWeight: '600',
+        color: '#222',
+    },
+
+    nearbyLocationSubtitle: {
+        marginTop: 3,
+        fontSize: 12,
+        color: '#777',
+    },
+
+    distanceBadge: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: '#eef2ff',
+        paddingHorizontal: 8,
+        paddingVertical: 5,
+        borderRadius: 15,
+    },
+
+    distanceText: {
+        marginLeft: 3,
+        fontSize: 12,
+        fontWeight: '600',
+        color: '#4361ee',
+    },
+
+    disabledTabButton: {
+        opacity: 0.45,
+    },
+
+    disabledTabText: {
+        color: '#999',
     },
 });

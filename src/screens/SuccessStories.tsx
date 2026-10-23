@@ -112,6 +112,11 @@ const SuccessStoriesScreen = ({ navigation }: any) => {
                                 padding: 15,
                                 paddingBottom: 100,
                             }}
+                            ListEmptyComponent={() => (
+                                <Text style={{ textAlign: 'center', marginTop: 40, fontSize: 16, color: '#666', }}>
+                                    No Success Stories Found
+                                </Text>
+                            )}
                             renderItem={({ item }) => (
                                 <View style={styles.storyCard}>
                                     <Image
