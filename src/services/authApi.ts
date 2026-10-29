@@ -638,18 +638,30 @@ export const addPresentationRequest = async (data: any) => {
     }
 };
 
-// get presentation notifications
-export const getPresentationNotifications = async () => {
+//get presentation details
+export const getPresentationDetails = async (memberId: any) => {
     try {
-        const response = await axios.get(`${BASE_URL}/presentation/allNotifications/`);
+        const response = await axios.get(`${BASE_URL}/presentation/presentationDetails/${memberId}/`);
         return response.data;
-    }
-    catch (error: any) {
+    } catch (error: any) {
         if (error.response) {
             throw error.response.data;
         } else {
             throw { message: 'Network Error' };
         }
+    }
+};
+
+// get presentation notifications
+export const getPresentationNotifications = async (memberId?: any) => {
+    try {
+        const response = await axios.get(`${BASE_URL}/presentation/allNotifications/?member_id=${memberId}`);
+        return response.data;
+    } catch (error: any) {
+        if (error.response) {
+            throw error.response.data;
+        }
+        throw { message: 'Network Error' };
     }
 };
 
@@ -682,9 +694,9 @@ export const getNearbyMembers = async (memberId: number, radiusKm: number = 10) 
 };
 
 // create meeting payment
-export const createMeetingPayment = async (data: any) => {
+export const createMeetingPayment = async (meetId: any) => {
     try {
-        const response = await axios.post(`${BASE_URL}/chapter/create-payment/`, data);
+        const response = await axios.post(`${BASE_URL}/chapter/create-payment/`, { meet_id: meetId });
         return response.data;
     } catch (error: any) {
         if (error.response) {

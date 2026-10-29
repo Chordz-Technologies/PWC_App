@@ -1,592 +1,951 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { ActivityIndicator, Alert, KeyboardAvoidingView, Platform, ScrollView, Text, TextInput, TouchableOpacity, View, } from 'react-native';
+import { ActivityIndicator, Alert, Platform, RefreshControl, ScrollView, Text, TextInput, TouchableOpacity, View, } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Dropdown } from 'react-native-element-dropdown';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import LinearGradient from 'react-native-linear-gradient';
-import Icon from 'react-native-vector-icons/Ionicons';
-import SafeAreaWrapper from './SafeAreaWrapper';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import { styles } from '../styles/PresentationScreenStyle';
-import { addPresentationRequest, getPresentationNotifications, getAllChapters } from '../services/authApi';
+import SafeAreaWrapper from './SafeAreaWrapper';
+import { getAllChapters, addPresentationRequest, getPresentationNotifications, getPresentationDetails, } from '../services/authApi';
 
-type PresentationStatus = 'pending' | 'approved' | 'rejected';
+type Chapter = {
+    id: number;
+    chapter_name?: string;
+    name?: string;
+    title?: string;
+};
 
-interface PresentationRequest {
-    id?: number | string;
-    date?: string | null;
-    time?: string | null;
-    member?: number;
+type Presentation = {
+    id: number;
+    date: string;
+    time: string;
+    member: number;
     member_name?: string;
-    topic?: string | null;
-    chapter?: number | null;
+    topic: string;
+    chapter: number;
     comment?: string | null;
-    status?: PresentationStatus;
-}
+    status: 'pending' | 'approved' | 'rejected' | string;
+};
+
+type PresentationNotification = {
+    id: number;
+    recipient?: number;
+    presentation?: number;
+    presentation_topic?: string;
+    presentation_status?: string;
+    title?: string;
+    message?: string;
+    is_read?: boolean;
+    created_at?: string;
+};
+
+const getErrorMessage = (error: any): string => {
+    if (typeof error === 'string') {
+        return error;
+    }
+
+    if (error?.message) {
+        return error.message;
+    }
+
+    if (error?.detail) {
+        return error.detail;
+    }
+
+    if (error?.error) {
+        return error.error;
+    }
+    return 'Something went wrong. Please try again.';
+};
+
+const formatDate = (date: Date): string => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+};
+
+const formatTime = (date: Date): string => {
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    return `${hours}:${minutes}`;
+};
+
+const formatDisplayDate = (dateString: string): string => {
+    if (!dateString) {
+        return 'Date not available';
+    }
+
+    const parsedDate = new Date(`${dateString.substring(0, 10)}T00:00:00`);
+
+    if (Number.isNaN(parsedDate.getTime())) {
+        return dateString;
+    }
+
+    return parsedDate.toLocaleDateString('en-IN', {
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric',
+    });
+};
+
+const formatDisplayTime = (timeString: string): string => {
+    if (!timeString) {
+        return 'Time not available';
+    }
+
+    const parts = timeString.split(':');
+    const hours = Number(parts[0]);
+    const minutes = parts[1];
+
+    if (Number.isNaN(hours) || !minutes) {
+        return timeString;
+    }
+
+    const period = hours >= 12 ? 'PM' : 'AM';
+    const displayHours = hours % 12 || 12;
+
+    return `${displayHours}:${minutes} ${period}`;
+};
+
+const getStatusColor = (status: string): string => {
+    switch (status?.toLowerCase()) {
+        case 'approved':
+            return '#2E7D32';
+
+        case 'rejected':
+            return '#D32F2F';
+
+        case 'pending':
+        default:
+            return '#F9A825';
+    }
+};
+
+const getStatusIcon = (status: string): string => {
+    switch (status?.toLowerCase()) {
+        case 'approved':
+            return 'checkmark-circle';
+
+        case 'rejected':
+            return 'close-circle';
+
+        case 'pending':
+        default:
+            return 'time';
+    }
+};
 
 const PresentationScreen = ({ navigation }: any) => {
-    type Chapter = {
-        id: number;
-        name: string;
-    };
-
-    const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-    const [selectedTime, setSelectedTime] = useState<Date | null>(null);
-
-    const [showDatePicker, setShowDatePicker] = useState(false);
-    const [showTimePicker, setShowTimePicker] = useState(false);
-
+    const [memberId, setMemberId] = useState<number | null>(null);
     const [chapters, setChapters] = useState<Chapter[]>([]);
     const [selectedChapterId, setSelectedChapterId] = useState<number | null>(null);
-
-    const [loadingChapters, setLoadingChapters] = useState(false);
-
-
-    const [memberId, setMemberId] = useState<number | null>(null);
-    const [chapterId, setChapterId] = useState<number | null>(null);
-
-    const [date, setDate] = useState('');
-    const [time, setTime] = useState('');
     const [topic, setTopic] = useState('');
     const [comment, setComment] = useState('');
-
-    const [requests, setRequests] = useState<PresentationRequest[]>([]);
-    const [notifications, setNotifications] = useState<any[]>([]);
-
+    const [selectedDate, setSelectedDate] = useState(new Date());
+    const [selectedTime, setSelectedTime] = useState(new Date());
+    const [showDatePicker, setShowDatePicker] = useState(false);
+    const [showTimePicker, setShowTimePicker] = useState(false);
     const [loading, setLoading] = useState(true);
     const [submitting, setSubmitting] = useState(false);
     const [refreshing, setRefreshing] = useState(false);
+    const [detailsLoading, setDetailsLoading] = useState(false);
+    const [presentation, setPresentation] = useState<Presentation | null>(null);
+    const [notifications, setNotifications] = useState<PresentationNotification[]>([]);
+    const selectedChapter = chapters.find(chapter => Number(chapter.id) === Number(selectedChapterId),);
+    const selectedChapterName =
+        selectedChapter?.chapter_name ||
+        selectedChapter?.name ||
+        selectedChapter?.title ||
+        'Selected chapter';
 
-    const formatDate = (date: Date): string => {
-        const year = date.getFullYear();
-        const month = String(date.getMonth() + 1).padStart(2, '0');
-        const day = String(date.getDate()).padStart(2, '0');
+    const loadMemberId = useCallback(async (): Promise<number | null> => {
+        try {
+            const storedMemberId = await AsyncStorage.getItem('userId');
 
-        return `${year}-${month}-${day}`;
-    };
+            if (
+                !storedMemberId ||
+                !Number.isFinite(Number(storedMemberId))
+            ) {
+                return null;
+            }
 
-    const formatTime = (date: Date): string => {
-        const hours = String(date.getHours()).padStart(2, '0');
-        const minutes = String(date.getMinutes()).padStart(2, '0');
+            const parsedId = Number(storedMemberId);
+            setMemberId(parsedId);
 
-        return `${hours}:${minutes}`;
-    };
+            return parsedId;
+        } catch (error) {
+            console.error('Error loading member ID:', error);
+            return null;
+        }
+    }, []);
 
-    const handleDateChange = (event: any, date?: Date) => {
-        setShowDatePicker(Platform.OS === 'ios' && event.type === 'set');
+    // --------------------------------------------------
+    // Fetch all chapters for dropdown
+    // --------------------------------------------------
+    const fetchChapters = useCallback(async () => {
+        try {
+            const response: any = await getAllChapters();
 
-        if (event.type === 'set' && date) {
+            const possibleLists = [
+                response?.all_chapters,
+            ];
+
+            const chapterList = possibleLists.find(Array.isArray) || [];
+
+            const validChapters: Chapter[] = chapterList
+                .filter((item: any) => item?.id != null)
+                .map((item: any) => ({
+                    id: Number(item.id),
+                    chapter_name: item.chapterName,
+                    name: item.name,
+                    title: item.title,
+                }));
+
+            setChapters(validChapters);
+        } catch (error) {
+            console.error('Error fetching chapters:', error);
+        }
+    }, []);
+
+    // --------------------------------------------------
+    // Fetch presentation details using member ID
+    // GET /presentation/presentationDetails/{id}/
+    // --------------------------------------------------
+    const fetchPresentationDetails = useCallback(
+        async (currentMemberId: number, showError = true) => {
+            setDetailsLoading(true);
+
+            try {
+                const response: any =
+                    await getPresentationDetails(currentMemberId);
+
+                const details: Presentation | undefined =
+                    response?.presentation_details ??
+                    response?.data?.presentation_details ??
+                    response?.data?.data?.presentation_details;
+
+                if (details) {
+                    setPresentation(details);
+                } else {
+                    setPresentation(null);
+
+                    if (showError) {
+                        Alert.alert(
+                            'No presentation details',
+                            response?.message ||
+                            'No presentation details were returned by the server.',
+                        );
+                    }
+                }
+            } catch (error: any) {
+                console.error('Error fetching presentation details:', error);
+
+                if (showError) {
+                    Alert.alert(
+                        'Unable to load presentation',
+                        getErrorMessage(error),
+                    );
+                }
+            } finally {
+                setDetailsLoading(false);
+            }
+        },
+        [],
+    );
+
+    // --------------------------------------------------
+    // Fetch notifications
+    // --------------------------------------------------
+    const fetchNotifications = useCallback(
+        async (currentMemberId: number) => {
+            try {
+                const response: any = await getPresentationNotifications(currentMemberId);
+
+                const possibleLists = [
+                    response?.notifications,
+                ];
+
+                const notificationList =
+                    possibleLists.find(Array.isArray) || [];
+
+                const memberNotifications = notificationList.filter(
+                    (item: PresentationNotification) =>
+                        item.recipient == null ||
+                        Number(item.recipient) === Number(currentMemberId),
+                );
+
+                setNotifications(memberNotifications);
+            } catch (error) {
+                console.error('Error fetching notifications:', error);
+                setNotifications([]);
+            }
+        },
+        [],
+    );
+
+    // --------------------------------------------------
+    // Initial screen loading
+    // --------------------------------------------------
+    const loadScreenData = useCallback(async () => {
+        setLoading(true);
+
+        try {
+            const currentMemberId = await loadMemberId();
+
+            await fetchChapters();
+
+            if (currentMemberId !== null) {
+                await Promise.all([
+                    fetchPresentationDetails(currentMemberId, false),
+                    fetchNotifications(currentMemberId),
+                ]);
+            } else {
+                Alert.alert(
+                    'Login required',
+                    'Unable to find your member ID. Please log in again.',
+                );
+            }
+        } finally {
+            setLoading(false);
+        }
+    }, [
+        loadMemberId,
+        fetchChapters,
+        fetchPresentationDetails,
+        fetchNotifications,
+    ]);
+
+    useEffect(() => {
+        loadScreenData();
+    }, [loadScreenData]);
+
+    // --------------------------------------------------
+    // Pull to refresh
+    // --------------------------------------------------
+    const handleRefresh = useCallback(async () => {
+        setRefreshing(true);
+
+        try {
+            await fetchChapters();
+
+            if (memberId !== null) {
+                await Promise.all([
+                    fetchPresentationDetails(memberId),
+                    fetchNotifications(memberId),
+                ]);
+            }
+        } finally {
+            setRefreshing(false);
+        }
+    }, [
+        fetchChapters,
+        fetchPresentationDetails,
+        fetchNotifications,
+        memberId,
+    ]);
+
+    // --------------------------------------------------
+    // Date and time pickers
+    // --------------------------------------------------
+    const handleDateChange = (_event: any, date?: Date) => {
+        setShowDatePicker(Platform.OS === 'ios');
+
+        if (date) {
             setSelectedDate(date);
         }
     };
 
-    const handleTimeChange = (event: any, time?: Date) => {
-        setShowTimePicker(Platform.OS === 'ios' && event.type === 'set');
+    const handleTimeChange = (_event: any, date?: Date) => {
+        setShowTimePicker(Platform.OS === 'ios');
 
-        if (event.type === 'set' && time) {
-            setSelectedTime(time);
+        if (date) {
+            setSelectedTime(date);
         }
     };
 
-    const loadNotifications = useCallback(async () => {
-        try {
-            const response = await getPresentationNotifications();
-
-            console.log('Presentation notifications:', response);
-
-            // Supports common API response structures.
-            const data = response.results
-
-            if (Array.isArray(data)) {
-                setNotifications(data);
-            } else {
-                setNotifications([]);
-            }
-        } catch (error: any) {
-            console.log(
-                'Presentation notification error:',
-                error?.response?.data || error,
-            );
-            setNotifications([]);
-        }
-    }, []);
-
-    const loadScreen = useCallback(async () => {
-        try {
-            const storedMemberId = await AsyncStorage.getItem('userId');
-            const storedChapterId = await AsyncStorage.getItem('chapter_id');
-
-            if (storedMemberId) {
-                setMemberId(Number(storedMemberId));
-            }
-
-            if (storedChapterId) {
-                setChapterId(Number(storedChapterId));
-            }
-
-            await loadNotifications();
-        } catch (error) {
-            console.log('Load presentation screen error:', error);
-        } finally {
-            setLoading(false);
-        }
-    }, [loadNotifications]);
-
-    const fetchChapters = async () => {
-        try {
-            setLoadingChapters(true);
-            const response = await getAllChapters();
-            const chapterList = Array.isArray(response) ? response : response?.all_chapters;
-            if (!Array.isArray(chapterList)) {
-                setChapters([]);
-                return;
-            }
-            const formattedChapters: Chapter[] = chapterList.map(
-                (item: any) => ({
-                    id: Number(item.id),
-                    name: item.chapterName
-                }),
-            );
-            setChapters(formattedChapters.filter(item => Number.isFinite(item.id)));
-        } catch (error: any) {
-            Alert.alert('Error', 'Failed to load chapters.');
-        } finally {
-            setLoadingChapters(false);
-        }
+    const resetForm = () => {
+        setTopic('');
+        setComment('');
+        setSelectedChapterId(null);
+        setSelectedDate(new Date());
+        setSelectedTime(new Date());
     };
 
-    useEffect(() => {
-        loadScreen();
-        fetchChapters();
-    }, [loadScreen]);
-
-    // const onRefresh = async () => {
-    //     setRefreshing(true);
-    //     await loadScreen();
-    //     setRefreshing(false);
-    // };
-
+    // --------------------------------------------------
+    // Submit presentation request
+    // --------------------------------------------------
     const handleSubmit = async () => {
-        if (!selectedDate) {
-            Alert.alert('Validation', 'Please select a presentation date.');
-            return;
-        }
-
-        if (!selectedTime) {
-            Alert.alert('Validation', 'Please select a presentation time.');
-            return;
-        }
-
-        if (selectedChapterId === null) {
-            Alert.alert('Validation', 'Please select a chapter.');
+        if (memberId === null) {
+            Alert.alert(
+                'Login required',
+                'Your member ID is unavailable. Please log in again.',
+            );
             return;
         }
 
         if (!topic.trim()) {
-            Alert.alert('Validation', 'Please enter a presentation topic.');
+            Alert.alert(
+                'Required field',
+                'Please enter your presentation topic.',
+            );
             return;
         }
 
+        if (selectedChapterId === null) {
+            Alert.alert(
+                'Required field',
+                'Please select a chapter.',
+            );
+            return;
+        }
+
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        const chosenDate = new Date(selectedDate);
+        chosenDate.setHours(0, 0, 0, 0);
+
+        if (chosenDate < today) {
+            Alert.alert(
+                'Invalid date',
+                'Please select today or a future date.',
+            );
+            return;
+        }
+
+        const payload = {
+            date: formatDate(selectedDate),
+            time: `${formatTime(selectedTime)}:00`,
+            member: memberId,
+            topic: topic.trim(),
+            chapter: selectedChapterId,
+            comment: comment.trim() || null,
+        };
+
+        setSubmitting(true);
+
         try {
-            setSubmitting(true);
-
-            const memberId = await AsyncStorage.getItem('userId');
-
-            if (!memberId || !Number.isFinite(Number(memberId))) {
-                Alert.alert('Error', 'Member ID not found. Please log in again.');
-                return;
-            }
-
-            const payload = {
-                date: formatDate(selectedDate),
-                time: formatTime(selectedTime),
-                member: Number(memberId),
-                topic: topic.trim(),
-                chapter: selectedChapterId,
-                comment: comment.trim() || null,
-            };
-
-            console.log('Presentation request payload:', payload);
-
-            const response = await addPresentationRequest(payload);
-
-            console.log('Presentation API response:', response);
+            const response: any = await addPresentationRequest(payload);
 
             Alert.alert(
-                'Success',
-                response?.message ?? 'Presentation request submitted successfully.',
+                'Request submitted',
+                'Your presentation request has been submitted successfully.',
             );
 
-            setSelectedDate(null);
-            setSelectedTime(null);
-            setSelectedChapterId(null);
-            setTopic('');
-            setComment('');
+            resetForm();
 
-            // Refresh your existing request/notification list here if needed.
+            // Reload details and notifications after submitting.
+            await Promise.all([
+                fetchPresentationDetails(memberId, false),
+                fetchNotifications(memberId),
+            ]);
         } catch (error: any) {
-            console.error(
-                'Presentation request error:',
-                error?.response?.data ?? error,
-            );
-
             Alert.alert(
-                'Error',
-                error?.response?.data?.message ??
-                'Failed to submit presentation request.',
+                'Submission failed',
+                getErrorMessage(error),
             );
         } finally {
             setSubmitting(false);
         }
     };
 
-    const getStatusColor = (status?: string) => {
-        switch (status?.toLowerCase()) {
-            case 'approved':
-                return '#16803c';
-            case 'rejected':
-                return '#dc2626';
-            default:
-                return '#b7791f';
+    // --------------------------------------------------
+    // Presentation details card
+    // --------------------------------------------------
+    const renderPresentationDetails = () => {
+        if (detailsLoading) {
+            return (
+                <View style={styles.inlineLoader}>
+                    <ActivityIndicator size="small" color="#4361ee" />
+                    <Text style={styles.inlineLoaderText}>
+                        Loading presentation details...
+                    </Text>
+                </View>
+            );
         }
-    };
 
-    const getStatusIcon = (status?: string) => {
-        switch (status?.toLowerCase()) {
-            case 'approved':
-                return 'checkmark-circle';
-            case 'rejected':
-                return 'close-circle';
-            default:
-                return 'time-outline';
+        if (!presentation) {
+            return (
+                <View style={styles.emptyContainer}>
+                    <Ionicons
+                        name="document-text-outline"
+                        size={42}
+                        color="#C2C7D6"
+                    />
+
+                    <Text style={styles.emptyTitle}>
+                        No Presentation Details
+                    </Text>
+
+                    <Text style={styles.emptyText}>
+                        Presentation details will appear here when the server returns
+                        a record for your member ID.
+                    </Text>
+                </View>
+            );
         }
-    };
 
-    const renderStatus = (status?: string) => {
-        const normalizedStatus = status?.toLowerCase() || 'pending';
+        const status = presentation.status || 'pending';
+
+        const chapter = chapters.find(
+            item => Number(item.id) === Number(presentation.chapter),
+        );
+
+        const chapterName = chapter?.chapter_name;
 
         return (
-            <View
-                style={[
-                    styles.statusBadge,
-                    { backgroundColor: `${getStatusColor(normalizedStatus)}15` },
-                ]}>
-                <Icon
-                    name={getStatusIcon(normalizedStatus)}
-                    size={16}
-                    color={getStatusColor(normalizedStatus)}
-                />
-                <Text
-                    style={[
-                        styles.statusText,
-                        { color: getStatusColor(normalizedStatus) },
-                    ]}>
-                    {normalizedStatus.charAt(0).toUpperCase() +
-                        normalizedStatus.slice(1)}
-                </Text>
+            <View style={styles.presentationCard}>
+                <View style={styles.presentationHeader}>
+                    <View style={styles.presentationTitleContainer}>
+                        <Text style={styles.presentationTopic}>
+                            {presentation.topic || 'Untitled Presentation'}
+                        </Text>
+                    </View>
+
+                    <View
+                        style={[
+                            styles.statusBadge,
+                            { backgroundColor: getStatusColor(status) },
+                        ]}>
+                        <Ionicons
+                            name={getStatusIcon(status) as any}
+                            size={14}
+                            color="#fff"
+                        />
+
+                        <Text style={styles.statusText}>
+                            {status.toUpperCase()}
+                        </Text>
+                    </View>
+                </View>
+
+                <View style={styles.divider} />
+
+                <View style={styles.infoRow}>
+                    <Ionicons
+                        name="calendar-outline"
+                        size={18}
+                        color="#4361ee"
+                    />
+
+                    <Text style={styles.infoLabel}>Date</Text>
+
+                    <Text style={styles.infoValue}>
+                        {formatDisplayDate(presentation.date)}
+                    </Text>
+                </View>
+
+                <View style={styles.infoRow}>
+                    <Ionicons
+                        name="time-outline"
+                        size={18}
+                        color="#4361ee"
+                    />
+
+                    <Text style={styles.infoLabel}>Time</Text>
+
+                    <Text style={styles.infoValue}>
+                        {formatDisplayTime(presentation.time)}
+                    </Text>
+                </View>
+
+                <View style={styles.infoRow}>
+                    <Ionicons
+                        name="people-outline"
+                        size={18}
+                        color="#4361ee"
+                    />
+
+                    <Text style={styles.infoLabel}>Chapter</Text>
+
+                    <Text style={styles.infoValue}>
+                        {chapterName}
+                    </Text>
+                </View>
+
+                {!!presentation.member_name && (
+                    <View style={styles.infoRow}>
+                        <Ionicons
+                            name="person-outline"
+                            size={18}
+                            color="#4361ee"
+                        />
+
+                        <Text style={styles.infoLabel}>Member</Text>
+
+                        <Text style={styles.infoValue}>
+                            {presentation.member_name}
+                        </Text>
+                    </View>
+                )}
+
+                {!!presentation.comment && (
+                    <View style={styles.commentContainer}>
+                        <Text style={styles.commentLabel}>Comment</Text>
+
+                        <Text style={styles.commentValue}>
+                            {presentation.comment}
+                        </Text>
+                    </View>
+                )}
+
+                {status.toLowerCase() === 'pending' && (
+                    <View style={styles.statusMessageBox}>
+                        <Ionicons
+                            name="time-outline"
+                            size={18}
+                            color="#A66A00"
+                        />
+
+                        <Text style={styles.pendingMessage}>
+                            Your presentation request is waiting for approval.
+                        </Text>
+                    </View>
+                )}
+
+                {status.toLowerCase() === 'rejected' && (
+                    <View style={styles.rejectedMessageBox}>
+                        <Ionicons
+                            name="alert-circle-outline"
+                            size={18}
+                            color="#D32F2F"
+                        />
+
+                        <Text style={styles.rejectedMessage}>
+                            Your presentation request has been rejected.
+                        </Text>
+                    </View>
+                )}
+
+                {status.toLowerCase() === 'approved' && (
+                    <View style={styles.approvedMessageBox}>
+                        <Ionicons
+                            name="checkmark-circle-outline"
+                            size={18}
+                            color="#2E7D32"
+                        />
+
+                        <Text style={styles.approvedMessage}>
+                            Your presentation request has been approved.
+                        </Text>
+                    </View>
+                )}
             </View>
         );
     };
 
-    // Show notification messages that look like presentation rules.
-    const getNotificationMessage = (item: any): string => {
-        if (typeof item === 'string') {
-            return item;
-        }
+    // --------------------------------------------------
+    // Notification card
+    // --------------------------------------------------
+    const renderNotificationCard = (
+        item: PresentationNotification,
+    ) => {
+        const status = item.presentation_status || 'pending';
 
         return (
-            item?.message ??
-            item?.description ??
-            item?.notification ??
-            item?.title ??
-            ''
+            <View key={String(item.id)} style={styles.notificationCard}>
+                <View style={styles.notificationIcon}>
+                    <Ionicons
+                        name={getStatusIcon(status) as any}
+                        size={25}
+                        color={getStatusColor(status)}
+                    />
+                </View>
+
+                <View style={styles.notificationContent}>
+                    <Text style={styles.notificationTitle}>
+                        {item.title || 'Presentation Update'}
+                    </Text>
+
+                    <Text style={styles.notificationMessage}>
+                        {item.message ||
+                            `Your presentation request for "${item.presentation_topic || 'your topic'
+                            }" is ${status}.`}
+                    </Text>
+
+                    {!!item.created_at && (
+                        <Text style={styles.notificationDate}>
+                            {new Date(item.created_at).toLocaleString('en-IN')}
+                        </Text>
+                    )}
+                </View>
+            </View>
         );
     };
 
-    const approvedRequests = requests.filter(
-        item => item.status?.toLowerCase() === 'approved',
-    );
+    if (loading) {
+        return (
+            <SafeAreaWrapper>
+                <View style={styles.loaderContainer}>
+                    <ActivityIndicator size="large" color="#4361ee" />
+
+                    <Text style={styles.loadingText}>
+                        Loading presentation details...
+                    </Text>
+                </View>
+            </SafeAreaWrapper>
+        );
+    }
 
     return (
         <SafeAreaWrapper>
-            <KeyboardAvoidingView
-                style={{ flex: 1 }}
-                behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+            <View style={styles.container}>
 
-                <View style={styles.container}>
-
-                    <LinearGradient colors={['#4361ee', '#3f37c9']} style={styles.header} >
-                        <TouchableOpacity onPress={() => navigation.goBack()}>
-                            <Icon name="arrow-back" size={24} color="#fff" />
-                        </TouchableOpacity>
-                        <Text style={styles.headerTitle}>
-                            Presentation Requests
-                        </Text>
-                        <View style={{ width: 24 }} />
-                    </LinearGradient>
-
-                    {loading ? (
-                        <ActivityIndicator
-                            size="large"
-                            color="#4361ee"
-                            style={{ marginTop: 40 }}
+                {/* Header */}
+                <LinearGradient
+                    colors={['#4361ee', '#3f37c9']}
+                    style={styles.header}
+                >
+                    <TouchableOpacity onPress={() => navigation.goBack()}>
+                        <Ionicons
+                            name="arrow-back"
+                            size={24}
+                            color="#fff"
                         />
-                    ) : (
-                        <ScrollView
-                            showsVerticalScrollIndicator={false}
-                            contentContainerStyle={styles.scrollContent}
-                        >
-                            {/* REQUEST FORM */}
-                            <View style={styles.card}>
-                                <View style={styles.sectionHeading}>
-                                    <Icon name="document-text-outline" size={22} color="#4361ee" />
-                                    <Text style={styles.sectionTitle}>
-                                        Request a Presentation
-                                    </Text>
-                                </View>
+                    </TouchableOpacity>
 
-                                {/* Presentation Date */}
-                                <View style={styles.fieldContainer}>
-                                    <Text style={styles.label}>Presentation Date</Text>
+                    <Text style={styles.headerTitle}>
+                        Presentation Requests
+                    </Text>
+                </LinearGradient>
 
-                                    <TouchableOpacity
-                                        style={styles.pickerButton}
-                                        onPress={() => setShowDatePicker(true)}>
-                                        <Text
-                                            style={[
-                                                styles.pickerText,
-                                                !selectedDate && styles.placeholderText,
-                                            ]}>
-                                            {selectedDate
-                                                ? formatDate(selectedDate)
-                                                : 'Select presentation date'}
-                                        </Text>
-                                    </TouchableOpacity>
+                <ScrollView
+                    contentContainerStyle={styles.scrollContent}
+                    showsVerticalScrollIndicator={false}
+                    refreshControl={
+                        <RefreshControl
+                            refreshing={refreshing}
+                            onRefresh={handleRefresh}
+                            colors={['#4361ee']}
+                        />
+                    }>
+                    {/* Request form */}
+                    <View style={styles.sectionCard}>
+                        <Text style={styles.sectionTitle}>
+                            Request a Presentation
+                        </Text>
 
-                                    {showDatePicker && (
-                                        <DateTimePicker
-                                            value={selectedDate ?? new Date()}
-                                            mode="date"
-                                            display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-                                            minimumDate={new Date()}
-                                            onChange={handleDateChange}
-                                        />
-                                    )}
-                                </View>
+                        <Text style={styles.label}>Presentation Date*</Text>
 
-                                {/* Presentation Time */}
-                                <View style={styles.fieldContainer}>
-                                    <Text style={styles.label}>Presentation Time</Text>
+                        <TouchableOpacity
+                            style={styles.pickerButton}
+                            onPress={() => setShowDatePicker(true)}>
+                            <Ionicons
+                                name="calendar-outline"
+                                size={20}
+                                color="#4361ee"
+                            />
 
-                                    <TouchableOpacity
-                                        style={styles.pickerButton}
-                                        onPress={() => setShowTimePicker(true)}>
-                                        <Text
-                                            style={[
-                                                styles.pickerText,
-                                                !selectedTime && styles.placeholderText,
-                                            ]}>
-                                            {selectedTime
-                                                ? formatTime(selectedTime)
-                                                : 'Select presentation time'}
-                                        </Text>
-                                    </TouchableOpacity>
+                            <Text style={styles.pickerButtonText}>
+                                {formatDisplayDate(formatDate(selectedDate))}
+                            </Text>
 
-                                    {showTimePicker && (
-                                        <DateTimePicker
-                                            value={selectedTime ?? new Date()}
-                                            mode="time"
-                                            is24Hour
-                                            display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-                                            onChange={handleTimeChange}
-                                        />
-                                    )}
-                                </View>
+                            <Ionicons
+                                name="chevron-down"
+                                size={18}
+                                color="#666"
+                            />
+                        </TouchableOpacity>
 
-                                {/* Chapter Dropdown */}
-                                <View style={styles.fieldContainer}>
-                                    <Text style={styles.label}>Select Chapter</Text>
+                        {showDatePicker && (
+                            <DateTimePicker
+                                value={selectedDate}
+                                mode="date"
+                                display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+                                minimumDate={new Date()}
+                                onChange={handleDateChange}
+                            />
+                        )}
 
-                                    {loadingChapters ? (
-                                        <ActivityIndicator color="#4361ee" />
-                                    ) : (
-                                        <Dropdown
-                                            style={styles.dropdown}
-                                            containerStyle={styles.dropdownList}
-                                            placeholderStyle={styles.placeholderText}
-                                            selectedTextStyle={styles.pickerText}
-                                            itemTextStyle={styles.dropdownItemText}
-                                            data={chapters.map(chapter => ({
-                                                label: chapter.name,
-                                                value: chapter.id,
-                                            }))}
-                                            labelField="label"
-                                            valueField="value"
-                                            placeholder="Select chapter"
-                                            value={selectedChapterId}
-                                            onChange={item => {
-                                                setSelectedChapterId(Number(item.value));
-                                            }}
-                                        />
-                                    )}
-                                </View>
+                        <Text style={styles.label}>Presentation Time*</Text>
 
-                                <Text style={styles.label}>Presentation Topic*</Text>
-                                <TextInput
-                                    style={styles.input}
-                                    placeholder="Enter presentation topic"
-                                    placeholderTextColor="#999"
-                                    value={topic}
-                                    onChangeText={setTopic}
+                        <TouchableOpacity
+                            style={styles.pickerButton}
+                            onPress={() => setShowTimePicker(true)}>
+                            <Ionicons
+                                name="time-outline"
+                                size={20}
+                                color="#4361ee"
+                            />
+
+                            <Text style={styles.pickerButtonText}>
+                                {formatDisplayTime(formatTime(selectedTime))}
+                            </Text>
+
+                            <Ionicons
+                                name="chevron-down"
+                                size={18}
+                                color="#666"
+                            />
+                        </TouchableOpacity>
+
+                        {showTimePicker && (
+                            <DateTimePicker
+                                value={selectedTime}
+                                mode="time"
+                                display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+                                onChange={handleTimeChange}
+                            />
+                        )}
+
+                        <Text style={styles.label}>Chapter*</Text>
+
+                        <Dropdown
+                            style={styles.dropdown}
+                            containerStyle={styles.dropdownContainer}
+                            placeholderStyle={styles.dropdownPlaceholder}
+                            selectedTextStyle={styles.dropdownSelectedText}
+                            data={chapters.map(chapter => ({
+                                label:
+                                    chapter.chapter_name ||
+                                    chapter.name ||
+                                    chapter.title ||
+                                    `Chapter ${chapter.id}`,
+                                value: chapter.id,
+                            }))}
+                            labelField="label"
+                            valueField="value"
+                            placeholder="Select chapter"
+                            value={selectedChapterId}
+                            onChange={item =>
+                                setSelectedChapterId(Number(item.value))
+                            }
+                            renderLeftIcon={() => (
+                                <Ionicons
+                                    name="people-outline"
+                                    size={20}
+                                    color="#4361ee"
+                                    style={styles.dropdownIcon}
                                 />
-
-                                <Text style={styles.label}>Comment</Text>
-                                <TextInput
-                                    style={[styles.input, styles.commentInput]}
-                                    placeholder="Add a message or comment (optional)"
-                                    placeholderTextColor="#999"
-                                    value={comment}
-                                    onChangeText={setComment}
-                                    multiline
-                                    textAlignVertical="top"
-                                />
-
-                                <TouchableOpacity
-                                    style={[
-                                        styles.submitButton,
-                                        submitting && styles.disabledButton,
-                                    ]}
-                                    onPress={handleSubmit}
-                                    disabled={submitting}
-                                    activeOpacity={0.8}>
-                                    {submitting ? (
-                                        <ActivityIndicator color="#fff" />
-                                    ) : (
-                                        <>
-                                            <Icon name="send-outline" size={18} color="#fff" />
-                                            <Text style={styles.submitButtonText}>
-                                                Submit Request
-                                            </Text>
-                                        </>
-                                    )}
-                                </TouchableOpacity>
-                            </View>
-
-                            {/* REQUEST STATUS */}
-                            <View style={styles.card}>
-                                <View style={styles.sectionHeading}>
-                                    <Icon name="list-outline" size={22} color="#4361ee" />
-                                    <Text style={styles.sectionTitle}>My Requests</Text>
-                                </View>
-
-                                {requests.length === 0 ? (
-                                    <Text style={styles.emptyText}>
-                                        No requests submitted in this session. Previously submitted
-                                        requests require a request-list API to load.
-                                    </Text>
-                                ) : (
-                                    requests.map((item, index) => (
-                                        <View
-                                            key={String(item.id ?? `${item.topic}-${index}`)}
-                                            style={styles.requestCard}>
-                                            <View style={styles.requestHeader}>
-                                                <Text style={styles.requestTopic}>
-                                                    {item.topic || 'Presentation'}
-                                                </Text>
-                                                {renderStatus(item.status)}
-                                            </View>
-
-                                            <Text style={styles.detailText}>
-                                                Date: {item.date || 'Not specified'}
-                                            </Text>
-                                            <Text style={styles.detailText}>
-                                                Time: {item.time || 'Not specified'}
-                                            </Text>
-                                            {!!item.comment && (
-                                                <Text style={styles.detailText}>
-                                                    Comment: {item.comment}
-                                                </Text>
-                                            )}
-
-                                            {item.status?.toLowerCase() === 'pending' && (
-                                                <Text style={styles.statusMessage}>
-                                                    Your request is waiting for admin approval.
-                                                </Text>
-                                            )}
-
-                                            {item.status?.toLowerCase() === 'rejected' && (
-                                                <Text style={styles.rejectedMessage}>
-                                                    Your request was rejected. Please contact the admin
-                                                    for further information.
-                                                </Text>
-                                            )}
-
-                                            {item.status?.toLowerCase() === 'approved' && (
-                                                <Text style={styles.approvedMessage}>
-                                                    Your presentation request has been approved. Please
-                                                    review the presentation rules below.
-                                                </Text>
-                                            )}
-                                        </View>
-                                    ))
-                                )}
-                            </View>
-
-                            {/* APPROVED REQUEST MESSAGE */}
-                            {approvedRequests.length > 0 && (
-                                <View style={styles.approvedBanner}>
-                                    <Icon name="checkmark-circle" size={24} color="#16803c" />
-                                    <View style={{ flex: 1, marginLeft: 10 }}>
-                                        <Text style={styles.approvedTitle}>
-                                            Presentation Approved
-                                        </Text>
-                                        <Text style={styles.approvedMessage}>
-                                            Your request has been accepted by the admin. Please read
-                                            the presentation rules and regulations below.
-                                        </Text>
-                                    </View>
-                                </View>
                             )}
+                            disable={chapters.length === 0}
+                        />
 
-                            {/* ADMIN NOTIFICATIONS / RULES */}
-                            <View style={styles.card}>
-                                <View style={styles.sectionHeading}>
-                                    <Icon name="clipboard-outline" size={22} color="#4361ee" />
-                                    <Text style={styles.sectionTitle}>
-                                        Presentation Rules & Notifications
+                        <Text style={styles.label}>Presentation Topic*</Text>
+
+                        <TextInput
+                            style={styles.input}
+                            placeholder="Enter your presentation topic"
+                            placeholderTextColor="#999"
+                            value={topic}
+                            onChangeText={setTopic}
+                            maxLength={200}
+                        />
+
+                        <Text style={styles.label}>Comment</Text>
+
+                        <TextInput
+                            style={[styles.input, styles.commentInput]}
+                            placeholder="Enter additional information (optional)"
+                            placeholderTextColor="#999"
+                            value={comment}
+                            onChangeText={setComment}
+                            multiline
+                            textAlignVertical="top"
+                            maxLength={1000}
+                        />
+
+                        <TouchableOpacity
+                            style={[
+                                styles.submitButton,
+                                submitting && styles.disabledButton,
+                            ]}
+                            onPress={handleSubmit}
+                            disabled={submitting}>
+                            {submitting ? (
+                                <ActivityIndicator color="#fff" />
+                            ) : (
+                                <>
+                                    <Ionicons
+                                        name="paper-plane-outline"
+                                        size={19}
+                                        color="#fff"
+                                    />
+
+                                    <Text style={styles.submitButtonText}>
+                                        Submit Request
                                     </Text>
-                                </View>
+                                </>
+                            )}
+                        </TouchableOpacity>
+                    </View>
 
-                                {notifications.length === 0 ? (
-                                    <Text style={styles.emptyText}>
-                                        No presentation notifications or rules available yet.
-                                    </Text>
-                                ) : (
-                                    notifications.map((item, index) => {
-                                        const message = getNotificationMessage(item);
+                    {/* Presentation rules */}
+                    <View style={styles.sectionCard}>
+                        <View style={styles.sectionHeadingRow}>
+                            <Ionicons
+                                name="information-circle-outline"
+                                size={23}
+                                color="#4361ee"
+                            />
 
-                                        if (!message) {
-                                            return null;
-                                        }
+                            <Text style={styles.sectionTitle}>
+                                Presentation Rules
+                            </Text>
+                        </View>
 
-                                        return (
-                                            <View
-                                                key={String(item?.id ?? index)}
-                                                style={styles.notificationItem}>
-                                                <Icon
-                                                    name="information-circle-outline"
-                                                    size={20}
-                                                    color="#4361ee"
-                                                />
-                                                <Text style={styles.notificationText}>{message}</Text>
-                                            </View>
-                                        );
-                                    })
-                                )}
+                        {[
+                            'Each presentation is limited to 10 minutes.',
+                            'A member can present once per month.',
+                            'Your request must be approved before presenting.',
+                            'Choose a relevant topic for the group.',
+                            'Please arrive on time and respect other presenters.',
+                        ].map((rule, index) => (
+                            <View key={index} style={styles.ruleRow}>
+                                <Ionicons
+                                    name="checkmark-circle"
+                                    size={18}
+                                    color="#2E7D32"
+                                />
+
+                                <Text style={styles.ruleText}>{rule}</Text>
                             </View>
-                        </ScrollView>
-                    )}
-                </View>
-            </KeyboardAvoidingView>
+                        ))}
+                    </View>
+
+                    {/* Presentation details from API */}
+                    <View style={styles.sectionCard}>
+                        <View style={styles.sectionHeadingRow}>
+                            <Ionicons
+                                name="document-text-outline"
+                                size={23}
+                                color="#4361ee"
+                            />
+
+                            <Text style={styles.sectionTitle}>
+                                My Presentation Details
+                            </Text>
+                        </View>
+
+                        {renderPresentationDetails()}
+                    </View>
+
+                    {/* Approval notifications */}
+                    <View style={styles.sectionCard}>
+                        <View style={styles.sectionHeadingRow}>
+                            <Ionicons
+                                name="notifications-outline"
+                                size={23}
+                                color="#4361ee"
+                            />
+
+                            <Text style={styles.sectionTitle}>
+                                Approval Notifications
+                            </Text>
+                        </View>
+
+                        {notifications.length === 0 ? (
+                            <Text style={styles.emptyText}>
+                                No presentation notifications available.
+                            </Text>
+                        ) : (
+                            notifications.map(renderNotificationCard)
+                        )}
+                    </View>
+                </ScrollView>
+            </View>
         </SafeAreaWrapper>
     );
 };

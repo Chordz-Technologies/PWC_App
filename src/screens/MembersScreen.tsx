@@ -14,7 +14,6 @@ const MembersScreen = ({ navigation }: any) => {
     const [members, setMembers] = useState<any[]>([]);
     const [searchType, setSearchType] = useState<'name' | 'business'>('name');
     const [nearbyLocationEnabled, setNearbyLocationEnabled] = useState(false);
-    // const [locationLoading, setLocationLoading] = useState(false);
     const [nearbyMembers, setNearbyMembers] = useState<any[]>([]);
     const [nearbyLoading, setNearbyLoading] = useState(false);
 
@@ -53,7 +52,6 @@ const MembersScreen = ({ navigation }: any) => {
                 setMembers([]);
             }
         } catch (error) {
-            console.log(error);
             setMembers([]);
         } finally {
             setLoading(false);
@@ -110,7 +108,6 @@ const MembersScreen = ({ navigation }: any) => {
                     buttonNegative: 'Deny',
                 },
             );
-
             return granted === PermissionsAndroid.RESULTS.GRANTED;
         } catch (error) {
             console.log('Location permission error:', error);
@@ -147,32 +144,16 @@ const MembersScreen = ({ navigation }: any) => {
         try {
             const response = await getNearbyMembers(memberId, 10);
 
-            console.log('Nearby Members Response:', response);
-
             if (response?.status === 'success') {
                 setNearbyMembers(response?.nearby_members || []);
             } else {
                 setNearbyMembers([]);
-
-                Alert.alert(
-                    'Error',
-                    response?.message ||
-                    'Unable to fetch nearby members.',
-                );
+                Alert.alert('Error', response?.message || 'Unable to fetch nearby members.',);
             }
         } catch (error: any) {
-            console.log(
-                'Nearby Members API Error:',
-                error?.response?.data || error,
-            );
-
+            console.log('Nearby Members API Error:', error?.response?.data || error,);
             setNearbyMembers([]);
-
-            Alert.alert(
-                'Error',
-                error?.response?.data?.message ||
-                'Unable to fetch nearby members.',
-            );
+            Alert.alert('Error', error?.response?.data?.message || 'Unable to fetch nearby members.');
         }
     };
 
@@ -182,45 +163,23 @@ const MembersScreen = ({ navigation }: any) => {
         }
 
         if (!value) {
-            // -----------------------------
-            // TURN OFF
-            // -----------------------------
-
             setNearbyLocationEnabled(false);
             setNearbyMembers([]);
-
             return;
         }
 
         try {
             setNearbyLoading(true);
-
-            // -----------------------------
-            // STEP 1: GET MEMBER ID
-            // -----------------------------
-
-            const storedMemberId =
-                await AsyncStorage.getItem('userId');
-
+            const storedMemberId = await AsyncStorage.getItem('userId');
             if (!storedMemberId) {
-                Alert.alert(
-                    'Error',
-                    'Member ID not found. Please login again.',
-                );
-
+                Alert.alert('Error', 'Member ID not found. Please login again.',);
                 setNearbyLocationEnabled(false);
                 setNearbyLoading(false);
                 return;
             }
 
             const memberId = Number(storedMemberId);
-
-            // -----------------------------
-            // STEP 2: REQUEST LOCATION
-            // -----------------------------
-
-            const hasPermission =
-                await requestLocationPermission();
+            const hasPermission = await requestLocationPermission();
 
             if (!hasPermission) {
                 Alert.alert(
@@ -233,20 +192,8 @@ const MembersScreen = ({ navigation }: any) => {
                 return;
             }
 
-            // -----------------------------
-            // STEP 3: GET GPS LOCATION
-            // -----------------------------
-
             const location = await getCurrentLocation();
-
             const { latitude, longitude } = location;
-
-            console.log('Current Latitude:', latitude);
-            console.log('Current Longitude:', longitude);
-
-            // -----------------------------
-            // STEP 4: UPDATE LOCATION
-            // -----------------------------
 
             const locationPayload = {
                 member_id: memberId,
@@ -255,24 +202,7 @@ const MembersScreen = ({ navigation }: any) => {
                 is_tracking_enabled: true,
             };
 
-            console.log(
-                'Update Location Payload:',
-                locationPayload,
-            );
-
-            const locationResponse =
-                await updateMemberLocation(
-                    locationPayload,
-                );
-
-            console.log(
-                'Update Location Response:',
-                locationResponse,
-            );
-
-            // -----------------------------
-            // STEP 5: CHECK UPDATE SUCCESS
-            // -----------------------------
+            const locationResponse = await updateMemberLocation(locationPayload,);
 
             if (
                 locationResponse?.status !== 'success' &&
@@ -284,37 +214,13 @@ const MembersScreen = ({ navigation }: any) => {
                     'Unable to update location.',
                 );
             }
-
-            // -----------------------------
-            // STEP 6: ENABLE TOGGLE
-            // -----------------------------
-
             setNearbyLocationEnabled(true);
-
-            // Clear normal search results
             setMembers([]);
-
-            // -----------------------------
-            // STEP 7: GET NEARBY MEMBERS
-            // -----------------------------
-
             await fetchNearbyMembers(memberId);
-
         } catch (error: any) {
-            console.log(
-                'Nearby Location Flow Error:',
-                error?.response?.data || error,
-            );
-
             setNearbyLocationEnabled(false);
             setNearbyMembers([]);
-
-            Alert.alert(
-                'Error',
-                error?.response?.data?.message ||
-                error?.message ||
-                'Unable to enable nearby location.',
-            );
+            Alert.alert('Error', error?.response?.data?.message || error?.message || 'Unable to enable nearby location.',);
         } finally {
             setNearbyLoading(false);
         }
@@ -439,7 +345,6 @@ const MembersScreen = ({ navigation }: any) => {
                             </Text>
                         </TouchableOpacity>
 
-
                         {/* BUSINESS BUTTON */}
                         <TouchableOpacity
                             style={[
@@ -466,18 +371,10 @@ const MembersScreen = ({ navigation }: any) => {
                                 Search By Business
                             </Text>
                         </TouchableOpacity>
-
                     </View>
 
-
-                    {/* ================================= */}
-                    {/* NEARBY MEMBERS TOGGLE */}
-                    {/* ================================= */}
-
                     <View style={styles.nearbyLocationContainer}>
-
                         <View style={styles.nearbyLocationLeft}>
-
                             <Icon
                                 name="location-outline"
                                 size={23}
@@ -487,27 +384,15 @@ const MembersScreen = ({ navigation }: any) => {
                                         : '#777'
                                 }
                             />
-
-                            <View
-                                style={styles.nearbyLocationTextContainer}
-                            >
-
-                                <Text
-                                    style={styles.nearbyLocationTitle}
-                                >
+                            <View style={styles.nearbyLocationTextContainer}>
+                                <Text style={styles.nearbyLocationTitle}>
                                     Find Nearby Members
                                 </Text>
-
-                                <Text
-                                    style={styles.nearbyLocationSubtitle}
-                                >
+                                <Text style={styles.nearbyLocationSubtitle}>
                                     Members near your location
                                 </Text>
-
                             </View>
-
                         </View>
-
 
                         {nearbyLoading ? (
                             <ActivityIndicator
@@ -552,10 +437,8 @@ const MembersScreen = ({ navigation }: any) => {
                                 style={styles.card}
                                 activeOpacity={0.8}
                             >
-
                                 {/* TOP */}
                                 <View style={styles.cardTop}>
-
                                     <View style={styles.avatar}>
                                         <Text style={styles.avatarText}>
                                             {item.name
@@ -563,22 +446,18 @@ const MembersScreen = ({ navigation }: any) => {
                                                 ?.toUpperCase()}
                                         </Text>
                                     </View>
-
                                     <View
                                         style={{
                                             flex: 1,
                                             marginLeft: 12,
                                         }}
                                     >
-
                                         <Text style={styles.memberName}>
                                             {item.name}
                                         </Text>
-
                                         <Text style={styles.businessCategory}>
                                             {item.business_category || 'Business'}
                                         </Text>
-
                                     </View>
 
                                     {/* NEARBY DISTANCE */}
@@ -590,33 +469,25 @@ const MembersScreen = ({ navigation }: any) => {
                                                     size={13}
                                                     color="#4361ee"
                                                 />
-
                                                 <Text style={styles.distanceText}>
                                                     {item.distance_km} km
                                                 </Text>
                                             </View>
                                         )}
-
                                 </View>
-
 
                                 {/* DETAILS */}
                                 <View style={{ marginTop: 12 }}>
-
                                     <Text style={styles.infoText}>
                                         📧 {item.email || 'N/A'}
                                     </Text>
-
                                     <Text style={styles.infoText}>
                                         📞 {item.phone || 'N/A'}
                                     </Text>
-
                                     <Text style={styles.infoText}>
                                         📍 {item.office_address || 'No Address'}
                                     </Text>
-
                                 </View>
-
 
                                 {/* BUTTONS */}
                                 <View style={styles.buttonContainer}>
@@ -633,19 +504,15 @@ const MembersScreen = ({ navigation }: any) => {
                                             )
                                         }
                                     >
-
                                         <Icon
                                             name="information-circle"
                                             size={16}
                                             color="#1e1b8f"
                                         />
-
                                         <Text style={styles.viewButtonText}>
                                             View Details
                                         </Text>
-
                                     </TouchableOpacity>
-
 
                                     <View style={styles.bottomButtons}>
 
@@ -662,19 +529,15 @@ const MembersScreen = ({ navigation }: any) => {
                                                 )
                                             }
                                         >
-
                                             <Icon
                                                 name="people"
                                                 size={15}
                                                 color="#fff"
                                             />
-
                                             <Text style={styles.bottomButtonText}>
                                                 Give Reference
                                             </Text>
-
                                         </TouchableOpacity>
-
 
                                         {/* 1:1 MEETING */}
                                         <TouchableOpacity
@@ -689,23 +552,17 @@ const MembersScreen = ({ navigation }: any) => {
                                                 )
                                             }
                                         >
-
                                             <Icon
                                                 name="calendar"
                                                 size={15}
                                                 color="#fff"
                                             />
-
                                             <Text style={styles.bottomButtonText}>
                                                 Register One to One
                                             </Text>
-
                                         </TouchableOpacity>
-
                                     </View>
-
                                 </View>
-
                             </TouchableOpacity>
                         ))
                     )}

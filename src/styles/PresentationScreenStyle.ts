@@ -1,10 +1,6 @@
 import { StyleSheet } from 'react-native';
 
 export const styles = StyleSheet.create({
-    flex: {
-        flex: 1,
-    },
-
     container: {
         flex: 1,
         backgroundColor: '#f8f9fe',
@@ -37,211 +33,328 @@ export const styles = StyleSheet.create({
     headerRight: {
         width: 40,
     },
-
     scrollContent: {
-        padding: 15,
-        paddingBottom: 30,
-    },
-
-    card: {
-        backgroundColor: '#fff',
         padding: 16,
-        borderRadius: 14,
-        marginBottom: 15,
+        paddingBottom: 35,
+    },
+    sectionCard: {
+        backgroundColor: '#fff',
+        borderRadius: 16,
+        padding: 16,
+        marginBottom: 16,
         elevation: 2,
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 1 },
-        shadowOpacity: 0.08,
+        shadowOpacity: 0.06,
         shadowRadius: 4,
     },
-
-    sectionHeading: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginBottom: 18,
-    },
-
     sectionTitle: {
         fontSize: 17,
         fontWeight: '700',
-        color: '#222',
-        marginLeft: 9,
-        flex: 1,
+        color: '#20233A',
+        flexShrink: 1,
     },
-
+    sectionHeadingRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 14,
+        gap: 8,
+    },
     label: {
+        color: '#30344B',
         fontSize: 14,
         fontWeight: '600',
-        color: '#333',
-        marginBottom: 7,
-        marginTop: 10,
+        marginBottom: 8,
+        marginTop: 12,
     },
-
     input: {
-        borderWidth: 1,
-        borderColor: '#dfe3eb',
-        borderRadius: 10,
         minHeight: 48,
-        paddingHorizontal: 13,
+        borderWidth: 1,
+        borderColor: '#DDE1EB',
+        borderRadius: 10,
+        paddingHorizontal: 12,
         color: '#222',
+        fontSize: 14,
         backgroundColor: '#fff',
     },
-
     commentInput: {
         minHeight: 90,
         paddingTop: 12,
     },
-
+    pickerButton: {
+        minHeight: 49,
+        borderWidth: 1,
+        borderColor: '#DDE1EB',
+        borderRadius: 10,
+        paddingHorizontal: 12,
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: '#fff',
+    },
+    pickerButtonText: {
+        flex: 1,
+        color: '#30344B',
+        fontSize: 14,
+        marginLeft: 10,
+    },
+    dropdown: {
+        minHeight: 49,
+        borderWidth: 1,
+        borderColor: '#DDE1EB',
+        borderRadius: 10,
+        paddingHorizontal: 12,
+        backgroundColor: '#fff',
+    },
+    dropdownContainer: {
+        borderRadius: 10,
+        borderColor: '#DDE1EB',
+    },
+    dropdownPlaceholder: {
+        color: '#999',
+        fontSize: 14,
+    },
+    dropdownSelectedText: {
+        color: '#30344B',
+        fontSize: 14,
+    },
+    dropdownIcon: {
+        marginRight: 10,
+    },
     submitButton: {
-        marginTop: 20,
+        minHeight: 50,
         backgroundColor: '#4361ee',
         borderRadius: 10,
-        paddingVertical: 14,
+        marginTop: 22,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
-        gap: 8,
+        gap: 9,
     },
-
     disabledButton: {
         opacity: 0.65,
     },
-
     submitButtonText: {
         color: '#fff',
         fontSize: 15,
         fontWeight: '700',
     },
-
-    emptyText: {
-        color: '#777',
-        fontSize: 14,
-        lineHeight: 21,
-    },
-
-    requestCard: {
-        borderWidth: 1,
-        borderColor: '#e6e9f0',
-        borderRadius: 10,
-        padding: 13,
-        marginBottom: 10,
-    },
-
-    requestHeader: {
+    ruleRow: {
         flexDirection: 'row',
         alignItems: 'flex-start',
+        marginBottom: 12,
+        gap: 9,
+    },
+    ruleText: {
+        flex: 1,
+        color: '#4B5064',
+        fontSize: 13,
+        lineHeight: 19,
+    },
+    presentationCard: {
+        borderWidth: 1,
+        borderColor: '#E8EAF2',
+        borderRadius: 12,
+        padding: 13,
+        backgroundColor: '#fff',
+    },
+    presentationHeader: {
+        flexDirection: 'row',
         justifyContent: 'space-between',
-        marginBottom: 10,
+        alignItems: 'flex-start',
         gap: 8,
     },
-    
-    requestTopic: {
+    presentationTitleContainer: {
         flex: 1,
-        fontSize: 16,
+    },
+    presentationTopic: {
+        fontSize: 15,
         fontWeight: '700',
-        color: '#222',
+        color: '#20233A',
+        lineHeight: 21,
+    },
+    presentationId: {
+        color: '#898EA0',
+        fontSize: 11,
+        marginTop: 4,
     },
     statusBadge: {
+        borderRadius: 6,
+        paddingHorizontal: 8,
+        paddingVertical: 6,
         flexDirection: 'row',
         alignItems: 'center',
-        paddingHorizontal: 9,
-        paddingVertical: 5,
-        borderRadius: 15,
         gap: 4,
     },
     statusText: {
+        color: '#fff',
+        fontSize: 10,
+        fontWeight: '700',
+    },
+    divider: {
+        height: 1,
+        backgroundColor: '#EEF0F6',
+        marginVertical: 12,
+    },
+    infoRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 10,
+        gap: 8,
+    },
+    infoLabel: {
+        color: '#777D8F',
+        fontSize: 13,
+        width: 65,
+    },
+    infoValue: {
+        flex: 1,
+        color: '#30344B',
+        fontSize: 13,
+        fontWeight: '500',
+    },
+    commentContainer: {
+        backgroundColor: '#F6F7FB',
+        borderRadius: 8,
+        padding: 10,
+        marginTop: 3,
+    },
+    commentLabel: {
         fontSize: 12,
         fontWeight: '700',
-        textTransform: 'capitalize',
+        color: '#555B6E',
+        marginBottom: 5,
     },
-    detailText: {
-        color: '#555',
+    commentValue: {
+        color: '#555B6E',
         fontSize: 13,
-        marginTop: 5,
-    },
-    statusMessage: {
-        color: '#9a6700',
-        fontSize: 13,
-        marginTop: 10,
         lineHeight: 19,
+    },
+    statusMessageBox: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: '#FFF8E1',
+        borderRadius: 8,
+        padding: 10,
+        marginTop: 12,
+        gap: 8,
+    },
+    pendingMessage: {
+        flex: 1,
+        color: '#8A5A00',
+        fontSize: 12,
+        lineHeight: 18,
+    },
+    rejectedMessageBox: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: '#FFEBEE',
+        borderRadius: 8,
+        padding: 10,
+        marginTop: 12,
+        gap: 8,
     },
     rejectedMessage: {
-        color: '#dc2626',
-        fontSize: 13,
-        marginTop: 10,
-        lineHeight: 19,
+        flex: 1,
+        color: '#B71C1C',
+        fontSize: 12,
+        lineHeight: 18,
+    },
+    approvedMessageBox: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: '#E8F5E9',
+        borderRadius: 8,
+        padding: 10,
+        marginTop: 12,
+        gap: 8,
     },
     approvedMessage: {
-        color: '#16803c',
-        fontSize: 13,
+        flex: 1,
+        color: '#1B5E20',
+        fontSize: 12,
+        lineHeight: 18,
+    },
+    emptyContainer: {
+        alignItems: 'center',
+        paddingVertical: 22,
+    },
+    emptyTitle: {
+        color: '#30344B',
+        fontSize: 15,
+        fontWeight: '700',
         marginTop: 10,
+    },
+    emptyText: {
+        color: '#898EA0',
+        fontSize: 13,
+        textAlign: 'center',
+        lineHeight: 19,
+        paddingVertical: 12,
+    },
+    inlineLoader: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingVertical: 24,
+        gap: 10,
+    },
+    inlineLoaderText: {
+        color: '#555B6E',
+        fontSize: 13,
+    },
+    refreshButton: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingVertical: 10,
+        gap: 6,
+        marginTop: 4,
+    },
+    refreshButtonText: {
+        color: '#4361ee',
+        fontSize: 13,
+        fontWeight: '600',
+    },
+    notificationCard: {
+        flexDirection: 'row',
+        borderWidth: 1,
+        borderColor: '#E8EAF2',
+        borderRadius: 12,
+        padding: 12,
+        marginBottom: 12,
+    },
+    notificationIcon: {
+        marginRight: 10,
+        paddingTop: 2,
+    },
+    notificationContent: {
+        flex: 1,
+    },
+    notificationTitle: {
+        fontSize: 14,
+        fontWeight: '700',
+        color: '#20233A',
+        marginBottom: 5,
+    },
+    notificationMessage: {
+        fontSize: 13,
+        color: '#555B6E',
         lineHeight: 19,
     },
-    approvedBanner: {
-        flexDirection: 'row',
-        alignItems: 'flex-start',
-        backgroundColor: '#eaf7ee',
-        borderRadius: 12,
-        padding: 15,
-        marginBottom: 15,
+    notificationDate: {
+        color: '#898EA0',
+        fontSize: 11,
+        marginTop: 8,
     },
-    approvedTitle: {
-        fontSize: 16,
-        color: '#166534',
-        fontWeight: '700',
-        marginBottom: 4,
-    },
-    notificationItem: {
-        flexDirection: 'row',
-        alignItems: 'flex-start',
-        paddingVertical: 11,
-        borderBottomWidth: StyleSheet.hairlineWidth,
-        borderBottomColor: '#e3e6ed',
-        gap: 9,
-    },
-    notificationText: {
+    loaderContainer: {
         flex: 1,
-        fontSize: 14,
-        color: '#444',
-        lineHeight: 21,
-    },
-    fieldContainer: {
-        marginBottom: 16,
-    },
-    pickerButton: {
-        minHeight: 50,
-        borderWidth: 1,
-        borderColor: '#D6D6D6',
-        borderRadius: 8,
-        paddingHorizontal: 14,
         justifyContent: 'center',
-        backgroundColor: '#FFFFFF',
+        alignItems: 'center',
+        backgroundColor: '#F5F7FB',
     },
-
-    pickerText: {
-        fontSize: 15,
-        color: '#333333',
-    },
-
-    placeholderText: {
-        color: '#999999',
-    },
-
-    dropdown: {
-        height: 50,
-        borderWidth: 1,
-        borderColor: '#D6D6D6',
-        borderRadius: 8,
-        paddingHorizontal: 12,
-        backgroundColor: '#FFFFFF',
-    },
-
-    dropdownList: {
-        borderRadius: 8,
-    },
-
-    dropdownItemText: {
-        fontSize: 15,
-        color: '#333333',
+    loadingText: {
+        color: '#555B6E',
+        fontSize: 14,
+        marginTop: 12,
     },
 });
